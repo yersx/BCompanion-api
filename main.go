@@ -2,9 +2,9 @@
 package main
 
 import (
+	"bcompanion/controller"
 	"log"
 	"net/http"
-	"restful-api/controller"
 
 	"github.com/gorilla/mux"
 )
@@ -16,5 +16,5 @@ func main() {
 	r.HandleFunc("/login", controller.LoginHandler).Methods("POST")
 	r.HandleFunc("/profile", controller.ProfileHandler).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":8833", r))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }

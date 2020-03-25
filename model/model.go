@@ -1,12 +1,13 @@
-// model
 package model
 
 type User struct {
-	Username  string `json:"username"`
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
-	Password  string `json:"password"`
-	Token     string `json:"token"`
+	FirstName   string `json:"firstname"`
+	LastName    string `json:"lastname"`
+	Password    string `json:"password"`
+	Token       string `json:"token"`
+	PhoneNumber string `json:"phoneNumber"`
+	DateOfBirth string `json:"dateOfBirth"`
+	City        string `json:"city"`
 }
 
 type ResponseResult struct {

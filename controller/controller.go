@@ -2,13 +2,13 @@
 package controller
 
 import (
+	"bcompanion/config/db"
+	"bcompanion/model"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"restful-api/config/db"
-	"restful-api/model"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
@@ -32,7 +32,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	collection, err := db.GetDBCollection()
+	collection, err := db.GetDBCollection("users")
 
 	if err != nil {
 		res.Error = err.Error()
@@ -42,7 +42,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	var result model.User
 	// Check if user exists in the database
-	err = collection.FindOne(context.TODO(), bson.D{{"username", user.Username}}).Decode(&result)
+	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&result)
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
 
@@ -80,7 +80,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res.Result = "Username already Exists!!"
+	res.Result = "User already Exists!!"
 	json.NewEncoder(w).Encode(res)
 }
 
@@ -100,7 +100,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		//log.Fatal(err)
 	}
 
-	collection, err := db.GetDBCollection()
+	collection, err := db.GetDBCollection("users")
 
 	if err != nil {
 		res.Error = err.Error()
@@ -108,10 +108,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = collection.FindOne(context.TODO(), bson.D{{"username", user.Username}}).Decode(&result)
+	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&result)
 
 	if err != nil {
-		res.Error = "Invalid username"
+		res.Error = "Invalid phone"
 		json.NewEncoder(w).Encode(res)
 		return
 	}
@@ -125,9 +125,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username":  result.Username,
-		"firstname": result.FirstName,
-		"lastname":  result.LastName,
+		"firstname":   result.FirstName,
+		"lastname":    result.LastName,
+		"phoneNumber": result.PhoneNumber,
+		"dateOfBirth": result.DateOfBirth,
+		"city":        result.City,
 	})
 
 	tokenString, err := token.SignedString([]byte("secret"))
@@ -157,9 +159,11 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	var result model.User
 	var res model.ResponseResult
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		result.Username = claims["username"].(string)
 		result.FirstName = claims["firstname"].(string)
 		result.LastName = claims["lastname"].(string)
+		result.PhoneNumber = claims["phoneNumber"].(string)
+		result.DateOfBirth = claims["dateOfBirth"].(string)
+		result.City = claims["city"].(string)
 
 		json.NewEncoder(w).Encode(result)
 		return

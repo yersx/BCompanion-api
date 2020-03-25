@@ -8,9 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetDBCollection() (*mongo.Collection, error) {
-	// Set client options to connect to external resource - AWS
-	clientOptions := options.Client().ApplyURI("mongodb+srv://<username>:<password>@brandsng-k5x55.mongodb.net/test?retryWrites=true&w=majority")
+func GetDBCollection(name string) (*mongo.Collection, error) {
+	clientOptions := options.Client().ApplyURI("mongodb+srv://mongouser:Mongo980825user@mongocluster-fvpsj.mongodb.net/test?retryWrites=true&w=majority")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		return nil, err
@@ -22,6 +21,6 @@ func GetDBCollection() (*mongo.Collection, error) {
 		return nil, err
 	}
 
-	collection := client.Database("test").Collection("trainers")
+	collection := client.Database("BCompanion").Collection(name)
 	return collection, nil
 }
