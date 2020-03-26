@@ -42,7 +42,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	var result model.User
 	// Check if user exists in the database
-	err = collection.FindOne(context.TODO(), bson.D{{"phonenumber", user.PhoneNumber}}).Decode(&result)
+	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&result)
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
 
@@ -108,7 +108,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = collection.FindOne(context.TODO(), bson.D{{"phonenumber", user.PhoneNumber}}).Decode(&result)
+	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&result)
 
 	if err != nil {
 		res.Error = "Invalid phone"
@@ -127,7 +127,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"firstname":   result.FirstName,
 		"lastname":    result.LastName,
-		"phonenumber": result.PhoneNumber,
+		"phoneNumber": result.PhoneNumber,
 		"dateOfBirth": result.DateOfBirth,
 		"city":        result.City,
 	})
@@ -161,7 +161,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		result.FirstName = claims["firstname"].(string)
 		result.LastName = claims["lastname"].(string)
-		result.PhoneNumber = claims["phonenumber"].(string)
+		result.PhoneNumber = claims["phoneNumber"].(string)
 		result.DateOfBirth = claims["dateOfBirth"].(string)
 		result.City = claims["city"].(string)
 
