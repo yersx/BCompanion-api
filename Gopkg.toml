@@ -27,6 +27,7 @@
 
 [metadata.heroku]
   root-package = "github.com/yersx/bcompanionApi"
+  go-version = "go1.14"
 
 [[constraint]]
   name = "github.com/dgrijalva/jwt-go"
