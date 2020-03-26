@@ -5,8 +5,8 @@ type User struct {
 	LastName    string `json:"lastname"`
 	Password    string `json:"password"`
 	Token       string `json:"token"`
-	PhoneNumber string `json:"phoneNumber"`
-	DateOfBirth string `json:"dateOfBirth"`
+	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber,omitempty"`
+	DateOfBirth string `json:"dateOfBirth" bson:"dateOfBirth,omitempty"`
 	City        string `json:"city"`
 }
 
