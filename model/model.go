@@ -5,7 +5,7 @@ type User struct {
 	LastName    string `json:"lastname"`
 	Password    string `json:"password"`
 	Token       string `json:"token"`
-	PhoneNumber string `json:"phoneNumber"`
+	PhoneNumber string `json:"phonenumber"`
 	DateOfBirth string `json:"dateOfBirth"`
 	City        string `json:"city"`
 }
