@@ -141,7 +141,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result.Token = tokenString
-	result.Password = ""
 
 	json.NewEncoder(w).Encode(result)
 }
