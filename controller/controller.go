@@ -47,7 +47,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		if err.Error() == "mongo: no documents in result" {
 
 			// Proceed to creating user, but first generate password
-			hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 5)
+			hash, err := bcrypt.GenerateFromPassword([]byte(user.PhoneNumber), 5)
 
 			if err != nil {
 				res.Error = "Error While Hashing Password, Try Again"
@@ -56,7 +56,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// store the hashed password
-			user.Password = string(hash)
+			user.Token = string(hash)
 
 			// Insert User
 			_, err = collection.InsertOne(context.TODO(), user)
@@ -80,7 +80,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res.Result = "User already Exists!!"
+	res.Error = "User already Exists!!"
 	json.NewEncoder(w).Encode(res)
 }
 
@@ -116,10 +116,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(user.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(result.Token), []byte(user.Token))
 
 	if err != nil {
-		res.Error = "Invalid Password"
+		res.Error = "Invalid Token"
 		json.NewEncoder(w).Encode(res)
 		return
 	}

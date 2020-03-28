@@ -3,7 +3,6 @@ package model
 type User struct {
 	FirstName   string `json:"firstname"`
 	LastName    string `json:"lastname"`
-	Password    string `json:"password"`
 	Token       string `json:"token"`
 	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber,omitempty"`
 	DateOfBirth string `json:"dateOfBirth" bson:"dateOfBirth,omitempty"`
