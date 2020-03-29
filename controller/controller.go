@@ -152,7 +152,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	tokenString := r.Header.Get("Authorization")
 
-	var result model.User
+	var user model.User
 	var res model.ResponseResult
 
 	collection, err := db.GetDBCollection("users")
