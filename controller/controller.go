@@ -163,7 +163,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = collection.FindOne(context.TODO(), bson.D{{"token", user.Token}}).Decode(&result)
+	err = collection.FindOne(context.TODO(), bson.D{{"token", tokenString}}).Decode(&result)
 	if err != nil {
 		res.Error = "Invalid token"
 		json.NewEncoder(w).Encode(res)
