@@ -65,6 +65,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				res.Error = "Error while Creating User, Try Again"
 				json.NewEncoder(w).Encode(res)
+				w.WriteHeader(400)
 				return
 			}
 
@@ -77,11 +78,13 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		// User most likely exists
 		res.Error = err.Error()
 		json.NewEncoder(w).Encode(res)
+		w.WriteHeader(400)
 		return
 	}
 
 	res.Error = "User already Exists!!"
 	json.NewEncoder(w).Encode(res)
+	w.WriteHeader(400)
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -148,27 +151,24 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	tokenString := r.Header.Get("Authorization")
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// Don't forget to validate the alg is what you expect:
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method")
-		}
-		return []byte("secret"), nil
-	})
+
 	var result model.User
 	var res model.ResponseResult
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		result.FirstName = claims["firstname"].(string)
-		result.LastName = claims["lastname"].(string)
-		result.PhoneNumber = claims["phoneNumber"].(string)
-		result.DateOfBirth = claims["dateOfBirth"].(string)
-		result.City = claims["city"].(string)
 
-		json.NewEncoder(w).Encode(result)
-		return
-	} else {
+	collection, err := db.GetDBCollection("users")
+	if err != nil {
 		res.Error = err.Error()
 		json.NewEncoder(w).Encode(res)
+		w.WriteHeader(400)
 		return
 	}
+
+	err = collection.FindOne(context.TODO(), bson.D{{"token", user.Token}}).Decode(&result)
+	if err != nil {
+		res.Error = "Invalid token"
+		json.NewEncoder(w).Encode(res)
+		w.WriteHeader(400)
+		return
+	}
+	json.NewEncoder(w).Encode(err)
 }
