@@ -6,7 +6,6 @@ import (
 	"bcompanion/model"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -153,6 +152,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	tokenString := r.Header.Get("Authorization")
 
 	var user model.User
+	var result model.User
 	var res model.ResponseResult
 
 	collection, err := db.GetDBCollection("users")
