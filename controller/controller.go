@@ -25,8 +25,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	var res model.ResponseResult
 	// Prepare our Error JSON Response in case there was error
 	if err != nil {
-		res.Error = err.Error()
-		res.Result = "No Fields Were Sent In"
+		res.Message = "No Fields Were Sent In"
 		json.NewEncoder(w).Encode(res)
 		return
 	}
@@ -34,7 +33,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	collection, err := db.GetDBCollection("users")
 
 	if err != nil {
-		res.Error = err.Error()
+		res.Message = err.Error()
 		json.NewEncoder(w).Encode(res)
 		return
 	}
@@ -49,7 +48,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			hash, err := bcrypt.GenerateFromPassword([]byte(user.PhoneNumber), 5)
 
 			if err != nil {
-				res.Error = "Error While Hashing Password, Try Again"
+				res.Message = "Error While Hashing Password, Try Again"
 				json.NewEncoder(w).Encode(res)
 				return
 			}
@@ -62,26 +61,26 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 			// Check if User Insertion Fails
 			if err != nil {
-				res.Error = "Error while Creating User, Try Again"
+				res.Message = "Error while Creating User, Try Again"
 				w.WriteHeader(400)
 				json.NewEncoder(w).Encode(res)
 				return
 			}
 
 			// User creation Succeeds
-			res.Result = "Registration Successful"
+			res.Message = "Registration Successful"
 			json.NewEncoder(w).Encode(res)
 			return
 		}
 
 		// User most likely exists
-		res.Error = err.Error()
+		res.Message = err.Error()
 		json.NewEncoder(w).Encode(res)
 		w.WriteHeader(400)
 		return
 	}
 
-	res.Error = "User already Exists!!"
+	res.Message = "User already Exists!!"
 	w.WriteHeader(400)
 	json.NewEncoder(w).Encode(res)
 }
@@ -96,7 +95,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &user)
 	if err != nil {
-		res.Error = err.Error()
+		res.Message = err.Error()
 		json.NewEncoder(w).Encode(res)
 		return
 		//log.Fatal(err)
@@ -105,7 +104,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	collection, err := db.GetDBCollection("users")
 
 	if err != nil {
-		res.Error = err.Error()
+		res.Message = err.Error()
 		json.NewEncoder(w).Encode(res)
 		return
 	}
@@ -113,7 +112,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&result)
 
 	if err != nil {
-		res.Error = "Invalid phone"
+		res.Message = "Invalid phone"
 		json.NewEncoder(w).Encode(res)
 		return
 	}
@@ -121,7 +120,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	err = bcrypt.CompareHashAndPassword([]byte(result.Token), []byte(user.Token))
 
 	if err != nil {
-		res.Error = "Invalid Token"
+		res.Message = "Invalid Token"
 		json.NewEncoder(w).Encode(res)
 		return
 	}
@@ -137,7 +136,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	tokenString, err := token.SignedString([]byte("secret"))
 
 	if err != nil {
-		res.Error = "Error while generating token, Try Again"
+		res.Message = "Error while generating token, Try Again"
 		json.NewEncoder(w).Encode(res)
 		return
 	}
@@ -156,7 +155,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 
 	collection, err := db.GetDBCollection("users")
 	if err != nil {
-		res.Error = err.Error()
+		res.Message = err.Error()
 		json.NewEncoder(w).Encode(res)
 		w.WriteHeader(400)
 		return
@@ -164,7 +163,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = collection.FindOne(context.TODO(), bson.D{{"token", tokenString}}).Decode(&result)
 	if err != nil {
-		res.Error = "Invalid token"
+		res.Message = "Invalid token"
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode(res)
 		return

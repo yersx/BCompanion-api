@@ -10,6 +10,5 @@ type User struct {
 }
 
 type ResponseResult struct {
-	Error  string `json:"error"`
-	Result string `json:"result"`
+	Message string `json:"message"`
 }
