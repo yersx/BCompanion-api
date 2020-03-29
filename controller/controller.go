@@ -162,12 +162,12 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err = collection.FindOne(context.TODO(), bson.D{{"token", tokenString}})
+	err = collection.FindOne(context.TODO(), bson.D{{"token", tokenString}}).Decode(&result)
 	if err != nil {
 		res.Error = "Invalid token"
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode(res)
 		return
 	}
-	json.NewEncoder(w).Encode(user.Decode(&result))
+	json.NewEncoder(w).Encode(result)
 }
