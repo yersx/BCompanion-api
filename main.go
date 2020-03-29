@@ -15,7 +15,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/users/addUser", controller.RegisterHandler).Methods("POST")
 	r.HandleFunc("/login", controller.LoginHandler).Methods("POST")
-	r.HandleFunc("/users/{phone_number}", controller.ProfileHandler).Methods("GET")
+	r.HandleFunc("/getUser", controller.ProfileHandler).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }

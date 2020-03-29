@@ -63,8 +63,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			// Check if User Insertion Fails
 			if err != nil {
 				res.Error = "Error while Creating User, Try Again"
-				json.NewEncoder(w).Encode(res)
 				w.WriteHeader(400)
+				json.NewEncoder(w).Encode(res)
 				return
 			}
 
@@ -82,8 +82,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res.Error = "User already Exists!!"
-	json.NewEncoder(w).Encode(res)
 	w.WriteHeader(400)
+	json.NewEncoder(w).Encode(res)
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -162,12 +162,12 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = collection.FindOne(context.TODO(), bson.D{{"token", tokenString}}).Decode(&result)
+	user, err = collection.FindOne(context.TODO(), bson.D{{"token", tokenString}})
 	if err != nil {
 		res.Error = "Invalid token"
-		json.NewEncoder(w).Encode(res)
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(res)
 		return
 	}
-	json.NewEncoder(w).Encode(err)
+	json.NewEncoder(w).Encode(user.Decode(&result))
 }
