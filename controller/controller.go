@@ -1,4 +1,3 @@
-// controller
 package controller
 
 import (
@@ -44,7 +43,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
 
-			// Proceed to creating user, but first generate password
+			// Proceed to creating user, but first generate token
 			hash, err := bcrypt.GenerateFromPassword([]byte(user.PhoneNumber), 5)
 
 			if err != nil {
