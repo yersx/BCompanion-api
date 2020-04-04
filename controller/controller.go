@@ -9,7 +9,7 @@ import (
 	"log"
 	"net/http"
 
-	identitytoolkit "google.golang.org/api/identitytoolkit/v3"
+	"google.golang.org/api/identitytoolkit/v3"
 	"google.golang.org/api/option"
 
 	jwt "github.com/dgrijalva/jwt-go"
