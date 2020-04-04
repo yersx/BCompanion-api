@@ -114,7 +114,9 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	client, err := identitytoolkit.NewService(context.Background(), opt)
 	if err != nil {
-		json.NewEncoder(w).Encode(err)
+		res.Message = "no firebase service"
+		json.NewEncoder(w).Encode(res)
+		return
 	}
 
 	// client, err := app.Firestore(context.Background())
@@ -129,7 +131,9 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		PhoneNumber:    "+77475652503",
 		RecaptchaToken: "6LcO2rQUAAAAADaKXYb5zNNiyFEMKtayz-SgPaoY"}).Context(context.Background()).Do()
 	if err != nil {
-		json.NewEncoder(w).Encode(err)
+		res.Message = "can not send"
+		json.NewEncoder(w).Encode(res)
+		return
 	}
 
 	var idToken = resp.ServerResponse.HTTPStatusCode
