@@ -105,7 +105,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	phoneNumber := fmt.Sprintf("+%s%s", authData.Code, authData.PhoneNumber)
+	phoneNumber := fmt.Sprintf("+%s%s", authData.Code, authData.Phone)
 
 	opt := option.WithCredentialsFile("ServiceAccountKey.json")
 
