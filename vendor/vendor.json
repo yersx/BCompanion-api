@@ -1,6 +1,11 @@
 {
 	"comment": "",
 	"ignore": "test",
-	"package": [],
+	"package": [
+		{
+			"path": "google.golang.org/api/identitytoolkit/v3",
+			"revision": ""
+		}
+	],
 	"rootPath": "bcompanion"
 }
