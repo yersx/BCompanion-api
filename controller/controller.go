@@ -100,7 +100,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	var res model.ResponseResult
 
 	if err != nil {
-		res.Message = "No Fields Were Sent In"
+		res.Message = "Not correct fields sent"
 		json.NewEncoder(w).Encode(res)
 		return
 	}

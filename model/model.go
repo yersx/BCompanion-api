@@ -19,6 +19,6 @@ type AuthData struct {
 	Domain    string `json:"domain"`
 	Code      string `json:"code"`
 	Password  string `json:"password"`
-	LastName  string `json:"lastName" bson:"lastName,omitempty"`
-	FirstName string `json:"firstName" bson:"firstName,omitempty"`
+	LastName  string `json:"lastName"`
+	FirstName string `json:"firstName"`
 }
