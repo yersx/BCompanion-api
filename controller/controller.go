@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"google.golang.org/api/identitytoolkit/v3"
@@ -131,8 +132,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		PhoneNumber:    "+77475652503",
 		RecaptchaToken: "6LcO2rQUAAAAADaKXYb5zNNiyFEMKtayz-SgPaoY"}).Context(context.Background()).Do()
 	if err != nil {
-		res.Message = "can not send"
-		json.NewEncoder(w).Encode(res)
+		log.Fatalln(err)
 		return
 	}
 
