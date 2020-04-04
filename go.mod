@@ -21,5 +21,6 @@ require (
 	golang.org/x/text v0.3.2
 	golang.org/x/tools v0.0.0-20200329025819-fd4102a86c65 // indirect
 	google.golang.org/api v0.21.0
+	google.golang.org/api/identitytoolkit/v3 v1.1.1
 	gopkg.in/ezzarghili/recaptcha-go.v4 v4.0.0 // indirect
 )
