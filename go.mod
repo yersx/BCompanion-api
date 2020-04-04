@@ -1,6 +1,6 @@
 module bcompanion
 
-go 1.14
+go 1.12.17
 
 require (
 	cloud.google.com/go/firestore v1.2.0 // indirect
