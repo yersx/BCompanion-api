@@ -109,7 +109,10 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	opt := option.WithCredentialsFile("ServiceAccountKey.json")
 
-	log.Fatalln(fmt.Sprintf("+%s %s", phoneNumber, tokenString))
+	log.Fatalln("fatal; " + fmt.Sprintf("+%s %s", phoneNumber, tokenString))
+
+	log.Output(1, "fatal; "+phoneNumber)
+	log.Printf("fatal; " + phoneNumber)
 	//app, err := firebase.NewApp(context.Background(), nil, opt)
 	// if err != nil {
 
