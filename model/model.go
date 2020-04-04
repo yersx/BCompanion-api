@@ -13,3 +13,12 @@ type User struct {
 type ResponseResult struct {
 	Message string `json:"message"`
 }
+
+type AuthData struct {
+	Phone     string `json:"phone"`
+	Domain    string `json:"domain"`
+	Code      string `json:"code"`
+	Password  string `json:"password"`
+	LastName  string `json:"lastName" bson:"lastName,omitempty"`
+	FirstName string `json:"firstName" bson:"firstName,omitempty"`
+}

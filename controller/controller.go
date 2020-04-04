@@ -5,6 +5,7 @@ import (
 	"bcompanion/model"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -90,19 +91,21 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
-	// w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json")
+	tokenString := r.Header.Get("captcha-token")
 
-	// var user model.User
-	// body, _ := ioutil.ReadAll(r.Body)
-	// err := json.Unmarshal(body, &user)
+	var authData model.AuthData
+	body, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(body, &authData)
 	var res model.ResponseResult
 
-	// if err != nil {
-	//  res.Message = "No Fields Were Sent In"
-	//  json.NewEncoder(w).Encode(res)
-	//  return
+	if err != nil {
+		res.Message = "No Fields Were Sent In"
+		json.NewEncoder(w).Encode(res)
+		return
+	}
 
-	// }
+	phoneNumber := fmt.Sprintf("+%s%s", authData.Code, authData.PhoneNumber)
 
 	opt := option.WithCredentialsFile("ServiceAccountKey.json")
 
@@ -129,8 +132,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	// defer client.Close()
 
 	resp, err := client.Relyingparty.SendVerificationCode(&identitytoolkit.IdentitytoolkitRelyingpartySendVerificationCodeRequest{
-		PhoneNumber:    "+77475652503",
-		RecaptchaToken: "6LcO2rQUAAAAADaKXYb5zNNiyFEMKtayz-SgPaoY"}).Context(context.Background()).Do()
+		PhoneNumber:    phoneNumber,
+		RecaptchaToken: tokenString}).Context(context.Background()).Do()
 	if err != nil {
 		log.Fatalln(err)
 		return
