@@ -6,7 +6,6 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"google.golang.org/api/identitytoolkit/v3"
@@ -113,10 +112,9 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	// 	log.Fatalln(err)
 	// }
 
-	log.Println("no error")
 	client, err := identitytoolkit.NewService(context.Background(), opt)
 	if err != nil {
-		log.Println(err)
+		json.NewEncoder(w).Encode(err)
 	}
 
 	// client, err := app.Firestore(context.Background())
@@ -131,7 +129,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		PhoneNumber:    "+77475652503",
 		RecaptchaToken: "6LcO2rQUAAAAADaKXYb5zNNiyFEMKtayz-SgPaoY"}).Context(context.Background()).Do()
 	if err != nil {
-		log.Println(err)
+		json.NewEncoder(w).Encode(err)
 	}
 
 	var idToken = resp.ServerResponse.HTTPStatusCode
