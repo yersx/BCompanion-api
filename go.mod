@@ -3,6 +3,8 @@ module bcompanion
 go 1.14
 
 require (
+	cloud.google.com/go/firestore v1.2.0 // indirect
+	firebase.google.com/go v3.12.0+incompatible
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-stack/stack v1.8.0
 	github.com/golang/snappy v0.0.2-0.20190904063534-ff6b7dc882cf
@@ -18,4 +20,6 @@ require (
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
 	golang.org/x/text v0.3.2
 	golang.org/x/tools v0.0.0-20200329025819-fd4102a86c65 // indirect
+	google.golang.org/api v0.21.0
+	gopkg.in/ezzarghili/recaptcha-go.v4 v4.0.0 // indirect
 )

@@ -6,7 +6,11 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
+
+	identitytoolkit "google.golang.org/api/identitytoolkit/v3"
+	"google.golang.org/api/option"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
@@ -82,6 +86,53 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	res.Message = "User already Exists!!"
 	w.WriteHeader(400)
 	json.NewEncoder(w).Encode(res)
+}
+
+func AuthHandler(w http.ResponseWriter, r *http.Request) {
+
+	// w.Header().Set("Content-Type", "application/json")
+
+	// var user model.User
+	// body, _ := ioutil.ReadAll(r.Body)
+	// err := json.Unmarshal(body, &user)
+	var res model.ResponseResult
+
+	// if err != nil {
+	// 	res.Message = "No Fields Were Sent In"
+	// 	json.NewEncoder(w).Encode(res)
+	// 	return
+	// }
+
+	opt := option.WithCredentialsFile("ServiceAccountKey.json")
+
+	//app, err := firebase.NewApp(context.Background(), nil, opt)
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+
+	client, err := identitytoolkit.NewService(context.Background(), opt)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// client, err := app.Firestore(context.Background())
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+	// defer client.Close()
+
+	resp, err := client.Relyingparty.SendVerificationCode(&identitytoolkit.IdentitytoolkitRelyingpartySendVerificationCodeRequest{
+		PhoneNumber:    "+77475652503",
+		RecaptchaToken: "6LcO2rQUAAAAADaKXYb5zNNiyFEMKtayz-SgPaoY"}).Context(context.Background()).Do()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var idToken = resp.ServerResponse.HTTPStatusCode
+	res.Message = string(idToken)
+	w.WriteHeader(400)
+	json.NewEncoder(w).Encode(res)
+
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
