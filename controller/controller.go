@@ -113,10 +113,10 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	// 	log.Fatalln(err)
 	// }
 
-	log.Output(1, "breakpoint")
+	log.Println("no error")
 	client, err := identitytoolkit.NewService(context.Background(), opt)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 
 	// client, err := app.Firestore(context.Background())
@@ -131,10 +131,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		PhoneNumber:    "+77475652503",
 		RecaptchaToken: "6LcO2rQUAAAAADaKXYb5zNNiyFEMKtayz-SgPaoY"}).Context(context.Background()).Do()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
-
-	log.Output(2, "breakpoint")
 
 	var idToken = resp.ServerResponse.HTTPStatusCode
 	res.Message = string(idToken)
