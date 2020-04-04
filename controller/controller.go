@@ -9,10 +9,11 @@ import (
 	"log"
 	"net/http"
 
+	"bcompanion/identitytoolkit/v3"
+
 	jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
-	"google.golang.org/api/identitytoolkit/v3"
 	"google.golang.org/api/option"
 )
 
