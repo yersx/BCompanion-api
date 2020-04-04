@@ -9,12 +9,11 @@ import (
 	"log"
 	"net/http"
 
-	"google.golang.org/api/identitytoolkit/v3"
-	"google.golang.org/api/option"
-
 	jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/api/identitytoolkit/v3"
+	"google.golang.org/api/option"
 )
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
