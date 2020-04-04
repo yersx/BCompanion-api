@@ -14,6 +14,7 @@ func main() {
 	port := os.Getenv("PORT")
 	r := mux.NewRouter()
 	r.HandleFunc("/users/addUser", controller.RegisterHandler).Methods("POST")
+	r.HandleFunc("/auth", controller.AuthHandler).Methods("POST")
 	r.HandleFunc("/login", controller.LoginHandler).Methods("POST")
 	r.HandleFunc("/getUser", controller.ProfileHandler).Methods("GET")
 

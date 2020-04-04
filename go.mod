@@ -1,8 +1,12 @@
 module bcompanion
 
-go 1.14
+go 1.23
 
 require (
+	cloud.google.com/go/firestore v1.2.0 // indirect
+	firebase.google.com/go v3.12.0+incompatible // indirect
+	github.com/Bowery/prompt v0.0.0-20190916142128-fa8279994f75 // indirect
+	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/snappy v0.0.2-0.20190904063534-ff6b7dc882cf // indirect

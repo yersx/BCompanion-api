@@ -15,6 +15,8 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/api/identitytoolkit/v3"
+	"google.golang.org/api/option"
 )
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -101,13 +103,16 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	//  res.Message = "No Fields Were Sent In"
 	//  json.NewEncoder(w).Encode(res)
 	//  return
+
 	// }
 
 	opt := option.WithCredentialsFile("ServiceAccountKey.json")
 
 	//app, err := firebase.NewApp(context.Background(), nil, opt)
 	// if err != nil {
+
 	//  log.Fatalln(err)
+	// 	log.Fatalln(err)
 	// }
 
 	client, err := identitytoolkit.NewService(context.Background(), opt)
@@ -118,6 +123,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	// client, err := app.Firestore(context.Background())
 	// if err != nil {
 	//  log.Fatalln(err)
+	// 	log.Fatalln(err)
+
 	// }
 	// defer client.Close()
 
