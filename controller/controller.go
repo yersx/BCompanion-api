@@ -113,6 +113,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	// 	log.Fatalln(err)
 	// }
 
+	log.Output(1, "breakpoint")
 	client, err := identitytoolkit.NewService(context.Background(), opt)
 	if err != nil {
 		log.Fatalln(err)
@@ -132,6 +133,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	log.Output(2, "breakpoint")
 
 	var idToken = resp.ServerResponse.HTTPStatusCode
 	res.Message = string(idToken)
