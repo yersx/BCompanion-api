@@ -91,7 +91,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Accept", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	tokenString := r.Header.Get("captcha-token")
 
 	var authData model.AuthData
