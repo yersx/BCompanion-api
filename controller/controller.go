@@ -99,9 +99,9 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	var res model.ResponseResult
 
-	log.Fatalln(body)
+	log.Fatalln("body is: " + body)
 
-	err := qson.Unmarshal(body, &authData)
+	err := qson.Unmarshal(&authData, string(body))
 	if err != nil {
 		res.Message = string(err.Error())
 		json.NewEncoder(w).Encode(res)
