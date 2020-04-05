@@ -113,7 +113,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	opt := option.WithCredentialsFile("ServiceAccountKey.json")
 
 	log.Output(1, "phone: "+phoneNumber)
-	log.Printf("token: " + tokenString)
+	log.Output("token: " + tokenString)
 	//app, err := firebase.NewApp(context.Background(), nil, opt)
 	// if err != nil {
 
@@ -140,7 +140,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		PhoneNumber:    phoneNumber,
 		RecaptchaToken: tokenString}).Context(context.Background()).Do()
 	if err != nil {
-		log.Fatalln(err)
+		log.Output(1, err.Error())
 		return
 	}
 
