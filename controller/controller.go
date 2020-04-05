@@ -100,7 +100,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.Unmarshal(body, &authData)
 	if err != nil {
-		res.Message = string(err.Error())
+		res.Message = string(err.Error() + "\n " + string(authData.Code) + " " + string(authData.Phone) + " " + string(authData.Domain))
 		json.NewEncoder(w).Encode(res)
 		return
 	}
