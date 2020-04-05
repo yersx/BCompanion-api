@@ -129,7 +129,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	captcha, err := recaptcha.NewReCAPTCHA("6Ldg2eYUAAAAAGP8E3gTqrRQFjPFstUT4lQptSEg", recaptcha.V2, 10*time.Second)
+	captcha, err := recaptcha.NewReCAPTCHA("6Ldg2eYUAAAAAGP8E3gTqrRQFjPFstUT4lqptSEg", recaptcha.V2, 10*time.Second)
 
 	verErr := captcha.Verify(tokenString)
 	if verErr != nil {
@@ -145,7 +145,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := client.Relyingparty.SendVerificationCode(&identitytoolkit.IdentitytoolkitRelyingpartySendVerificationCodeRequest{
 		PhoneNumber:    phoneNumber,
-		RecaptchaToken: "6Ldg2eYUAAAAAGP8E3gTqrRQFjPFstUT4lQptSEg"}).Context(context.Background()).Do()
+		RecaptchaToken: tokenString}).Context(context.Background()).Do()
 	if err != nil {
 		log.Printf(err.Error())
 		return
