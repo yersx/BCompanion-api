@@ -96,9 +96,9 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	var authData model.AuthData
 	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &authData)
 	var res model.ResponseResult
 
+	err := json.Unmarshal(body, &authData)
 	if err != nil {
 		res.Message = "Not correct fields sent"
 		json.NewEncoder(w).Encode(res)
