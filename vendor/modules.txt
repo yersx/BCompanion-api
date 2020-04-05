@@ -32,7 +32,6 @@ github.com/googleapis/gax-go/v2
 github.com/gorilla/mux
 # github.com/joncalhoun/qson v0.0.0-20200214190643-0e0c0e4268e7
 ## explicit
-github.com/joncalhoun/qson
 # github.com/klauspost/compress v1.10.3
 ## explicit
 github.com/klauspost/compress/fse
@@ -202,3 +201,6 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
+# gopkg.in/ezzarghili/recaptcha-go.v4 v4.0.0
+## explicit
+gopkg.in/ezzarghili/recaptcha-go.v4

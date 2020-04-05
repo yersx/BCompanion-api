@@ -9,13 +9,14 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-
-	"google.golang.org/api/identitytoolkit/v3"
-	"google.golang.org/api/option"
+	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/api/identitytoolkit/v3"
+	"google.golang.org/api/option"
+	"gopkg.in/ezzarghili/recaptcha-go.v4"
 )
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -128,6 +129,12 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	captcha, err := recaptcha.NewReCAPTCHA("6Ldg2eYUAAAAAGP8E3gTqrRQFjPFstUT4lQptSEg", recaptcha.V2, 10*time.Second)
+
+	verErr := captcha.Verify(tokenString)
+	if verErr != nil {
+		log.Printf("verification error: " + err.Error())
+	}
 	// client, err := app.Firestore(context.Background())
 	// if err != nil {
 	//  log.Fatalln(err)
