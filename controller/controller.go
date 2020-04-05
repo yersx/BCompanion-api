@@ -10,7 +10,6 @@ import (
 	"log"
 	"net/http"
 
-	qson "github.com/joncalhoun/qson"
 	"google.golang.org/api/identitytoolkit/v3"
 	"google.golang.org/api/option"
 
@@ -95,24 +94,26 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	tokenString := r.Header.Get("captcha-token")
 
-	var authData model.AuthData
-	body, _ := ioutil.ReadAll(r.Body)
+	// var authData model.AuthData
+	phone, ok1 := r.URL.Query()["phone"]
+	code := r.URL.Query()["code"]
 	var res model.ResponseResult
 
-	log.Fatalln("body is: " + string(body))
-
-	err := qson.Unmarshal(&authData, string(body))
-	if err != nil {
-		res.Message = string(err.Error())
+	if !ok1 || len(phone[0]) < 1 {
+		res.Message = "Url Param 'phone' is missing"
 		json.NewEncoder(w).Encode(res)
 		return
 	}
 
-	phoneNumber := fmt.Sprintf("+%s%s", authData.Code, authData.Phone)
+	Phone := phone[0]
+	Code := code[0]
+	log.Fatalln("body is: " + Code + Phone)
+
+	phoneNumber := fmt.Sprintf("+%s%s", Code, Phone)
 
 	opt := option.WithCredentialsFile("ServiceAccountKey.json")
 
-	log.Fatalln("fatal: " + fmt.Sprintf("+%s %s", phoneNumber, tokenString))
+	log.Fatalln("fatal: " + fmt.Sprintf("+%s%s", phoneNumber, tokenString))
 
 	log.Output(1, "fatal; "+phoneNumber)
 	log.Printf("fatal; " + phoneNumber)
