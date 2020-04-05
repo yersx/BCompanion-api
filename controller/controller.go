@@ -138,7 +138,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := client.Relyingparty.SendVerificationCode(&identitytoolkit.IdentitytoolkitRelyingpartySendVerificationCodeRequest{
 		PhoneNumber:    phoneNumber,
-		RecaptchaToken: tokenString}).Context(context.Background()).Do()
+		RecaptchaToken: "6Lfb0uYUAAAAAPOzWouLaso0U6vp0vqwkf_ohdyK"}).Context(context.Background()).Do()
 	if err != nil {
 		log.Printf(err.Error())
 		return
