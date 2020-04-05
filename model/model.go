@@ -10,10 +10,12 @@ type User struct {
 	City        string `json:"city"`
 }
 
+//ResponseResult is A STRUCT
 type ResponseResult struct {
 	Message string `json:"message"`
 }
 
+//AuthData is A STRUCT
 type AuthData struct {
 	Domain string `json:"domain"`
 	Code   string `json:"code"`
