@@ -99,7 +99,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	var res model.ResponseResult
 
-	log.Fatalln("body is: " + body)
+	log.Fatalln("body is: " + string(body))
 
 	err := qson.Unmarshal(&authData, string(body))
 	if err != nil {
