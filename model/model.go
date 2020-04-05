@@ -15,10 +15,7 @@ type ResponseResult struct {
 }
 
 type AuthData struct {
-	Phone     string `json:"phone"`
-	Domain    string `json:"domain"`
-	Code      string `json:"code"`
-	Password  string `json:"password"`
-	LastName  string `json:"lastName"`
-	FirstName string `json:"firstName"`
+	Phone  string `json:"phone"`
+	Domain string `json:"domain"`
+	Code   string `json:"code"`
 }
