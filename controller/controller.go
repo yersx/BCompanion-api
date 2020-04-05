@@ -99,7 +99,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&authData)
 	if err != nil {
-		res.Message = string(err.Error())
+		res.Message = string("error body  is: " + err.Error())
 		json.NewEncoder(w).Encode(res)
 		return
 	}
