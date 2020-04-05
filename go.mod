@@ -11,6 +11,7 @@ require (
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/snappy v0.0.2-0.20190904063534-ff6b7dc882cf // indirect
 	github.com/gorilla/mux v1.7.4
+	github.com/joncalhoun/qson v0.0.0-20200214190643-0e0c0e4268e7 // indirect
 	github.com/klauspost/compress v1.10.3 // indirect
 	github.com/mongodb/mongo-go-driver v0.3.0
 	github.com/pkg/errors v0.9.1 // indirect

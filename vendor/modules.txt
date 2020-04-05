@@ -30,6 +30,8 @@ github.com/googleapis/gax-go/v2
 # github.com/gorilla/mux v1.7.4
 ## explicit
 github.com/gorilla/mux
+# github.com/joncalhoun/qson v0.0.0-20200214190643-0e0c0e4268e7
+## explicit
 # github.com/klauspost/compress v1.10.3
 ## explicit
 github.com/klauspost/compress/fse

@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 
+	qson "github.com/joncalhoun/qson"
 	"google.golang.org/api/identitytoolkit/v3"
 	"google.golang.org/api/option"
 
@@ -95,11 +96,14 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	tokenString := r.Header.Get("captcha-token")
 
 	var authData model.AuthData
+	body, _ := ioutil.ReadAll(r.Body)
 	var res model.ResponseResult
 
-	err := json.NewDecoder(r.Body).Decode(&authData)
+	log.Fatalln(body)
+
+	err := qson.Unmarshal(body, &authData)
 	if err != nil {
-		res.Message = string("error body  is: " + err.Error())
+		res.Message = string(err.Error())
 		json.NewEncoder(w).Encode(res)
 		return
 	}
@@ -108,7 +112,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	opt := option.WithCredentialsFile("ServiceAccountKey.json")
 
-	log.Fatalln("fatal; " + fmt.Sprintf("+%s %s", phoneNumber, tokenString))
+	log.Fatalln("fatal: " + fmt.Sprintf("+%s %s", phoneNumber, tokenString))
 
 	log.Output(1, "fatal; "+phoneNumber)
 	log.Printf("fatal; " + phoneNumber)
