@@ -17,5 +17,5 @@ type ResponseResult struct {
 type AuthData struct {
 	Domain string `json:"domain"`
 	Code   string `json:"code"`
-	Phone  string `json:"Phone"`
+	Phone  string `json:"phone"`
 }
