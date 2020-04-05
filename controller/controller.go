@@ -95,10 +95,9 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	tokenString := r.Header.Get("captcha-token")
 
 	var authData model.AuthData
-	body, _ := ioutil.ReadAll(r.Body)
 	var res model.ResponseResult
 
-	err := json.Unmarshal(body, &authData)
+	err := json.NewDecoder(r.Body).Decode(&authData)
 	if err != nil {
 		res.Message = string(err.Error())
 		json.NewEncoder(w).Encode(res)
