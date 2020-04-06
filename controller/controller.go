@@ -274,6 +274,6 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res.Message = string(result.Token)
-	json.NewEncoder(w).Encode(result.Token)
+	json.NewEncoder(w).Encode(res)
 	return
 }
