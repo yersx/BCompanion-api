@@ -219,7 +219,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	tokenString := r.Header.Get("Authorization")
+	tokenString := r.Header.Get("Token")
 
 	var result model.User
 	var res model.ResponseResult
@@ -245,10 +245,17 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	tokenString := r.Header.Get("Authorization")
-
-	var result model.User
+	var phone model.Phone
+	body, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(body, &phone)
 	var res model.ResponseResult
+	var result model.User
+
+	if err != nil {
+		res.Message = "No Fields Were Sent In"
+		json.NewEncoder(w).Encode(res)
+		return
+	}
 
 	collection, err := db.GetDBCollection("users")
 	if err != nil {
@@ -258,9 +265,9 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = collection.FindOne(context.TODO(), bson.D{{"token", tokenString}}).Decode(&result)
+	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", phone.PhoneNumber}}).Decode(&result)
 	if err != nil {
-		res.Message = "Invalid token"
+		res.Message = "Not exist!"
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode(res)
 		return

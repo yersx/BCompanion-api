@@ -10,6 +10,10 @@ type User struct {
 	City        string `json:"city"`
 }
 
+type Phone struct {
+	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber,omitempty"`
+}
+
 //ResponseResult is A STRUCT
 type ResponseResult struct {
 	Message string `json:"message"`
