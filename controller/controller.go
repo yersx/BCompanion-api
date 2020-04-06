@@ -23,12 +23,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	// Get what was sent in
 	var user model.User
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &user)
 	var res model.ResponseResult
-	// Prepare our Error JSON Response in case there was error
+
 	if err != nil {
 		res.Message = "No Fields Were Sent In"
 		json.NewEncoder(w).Encode(res)
@@ -36,7 +35,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	collection, err := db.GetDBCollection("users")
-
 	if err != nil {
 		res.Message = err.Error()
 		json.NewEncoder(w).Encode(res)
@@ -51,10 +49,10 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 			// Proceed to creating user, but first generate token
 			hash, err := bcrypt.GenerateFromPassword([]byte(user.PhoneNumber), 5)
-
 			if err != nil {
 				res.Message = "Error While Hashing Password, Try Again"
 				json.NewEncoder(w).Encode(res)
+				w.WriteHeader(400)
 				return
 			}
 
@@ -73,7 +71,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// User creation Succeeds
-			res.Message = "Registration Successful"
+			res.Message = string(user.Token)
 			json.NewEncoder(w).Encode(res)
 			return
 		}
@@ -90,7 +88,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(res)
 }
 
-func AuthHandler(w http.ResponseWriter, r *http.Request) {
+func AuthorizationHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	tokenString := r.Header.Get("captcha-token")
@@ -129,7 +127,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	captcha, err := recaptcha.NewReCAPTCHA("6Ldg2eYUAAAAAGP8E3gTqrRQFjPFstUT4lqptSEg", recaptcha.V2, 10*time.Second)
+	captcha, err := recaptcha.NewReCAPTCHA("6Ldg2eYUAAAAAGP8E3gTqrRQFjPFstUT4lQptSEg", recaptcha.V2, 10*time.Second)
 
 	verErr := captcha.Verify(tokenString)
 	if verErr != nil {
@@ -222,6 +220,30 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	tokenString := r.Header.Get("Authorization")
+
+	var result model.User
+	var res model.ResponseResult
+
+	collection, err := db.GetDBCollection("users")
+	if err != nil {
+		res.Message = err.Error()
+		json.NewEncoder(w).Encode(res)
+		w.WriteHeader(400)
+		return
+	}
+
+	err = collection.FindOne(context.TODO(), bson.D{{"token", tokenString}}).Decode(&result)
+	if err != nil {
+		res.Message = "Invalid token"
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+	json.NewEncoder(w).Encode(result)
+}
+
+func AuthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
 	var result model.User
 	var res model.ResponseResult
