@@ -4,8 +4,8 @@ package model
 type User struct {
 	FirstName   string `json:"firstname"`
 	LastName    string `json:"lastname"`
-	Token       string `json:"-" bson:"token"`
-	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber"`
+	Token       string `json:"token"`
+	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber,omitempty"` //PhoneNumber is a field
 	DateOfBirth string `json:"dateOfBirth" bson:"dateOfBirth,omitempty"`
 	City        string `json:"city"`
 }
