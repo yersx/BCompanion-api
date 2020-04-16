@@ -14,6 +14,11 @@ type Phone struct {
 	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber,omitempty"`
 }
 
+type TokenResult struct {
+	Token   string `json:"auth_token"`
+	Message string `json:"message"`
+}
+
 //ResponseResult is A STRUCT
 type ResponseResult struct {
 	Message string `json:"message"`

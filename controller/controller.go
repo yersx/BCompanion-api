@@ -28,7 +28,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	var user model.User
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &user)
-	var res model.ResponseResult
+	var res model.TokenResult
 
 	if err != nil {
 		res.Message = "No Fields Were Sent In"
@@ -76,7 +76,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 				}
 
 				// User creation Succeeds
-				res.Message = string(user.Token)
+				res.Token = string(user.Token)
 				json.NewEncoder(w).Encode(res)
 				return
 			}
@@ -99,7 +99,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		res.Message = string(result.Token)
+		res.Token = string(result.Token)
 		json.NewEncoder(w).Encode(res)
 		return
 	}
