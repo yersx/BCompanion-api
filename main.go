@@ -16,6 +16,6 @@ func main() {
 	r.HandleFunc("/users/authorize", controller.RegisterHandler).Methods("POST")
 	r.HandleFunc("/users/auth", controller.AuthHandler).Methods("GET")
 	r.HandleFunc("/login", controller.LoginHandler).Methods("POST")
-	r.HandleFunc("/users/getUser", controller.ProfileHandler).Methods("GET")
+	r.HandleFunc("/users/{phone}", controller.ProfileHandler).Methods("GET")
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }

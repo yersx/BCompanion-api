@@ -12,6 +12,7 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/api/identitytoolkit/v3"
@@ -22,6 +23,7 @@ import (
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
+	authType := r.Header.Get("authType")
 
 	var user model.User
 	body, _ := ioutil.ReadAll(r.Body)
@@ -33,7 +35,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(res)
 		return
 	}
-
 	collection, err := db.GetDBCollection("users")
 	if err != nil {
 		res.Message = err.Error()
@@ -42,50 +43,66 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var result model.User
+
 	// Check if user exists in the database
 	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&result)
-	if err != nil {
-		if err.Error() == "mongo: no documents in result" {
 
-			// Proceed to creating user, but first generate token
-			hash, err := bcrypt.GenerateFromPassword([]byte(user.PhoneNumber), 5)
-			if err != nil {
-				res.Message = "Error While Hashing Password, Try Again"
+	if authType == "registration" {
+
+		if err != nil {
+			if err.Error() == "mongo: no documents in result" {
+
+				// Proceed to creating user, but first generate token
+				hash, err := bcrypt.GenerateFromPassword([]byte(user.PhoneNumber), 5)
+				if err != nil {
+					res.Message = "Error While Hashing Password, Try Again"
+					json.NewEncoder(w).Encode(res)
+					w.WriteHeader(400)
+					return
+				}
+
+				// store the hashed password
+				user.Token = string(hash)
+
+				// Insert User
+				_, err = collection.InsertOne(context.TODO(), user)
+
+				// Check if User Insertion Fails
+				if err != nil {
+					res.Message = "Error while Creating User, Try Again"
+					w.WriteHeader(400)
+					json.NewEncoder(w).Encode(res)
+					return
+				}
+
+				// User creation Succeeds
+				res.Message = string(user.Token)
 				json.NewEncoder(w).Encode(res)
-				w.WriteHeader(400)
 				return
 			}
 
-			// store the hashed password
-			user.Token = string(hash)
+			// User most likely exists
+			res.Message = err.Error()
+			json.NewEncoder(w).Encode(res)
+			w.WriteHeader(400)
+			return
+		}
 
-			// Insert User
-			_, err = collection.InsertOne(context.TODO(), user)
-
-			// Check if User Insertion Fails
-			if err != nil {
-				res.Message = "Error while Creating User, Try Again"
-				w.WriteHeader(400)
-				json.NewEncoder(w).Encode(res)
-				return
-			}
-
-			// User creation Succeeds
-			res.Message = string(user.Token)
+		res.Message = "User already Exists!!"
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(res)
+	} else if authType == "login" {
+		if err != nil {
+			res.Message = "Not exist!"
+			w.WriteHeader(400)
 			json.NewEncoder(w).Encode(res)
 			return
 		}
 
-		// User most likely exists
-		res.Message = err.Error()
+		res.Message = string(result.Token)
 		json.NewEncoder(w).Encode(res)
-		w.WriteHeader(400)
 		return
 	}
-
-	res.Message = "User already Exists!!"
-	w.WriteHeader(400)
-	json.NewEncoder(w).Encode(res)
 }
 
 func AuthorizationHandler(w http.ResponseWriter, r *http.Request) {
@@ -219,7 +236,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	tokenString := r.Header.Get("Token")
+	params := mux.Vars(r)
+	phone := params["phone"]
 
 	var result model.User
 	var res model.ResponseResult
@@ -232,14 +250,16 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = collection.FindOne(context.TODO(), bson.D{{"token", tokenString}}).Decode(&result)
-	if err != nil {
-		res.Message = "Invalid token"
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode(res)
-		return
+	if phone != "" {
+		err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", phone}}).Decode(&result)
+		if err != nil {
+			res.Message = "Invalid token"
+			w.WriteHeader(400)
+			json.NewEncoder(w).Encode(res)
+			return
+		}
+		json.NewEncoder(w).Encode(result)
 	}
-	json.NewEncoder(w).Encode(result)
 }
 
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
