@@ -253,7 +253,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	if phone != "" {
 		err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", phone}}).Decode(&result)
 		if err != nil {
-			res.Message = "Invalid token"
+			res.Message = "Phone number not found!"
 			w.WriteHeader(400)
 			json.NewEncoder(w).Encode(res)
 			return
