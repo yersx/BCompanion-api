@@ -23,7 +23,6 @@ import (
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
-	authType := r.Header.Get("authType")
 
 	var user model.User
 	body, _ := ioutil.ReadAll(r.Body)
@@ -41,8 +40,16 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(res)
 		return
 	}
-
 	var result model.User
+
+	AuthType, ok1 := r.URL.Query()["authType"]
+	if !ok1 || len(AuthType[0]) < 1 {
+		res.Message = "Url Param 'authType' is missing"
+		json.NewEncoder(w).Encode(res)
+		w.WriteHeader(400)
+		return
+	}
+	authType := AuthType[0]
 
 	// Check if user exists in the database
 	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&result)
