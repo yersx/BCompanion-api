@@ -74,7 +74,7 @@ func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 	if !ok1 || len(Phone[0]) < 1 {
 		// res.Message = "Url Param 'phone_number' is missing"
 		json.NewEncoder(w).Encode(nil)
-		w.WriteHeader(200)
+		w.WriteHeader(404)
 		return
 	}
 	phone := Phone[0]
@@ -82,7 +82,7 @@ func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 	result, err := userService.FindUser(phone)
 	if err != nil {
 		// res.Message = err.Error()
-		w.WriteHeader(200)
+		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)
 		return
 	}
