@@ -47,7 +47,7 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Message = "No Fields Were Sent In"
 		json.NewEncoder(w).Encode(response)
-		w.WriteHeader(400)
+		w.WriteHeader(404)
 		return
 	}
 
@@ -55,7 +55,7 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 	if !ok1 || len(AuthType[0]) < 1 {
 		response.Message = "Url Param 'authType' is missing"
 		json.NewEncoder(w).Encode(response)
-		w.WriteHeader(400)
+		w.WriteHeader(404)
 		return
 	}
 	authType := AuthType[0]
@@ -74,7 +74,7 @@ func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 	if !ok1 || len(Phone[0]) < 1 {
 		// res.Message = "Url Param 'phone_number' is missing"
 		json.NewEncoder(w).Encode(nil)
-		w.WriteHeader(400)
+		w.WriteHeader(200)
 		return
 	}
 	phone := Phone[0]
@@ -82,7 +82,7 @@ func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 	result, err := userService.FindUser(phone)
 	if err != nil {
 		// res.Message = err.Error()
-		w.WriteHeader(400)
+		w.WriteHeader(200)
 		json.NewEncoder(w).Encode(nil)
 		return
 	}

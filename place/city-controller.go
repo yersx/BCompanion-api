@@ -42,7 +42,7 @@ func (*controller) AddCity(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Message = "Can not add city"
 		json.NewEncoder(w).Encode(response)
-		w.WriteHeader(400)
+		w.WriteHeader(404)
 		return
 	}
 

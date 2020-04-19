@@ -36,7 +36,7 @@ func (*repo) SignUser(user model.User, authType string) (model.TokenResult, int)
 				hash, err := bcrypt.GenerateFromPassword([]byte(user.PhoneNumber), 5)
 				if err != nil {
 					res.Message = "Error While Hashing Password, Try Again"
-					code := 400
+					code := 404
 					return res, code
 				}
 
@@ -49,7 +49,7 @@ func (*repo) SignUser(user model.User, authType string) (model.TokenResult, int)
 				// Check if User Insertion Fails
 				if err != nil {
 					res.Message = "Error while Creating User, Try Again"
-					code := 400
+					code := 404
 					return res, code
 				}
 
@@ -61,18 +61,18 @@ func (*repo) SignUser(user model.User, authType string) (model.TokenResult, int)
 
 			// User most likely exists
 			res.Message = err.Error()
-			code := 400
+			code := 404
 			return res, code
 		}
 
 		res.Message = "User already Exists!!"
-		code := 400
+		code := 404
 		return res, code
 
 	} else if authType == "login" {
 		if err != nil {
 			res.Message = "Not exist!"
-			code := 400
+			code := 404
 			return res, code
 		}
 
@@ -80,7 +80,7 @@ func (*repo) SignUser(user model.User, authType string) (model.TokenResult, int)
 		code := 200
 		return res, code
 	}
-	return res, 400
+	return res, 404
 }
 
 func (*repo) FindUser(phoneNumber string) (*model.User, error) {
