@@ -51,7 +51,7 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("user: +%s", user)
+	log.Printf("user: %s", user)
 
 	AuthType, ok1 := r.URL.Query()["authType"]
 	if !ok1 || len(AuthType[0]) < 1 {
