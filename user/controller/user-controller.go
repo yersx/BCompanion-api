@@ -53,7 +53,7 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("user: %s", user)
 
-	AuthType, ok1 := r.URL.Query()["authType"]
+	AuthType, ok1 := r.URL.Query()["auth_type"]
 	if !ok1 || len(AuthType[0]) < 1 {
 		response.Message = "Url Param 'authType' is missing"
 		json.NewEncoder(w).Encode(response)
