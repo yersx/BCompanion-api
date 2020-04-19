@@ -80,6 +80,7 @@ func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	phone := Phone[0]
+	log.Output(1, "phone: "+phone)
 
 	result, err := userService.FindUser(phone)
 	if err != nil {
