@@ -9,13 +9,20 @@ import (
 	userservice "bcompanion/user"
 	"bcompanion/user/controller"
 	userrepository "bcompanion/user/repository"
+
+	place "bcompanion/place"
 )
 
 var (
 	userRepository userrepository.UserRepository = userrepository.NewMongoRepository()
 	userService    userservice.UserService       = userservice.NewUserService(userRepository)
 	userController controller.UserController     = controller.NewUserController(userService)
-	httpRouter     router.Router                 = router.NewMuxRouter()
+
+	placeRepository place.PlaceRepository = place.NewMongoRepository()
+	placeService    place.PlaceService    = place.NewPlaceService(placeRepository)
+	placeController place.PlaceController = place.NewPlaceController(placeService)
+
+	httpRouter router.Router = router.NewMuxRouter()
 )
 
 func main() {
@@ -23,7 +30,10 @@ func main() {
 	log.Printf("port: " + port)
 
 	httpRouter.POST("/users/authorize", userController.SignUser)
-	httpRouter.GET("/users/{phone}", userController.FindUser)
+	httpRouter.GET("/users/getUser", userController.FindUser)
+
+	httpRouter.POST("/city/add", placeController.AddCity)
+	httpRouter.GET("/cities", placeController.GetCities)
 
 	httpRouter.SERVE(port)
 }

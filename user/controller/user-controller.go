@@ -13,7 +13,6 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/api/identitytoolkit/v3"
@@ -69,10 +68,16 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
-	phone := params["phone"]
-
 	var res model.ResponseResult
+
+	Phone, ok1 := r.URL.Query()["phone_number"]
+	if !ok1 || len(Phone[0]) < 1 {
+		res.Message = "Url Param 'phone_number' is missing"
+		json.NewEncoder(w).Encode(res)
+		w.WriteHeader(400)
+		return
+	}
+	phone := Phone[0]
 
 	result, err := userService.FindUser(phone)
 	if err != nil {
@@ -83,7 +88,6 @@ func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(result)
 	return
-
 }
 
 func AuthorizationHandler(w http.ResponseWriter, r *http.Request) {
