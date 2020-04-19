@@ -3,6 +3,7 @@ package controller
 import (
 	"bcompanion/config/db"
 	"bcompanion/model"
+	"bcompanion/user"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -20,96 +21,70 @@ import (
 	"gopkg.in/ezzarghili/recaptcha-go.v4"
 )
 
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+type controller struct{}
 
+var (
+	userService user.UserService
+)
+
+type UserController interface {
+	SignUser(w http.ResponseWriter, r *http.Request)
+	FindUser(w http.ResponseWriter, r *http.Request)
+}
+
+func NewUserController(service user.UserService) UserController {
+	userService = service
+	return &controller{}
+}
+
+func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var user model.User
 	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &user)
-	var res model.TokenResult
+	var response model.TokenResult
 
+	err := json.Unmarshal(body, &user)
 	if err != nil {
-		res.Message = "No Fields Were Sent In"
+		response.Message = "No Fields Were Sent In"
 		json.NewEncoder(w).Encode(res)
-		return
-	}
-	collection, err := db.GetDBCollection("users")
-	if err != nil {
-		res.Message = err.Error()
-		json.NewEncoder(w).Encode(res)
+		w.WriteHeader(400)
 		return
 	}
 	var result model.User
 
 	AuthType, ok1 := r.URL.Query()["authType"]
 	if !ok1 || len(AuthType[0]) < 1 {
-		res.Message = "Url Param 'authType' is missing"
+		response.Message = "Url Param 'authType' is missing"
 		json.NewEncoder(w).Encode(res)
 		w.WriteHeader(400)
 		return
 	}
 	authType := AuthType[0]
 
-	// Check if user exists in the database
-	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&result)
+	res, code := userService.SignUser(user, authType)
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(res)
+	return
+}
 
-	if authType == "registration" {
+func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	phone := params["phone"]
 
-		if err != nil {
-			if err.Error() == "mongo: no documents in result" {
+	var res model.ResponseResult
 
-				// Proceed to creating user, but first generate token
-				hash, err := bcrypt.GenerateFromPassword([]byte(user.PhoneNumber), 5)
-				if err != nil {
-					res.Message = "Error While Hashing Password, Try Again"
-					json.NewEncoder(w).Encode(res)
-					w.WriteHeader(400)
-					return
-				}
-
-				// store the hashed password
-				user.Token = string(hash)
-
-				// Insert User
-				_, err = collection.InsertOne(context.TODO(), user)
-
-				// Check if User Insertion Fails
-				if err != nil {
-					res.Message = "Error while Creating User, Try Again"
-					w.WriteHeader(400)
-					json.NewEncoder(w).Encode(res)
-					return
-				}
-
-				// User creation Succeeds
-				res.Token = string(user.Token)
-				json.NewEncoder(w).Encode(res)
-				return
-			}
-
-			// User most likely exists
-			res.Message = err.Error()
-			json.NewEncoder(w).Encode(res)
-			w.WriteHeader(400)
-			return
-		}
-
-		res.Message = "User already Exists!!"
+	result, err := userService.FindUser(phone)
+	if err != nil {
+		res.Message = err.Error()
 		w.WriteHeader(400)
-		json.NewEncoder(w).Encode(res)
-	} else if authType == "login" {
-		if err != nil {
-			res.Message = "Not exist!"
-			w.WriteHeader(400)
-			json.NewEncoder(w).Encode(res)
-			return
-		}
-
-		res.Token = string(result.Token)
 		json.NewEncoder(w).Encode(res)
 		return
 	}
+	json.NewEncoder(w).Encode(result)
+	return
+
 }
 
 func AuthorizationHandler(w http.ResponseWriter, r *http.Request) {
@@ -239,34 +214,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	result.Token = tokenString
 
 	json.NewEncoder(w).Encode(result)
-}
-
-func ProfileHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
-	phone := params["phone"]
-
-	var result model.User
-	var res model.ResponseResult
-
-	collection, err := db.GetDBCollection("users")
-	if err != nil {
-		res.Message = err.Error()
-		json.NewEncoder(w).Encode(res)
-		w.WriteHeader(400)
-		return
-	}
-
-	if phone != "" {
-		err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", phone}}).Decode(&result)
-		if err != nil {
-			res.Message = "Phone number not found!"
-			w.WriteHeader(400)
-			json.NewEncoder(w).Encode(res)
-			return
-		}
-		json.NewEncoder(w).Encode(result)
-	}
 }
 
 func AuthHandler(w http.ResponseWriter, r *http.Request) {

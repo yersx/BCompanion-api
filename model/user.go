@@ -1,11 +1,32 @@
 package model
 
-import "github.com/mongodb/mongo-go-driver/bson/primitive"
+//User is A STRUCT
+type User struct {
+	FirstName   string `json:"firstname"`
+	LastName    string `json:"lastname"`
+	Token       string `json:"-" bson:"token"`
+	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber"`
+	DateOfBirth string `json:"dateOfBirth" bson:"dateOfBirth,omitempty"`
+	City        string `json:"city"`
+}
 
-type Customer struct {
-	ID        primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Firstname string             `json:"firstname,omitempty" bson:"firstname,omitempty"`
-	Lastname  string             `json:"lastname,omitempty" bson:"lastname,omitempty"`
-	Email     string             `json:"email,omitempty" bson:"email,omitempty"`
-	Password  string             `json:"password,omitempty" bson:"password,omitempty"`
+type Phone struct {
+	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber,omitempty"`
+}
+
+type TokenResult struct {
+	Token   string `json:"auth_token"`
+	Message string `json:"message"`
+}
+
+//ResponseResult is A STRUCT
+type ResponseResult struct {
+	Message string `json:"message"`
+}
+
+//AuthData is A STRUCT
+type AuthData struct {
+	Domain string `json:"domain"`
+	Code   string `json:"code"`
+	Phone  string `json:"phone"`
 }
