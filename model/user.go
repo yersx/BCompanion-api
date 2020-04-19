@@ -2,8 +2,8 @@ package model
 
 //User is A STRUCT
 type User struct {
-	FirstName   string `json:"firstname"`
-	LastName    string `json:"lastname"`
+	FirstName   string `json:"name"`
+	LastName    string `json:"surname"`
 	Token       string `json:"-" bson:"token"`
 	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber"`
 	DateOfBirth string `json:"dateOfBirth" bson:"dateOfBirth,omitempty"`
