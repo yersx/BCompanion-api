@@ -85,10 +85,13 @@ func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 	result, err := userService.FindUser(phone)
 	if err != nil {
 		// res.Message = err.Error()
+
+		log.Output(1, "error 404")
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)
 		return
 	}
+	log.Printf("result %s", result)
 	json.NewEncoder(w).Encode(result)
 	return
 }
