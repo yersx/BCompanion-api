@@ -47,16 +47,15 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 	err := json.Unmarshal(body, &user)
 	if err != nil {
 		response.Message = "No Fields Were Sent In"
-		json.NewEncoder(w).Encode(res)
+		json.NewEncoder(w).Encode(response)
 		w.WriteHeader(400)
 		return
 	}
-	var result model.User
 
 	AuthType, ok1 := r.URL.Query()["authType"]
 	if !ok1 || len(AuthType[0]) < 1 {
 		response.Message = "Url Param 'authType' is missing"
-		json.NewEncoder(w).Encode(res)
+		json.NewEncoder(w).Encode(response)
 		w.WriteHeader(400)
 		return
 	}
