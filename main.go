@@ -2,6 +2,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	router "bcompanion/http"
@@ -19,6 +20,7 @@ var (
 
 func main() {
 	port := os.Getenv("PORT")
+	log.Printf("port: " + port)
 
 	httpRouter.POST("/users/authorize", userController.SignUser)
 	httpRouter.GET("/users/{phone}", userController.FindUser)
