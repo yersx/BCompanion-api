@@ -68,12 +68,12 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var res model.ResponseResult
+	// var res model.ResponseResult
 
 	Phone, ok1 := r.URL.Query()["phone_number"]
 	if !ok1 || len(Phone[0]) < 1 {
-		res.Message = "Url Param 'phone_number' is missing"
-		json.NewEncoder(w).Encode(res)
+		// res.Message = "Url Param 'phone_number' is missing"
+		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(400)
 		return
 	}
@@ -81,9 +81,9 @@ func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 
 	result, err := userService.FindUser(phone)
 	if err != nil {
-		res.Message = err.Error()
+		// res.Message = err.Error()
 		w.WriteHeader(400)
-		json.NewEncoder(w).Encode(res)
+		json.NewEncoder(w).Encode(nil)
 		return
 	}
 	json.NewEncoder(w).Encode(result)
