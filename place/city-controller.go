@@ -59,7 +59,7 @@ func (*controller) GetCities(w http.ResponseWriter, r *http.Request) {
 	cities, err := placeService.GetCities()
 	if err != nil {
 		res.Message = err.Error()
-		w.WriteHeader(400)
+		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(res)
 		return
 	}
