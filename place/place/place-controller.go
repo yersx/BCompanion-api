@@ -43,7 +43,7 @@ func (*controller) AddPlace(w http.ResponseWriter, r *http.Request) {
 
 	City, ok1 := r.URL.Query()["city"]
 	if !ok1 || len(City[0]) < 1 {
-		response.Message = "Url Param 'authType' is missing"
+		response.Message = "Url Param 'city' is missing"
 		json.NewEncoder(w).Encode(response)
 		w.WriteHeader(404)
 		return
