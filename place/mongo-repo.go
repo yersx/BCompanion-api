@@ -61,6 +61,53 @@ func (*repo) GetCities() ([]*model.City, error) {
 	return toCities(out), nil
 }
 
+func (*repo) SavePlace(place model.Place) error {
+
+	// collection, err := db.GetDBCollection("cities")
+	// if err != nil {
+	// 	return err
+	// }
+
+	// _, err = collection.InsertOne(context.TODO(), city)
+	// // Check if City Insertion Fails
+	// if err != nil {
+	// 	return err
+	// }
+	return nil
+}
+
+func (*repo) GetPlaces() ([]*model.Place, error) {
+
+	// collection, err := db.GetDBCollection("cities")
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// cursor, err := collection.Find(context.TODO(), bson.D{})
+	// defer cursor.Close(context.TODO())
+
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// out := make([]*model.City, 0)
+
+	// for cursor.Next(context.TODO()) {
+	// 	city := new(model.City)
+	// 	err := cursor.Decode(city)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	out = append(out, city)
+	// }
+	// if err := cursor.Err(); err != nil {
+	// 	return nil, err
+	// }
+
+	return nil, nil
+}
+
 func toCity(b *model.City) *model.City {
 	return &model.City{
 		CityName:  b.CityName,
