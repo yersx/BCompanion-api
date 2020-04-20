@@ -70,7 +70,7 @@ func (*repo) SavePlace(place model.Place, city string) error {
 	}
 	log.Printf("db connected")
 
-	og.Printf("place %s", place)
+	log.Printf("place %s", place)
 
 	result, err := collection.UpdateOne(
 		context.TODO(),
