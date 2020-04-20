@@ -13,12 +13,13 @@ var (
 	placeService PlaceService
 )
 
-type PlaceController interface {
+type CityController interface {
 	AddCity(w http.ResponseWriter, r *http.Request)
 	GetCities(w http.ResponseWriter, r *http.Request)
 }
 
-func NewPlaceController(service PlaceService) PlaceController {
+// NewPlaceController implements PlaceController
+func NewCityController(service PlaceService) CityController {
 	placeService = service
 	return &controller{}
 }
@@ -60,7 +61,7 @@ func (*controller) GetCities(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res.Message = err.Error()
 		w.WriteHeader(404)
-		json.NewEncoder(w).Encode(res)
+		json.NewEncoder(w).Encode(nil)
 		return
 	}
 

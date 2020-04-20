@@ -11,6 +11,7 @@ import (
 	userrepository "bcompanion/user/repository"
 
 	place "bcompanion/place"
+	place1 "bcompanion/place/place"
 )
 
 var (
@@ -20,7 +21,9 @@ var (
 
 	placeRepository place.PlaceRepository = place.NewMongoRepository()
 	placeService    place.PlaceService    = place.NewPlaceService(placeRepository)
-	placeController place.PlaceController = place.NewPlaceController(placeService)
+	cityController  place.CityController  = place.NewCityController(placeService)
+
+	placeController place1.PlaceController = place1.NewPlaceController(placeService)
 
 	httpRouter router.Router = router.NewMuxRouter()
 )
@@ -32,8 +35,11 @@ func main() {
 	httpRouter.POST("/users/authorize", userController.SignUser)
 	httpRouter.GET("/users/getUser", userController.FindUser)
 
-	httpRouter.POST("/city/add", placeController.AddCity)
-	httpRouter.GET("/cities", placeController.GetCities)
+	httpRouter.POST("/city/add", cityController.AddCity)
+	httpRouter.GET("/cities", cityController.GetCities)
+
+	httpRouter.POST("/place/add", placeController.AddPlace)
+	httpRouter.GET("/places", placeController.GetPlaces)
 
 	httpRouter.SERVE(port)
 }

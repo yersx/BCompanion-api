@@ -6,6 +6,6 @@ type PlaceRepository interface {
 	SaveCity(city model.City) error
 	GetCities() ([]*model.City, error)
 
-	SavePlace(city model.Place) error
-	GetPlaces() ([]*model.Place, error)
+	SavePlace(place model.Place, city string) error
+	GetPlaces(city string) ([]*model.Place, error)
 }

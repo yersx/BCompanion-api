@@ -4,6 +4,7 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -61,12 +62,25 @@ func (*repo) GetCities() ([]*model.City, error) {
 	return toCities(out), nil
 }
 
-func (*repo) SavePlace(place model.Place) error {
+func (*repo) SavePlace(place model.Place, city string) error {
 
-	// collection, err := db.GetDBCollection("cities")
-	// if err != nil {
-	// 	return err
-	// }
+	collection, err := db.GetDBCollection("cities")
+	if err != nil {
+		return err
+	}
+
+	result, err := collection.UpdateOne(
+		context.TODO(),
+		bson.M{"cityName": city},
+		bson.D{
+			{"$push", bson.D{{"places", place}}},
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("result %s", result)
 
 	// _, err = collection.InsertOne(context.TODO(), city)
 	// // Check if City Insertion Fails
@@ -76,7 +90,7 @@ func (*repo) SavePlace(place model.Place) error {
 	return nil
 }
 
-func (*repo) GetPlaces() ([]*model.Place, error) {
+func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 
 	// collection, err := db.GetDBCollection("cities")
 	// if err != nil {
