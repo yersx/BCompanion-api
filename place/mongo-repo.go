@@ -4,7 +4,6 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
-	"encoding/json"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -71,15 +70,11 @@ func (*repo) SavePlace(place model.Place, city string) error {
 	}
 	log.Printf("db connected")
 
-	b, err := json.Marshal(place)
-	if err != nil {
-		return err
-	}
 	result, err := collection.UpdateOne(
 		context.TODO(),
 		bson.M{"cityName": city},
 		bson.D{
-			{"$push", bson.D{{"places", b}}},
+			{"$push", bson.D{{"places", place}}},
 		},
 	)
 	if err != nil {
