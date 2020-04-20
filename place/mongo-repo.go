@@ -74,7 +74,7 @@ func (*repo) SavePlace(place model.Place, city string) error {
 		context.TODO(),
 		bson.M{"cityName": city},
 		bson.D{
-			{"$set", bson.D{{"places", []model.Place{place}}}},
+			{"$push", bson.D{{"places", []model.Place{place}}}},
 		},
 	)
 	if err != nil {
