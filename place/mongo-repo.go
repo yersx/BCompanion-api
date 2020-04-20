@@ -70,13 +70,11 @@ func (*repo) SavePlace(place model.Place, city string) error {
 	}
 	log.Printf("db connected")
 
-	log.Printf("place %s", place)
-
 	result, err := collection.UpdateOne(
 		context.TODO(),
 		bson.M{"cityName": city},
 		bson.D{
-			{"$set", bson.D{{"places", place}}},
+			{"$set", bson.D{{"places", []model.Place{place}}}},
 		},
 	)
 	if err != nil {
