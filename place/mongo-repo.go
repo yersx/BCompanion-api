@@ -6,6 +6,8 @@ import (
 	"context"
 	"log"
 
+	options "go.mongodb.org/mongo-driver/mongo/options"
+
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -68,7 +70,6 @@ func (*repo) SavePlace(place model.Place, city string) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("db connected")
 
 	result, err := collection.UpdateOne(
 		context.TODO(),
@@ -81,7 +82,7 @@ func (*repo) SavePlace(place model.Place, city string) error {
 		return err
 	}
 
-	log.Printf("result %+v", result)
+	log.Printf("added result %v", result)
 
 	// _, err = collection.InsertOne(context.TODO(), city)
 	// // Check if City Insertion Fails
@@ -91,19 +92,33 @@ func (*repo) SavePlace(place model.Place, city string) error {
 	return nil
 }
 
+type fields struct {
+	ID     int `bson:"_id"`
+	Places int `bson:"places"`
+}
+
 func (*repo) GetPlaces(city string) ([]*model.Place, error) {
+	var place []*model.Place
+	collection, err := db.GetDBCollection("cities")
+	if err != nil {
+		return nil, err
+	}
 
-	// collection, err := db.GetDBCollection("cities")
-	// if err != nil {
-	// 	return nil, err
-	// }
+	projection := fields{
+		ID:     0,
+		Places: 1,
+	}
+	cursor, err := collection.Find(
+		context.TODO(),
+		bson.M{"cityName": city},
+		options.Find().SetProjection(projection))
+	defer cursor.Close(context.TODO())
 
-	// cursor, err := collection.Find(context.TODO(), bson.D{})
-	// defer cursor.Close(context.TODO())
+	if err = cursor.All(context.TODO(), &place); err != nil {
+		return nil, err
+	}
 
-	// if err != nil {
-	// 	return nil, err
-	// }
+	log.Printf("found places %v", place)
 
 	// out := make([]*model.City, 0)
 
@@ -120,7 +135,7 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 	// 	return nil, err
 	// }
 
-	return nil, nil
+	return place, nil
 }
 
 func toCity(b *model.City) *model.City {
