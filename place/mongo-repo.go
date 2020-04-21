@@ -98,7 +98,6 @@ type fields struct {
 }
 
 func (*repo) GetPlaces(city string) ([]*model.Place, error) {
-	var places []*model.Place
 	collection, err := db.GetDBCollection("cities")
 	if err != nil {
 		return nil, err
