@@ -39,7 +39,7 @@ func main() {
 	httpRouter.GET("/cities", cityController.GetCities)
 
 	httpRouter.POST("/place/add", placeController.AddPlace)
-	httpRouter.GET("/places", placeController.GetPlaces)
+	httpRouter.GET("/places/byCity", placeController.GetPlaces)
 
 	httpRouter.SERVE(port)
 }
