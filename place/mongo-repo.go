@@ -98,7 +98,7 @@ type fields struct {
 }
 
 func (*repo) GetPlaces(city string) ([]*model.Place, error) {
-	var place []*model.Place
+	var places []*model.Place
 	collection, err := db.GetDBCollection("cities")
 	if err != nil {
 		return nil, err
@@ -112,13 +112,31 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 		context.TODO(),
 		bson.M{"cityName": city},
 		options.Find().SetProjection(projection))
-	defer cursor.Close(context.TODO())
 
-	if err = cursor.All(context.TODO(), &place); err != nil {
+	if err != nil {
 		return nil, err
 	}
 
-	log.Printf("found places %v", place)
+	for cursor.Next(context.TODO()) {
+
+		// create a value into which the single document can be decoded
+		var place model.Place
+		err := cursor.Decode(&place)
+		if err != nil {
+			return nil, err
+		}
+
+		places = append(places, &place)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	// Close the cursor once finished
+	cursor.Close(context.TODO())
+
+	log.Printf("found places %v", places)
 
 	// out := make([]*model.City, 0)
 
