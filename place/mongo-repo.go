@@ -153,7 +153,7 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 	// 	return nil, err
 	// }
 
-	return place, nil
+	return places, nil
 }
 
 func toCity(b *model.City) *model.City {
