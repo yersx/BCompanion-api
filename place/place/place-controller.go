@@ -70,7 +70,7 @@ func (*controller) GetPlaces(w http.ResponseWriter, r *http.Request) {
 
 	City, ok1 := r.URL.Query()["city_name"]
 	if !ok1 || len(City[0]) < 1 {
-		res.Message = "Url Param 'city' is missing"
+		res.Message = "Url Param 'city_name' is missing"
 		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
 		return
