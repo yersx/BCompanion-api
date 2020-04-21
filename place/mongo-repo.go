@@ -117,6 +117,8 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 		return nil, err
 	}
 
+	log.Printf("found cursor %v", cursor)
+
 	for cursor.Next(context.TODO()) {
 
 		// create a value into which the single document can be decoded
