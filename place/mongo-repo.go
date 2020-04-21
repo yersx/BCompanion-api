@@ -112,51 +112,47 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 		context.TODO(),
 		bson.M{"cityName": city},
 		options.Find().SetProjection(projection))
+	defer cursor.Close(context.TODO())
 
 	if err != nil {
 		return nil, err
 	}
 
-	log.Printf("found cursor %v", &cursor)
-	log.Printf("found cursor* %v", *cursor)
+	out := make([]*model.Place, 0)
 
 	for cursor.Next(context.TODO()) {
-
-		// create a value into which the single document can be decoded
-		var place model.Place
-		err := cursor.Decode(&place)
+		place := new(model.Place)
+		err := cursor.Decode(place)
 		if err != nil {
 			return nil, err
 		}
 
-		places = append(places, &place)
+		out = append(out, place)
 	}
-
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
 
-	// Close the cursor once finished
-	cursor.Close(context.TODO())
+	log.Printf("found places %v", out)
 
-	log.Printf("found places %v", places)
+	return toPlaces(out), nil
+}
 
-	// out := make([]*model.City, 0)
+func toPlace(b *model.Place) *model.Place {
+	return &model.Place{
+		PlaceName:  b.PlaceName,
+		PlacePhoto: b.PlacePhoto,
+		CityName:   b.CityName,
+	}
+}
 
-	// for cursor.Next(context.TODO()) {
-	// 	city := new(model.City)
-	// 	err := cursor.Decode(city)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
+func toPlaces(bs []*model.Place) []*model.Place {
+	out := make([]*model.Place, len(bs))
 
-	// 	out = append(out, city)
-	// }
-	// if err := cursor.Err(); err != nil {
-	// 	return nil, err
-	// }
-
-	return places, nil
+	for i, b := range bs {
+		out[i] = toPlace(b)
+	}
+	return out
 }
 
 func toCity(b *model.City) *model.City {
