@@ -111,30 +111,19 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 		context.TODO(),
 		bson.M{"cityName": city},
 		options.Find().SetProjection(projection))
-	defer cursor.Close(context.TODO())
-
 	if err != nil {
 		return nil, err
 	}
-
-	out := make([]*model.Place, 0)
+	defer cursor.Close(context.TODO())
 
 	for cursor.Next(context.TODO()) {
-		place := new(model.Place)
-		err := cursor.Decode(place)
-		if err != nil {
+		var episode bson.M
+		if err = cursor.Decode(&episode); err != nil {
 			return nil, err
 		}
-
-		out = append(out, place)
+		log.Printf("found places %v", episode)
 	}
-	if err := cursor.Err(); err != nil {
-		return nil, err
-	}
-
-	log.Printf("found places %v", out)
-
-	return toPlaces(out), nil
+	return nil, nil
 }
 
 func toPlace(b *model.Place) *model.Place {
