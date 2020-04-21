@@ -116,14 +116,19 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 	}
 	defer cursor.Close(context.TODO())
 
+	var episode bson.M
+	var places model.Places
 	for cursor.Next(context.TODO()) {
-		var episode bson.M
 		if err = cursor.Decode(&episode); err != nil {
 			return nil, err
 		}
-		log.Printf("found places %v", episode)
+		log.Printf("found episode %v", episode)
 	}
-	return nil, nil
+	bsonBytes, _ := bson.Marshal(episode)
+	bson.Unmarshal(bsonBytes, &places)
+	log.Printf("found places %v", places)
+
+	return places.Places, nil
 }
 
 func toPlace(b *model.Place) *model.Place {

@@ -11,3 +11,7 @@ type Place struct {
 	PlacePhoto string `json:"placePhoto" bson:"placePhoto"`
 	CityName   string `json:"cityName" bson:"cityName"`
 }
+
+type Places struct {
+	Places []*Place `json:"-" bson:"places"`
+}
