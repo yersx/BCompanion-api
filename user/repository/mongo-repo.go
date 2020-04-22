@@ -4,6 +4,7 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
@@ -78,8 +79,9 @@ func (*repo) SignUser(user model.User, authType string) (string, int) {
 
 		res.Token = string(user.Token)
 		code := 200
-		return string(user.Token), code
+		return res.Token, code
 	}
+	log.Output(1, "token: "+res.Token+"+ "+string(user.Token))
 	return "", 404
 }
 
