@@ -46,7 +46,7 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 	err := json.Unmarshal(body, &user)
 	if err != nil {
 		response.Message = "No Fields Were Sent In"
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
 		return
 	}
@@ -56,7 +56,7 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 	AuthType, ok1 := r.URL.Query()["auth_type"]
 	if !ok1 || len(AuthType[0]) < 1 {
 		response.Message = "Url Param 'authType' is missing"
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
 		return
 	}
@@ -64,6 +64,10 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 
 	res, code := userService.SignUser(user, authType)
 	w.WriteHeader(code)
+	if code == 404 {
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
 	json.NewEncoder(w).Encode(res)
 	return
 }

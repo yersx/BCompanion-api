@@ -15,14 +15,14 @@ func NewMongoRepository() UserRepository {
 	return &repo{}
 }
 
-func (*repo) SignUser(user model.User, authType string) (model.TokenResult, int) {
+func (*repo) SignUser(user model.User, authType string) (string, int) {
 	var res model.TokenResult
 
 	collection, err := db.GetDBCollection("users")
 	if err != nil {
 		res.Message = err.Error()
-		code := 200
-		return res, code
+		code := 404
+		return "", code
 	}
 	// Check if user exists in the database
 	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&user)
@@ -37,7 +37,7 @@ func (*repo) SignUser(user model.User, authType string) (model.TokenResult, int)
 				if err != nil {
 					res.Message = "Error While Hashing Password, Try Again"
 					code := 404
-					return res, code
+					return "", code
 				}
 
 				// store the hashed password
@@ -50,37 +50,37 @@ func (*repo) SignUser(user model.User, authType string) (model.TokenResult, int)
 				if err != nil {
 					res.Message = "Error while Creating User, Try Again"
 					code := 404
-					return res, code
+					return "", code
 				}
 
 				// User creation Succeeds
 				res.Token = string(user.Token)
 				code := 200
-				return res, code
+				return "", code
 			}
 
 			// User most likely exists
 			res.Message = err.Error()
 			code := 404
-			return res, code
+			return "", code
 		}
 
 		res.Message = "User already Exists!!"
 		code := 404
-		return res, code
+		return "", code
 
 	} else if authType == "login" {
 		if err != nil {
 			res.Message = "Not exist!"
 			code := 404
-			return res, code
+			return "", code
 		}
 
 		res.Token = string(user.Token)
 		code := 200
-		return res, code
+		return string(user.Token), code
 	}
-	return res, 404
+	return "", 404
 }
 
 func (*repo) FindUser(phoneNumber string) (*model.User, error) {

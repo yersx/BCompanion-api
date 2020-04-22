@@ -6,7 +6,7 @@ import (
 )
 
 type UserService interface {
-	SignUser(user model.User, authType string) (model.TokenResult, int)
+	SignUser(user model.User, authType string) (string, int)
 	FindUser(phoneNumber string) (*model.User, error)
 }
 
@@ -21,7 +21,7 @@ func NewUserService(repository repository.UserRepository) UserService {
 	return &service{}
 }
 
-func (*service) SignUser(user model.User, authType string) (model.TokenResult, int) {
+func (*service) SignUser(user model.User, authType string) (string, int) {
 	return repo.SignUser(user, authType)
 }
 
