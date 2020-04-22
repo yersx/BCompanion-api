@@ -4,7 +4,6 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
-	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
@@ -57,7 +56,7 @@ func (*repo) SignUser(user model.User, authType string) (string, int) {
 				// User creation Succeeds
 				res.Token = string(user.Token)
 				code := 200
-				return "", code
+				return res.Token, code
 			}
 
 			// User most likely exists
@@ -77,11 +76,8 @@ func (*repo) SignUser(user model.User, authType string) (string, int) {
 			return "", code
 		}
 
-		log.Output(1, "tokenw: "+string(user.Token))
 		res.Token = string(user.Token)
 		code := 200
-		log.Output(1, "token: "+res.Token+"+ "+string(user.Token))
-		log.Printf("token print: %v", res.Token)
 		return res.Token, code
 	}
 	return "", 404
