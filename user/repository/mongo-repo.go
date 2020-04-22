@@ -77,11 +77,12 @@ func (*repo) SignUser(user model.User, authType string) (string, int) {
 			return "", code
 		}
 
+		log.Output(1, "tokenw: "+string(user.Token))
 		res.Token = string(user.Token)
 		code := 200
 		log.Output(1, "token: "+res.Token+"+ "+string(user.Token))
 		log.Printf("token print: %v", res.Token)
-		return string(user.Token), code
+		return res.Token, code
 	}
 	return "", 404
 }

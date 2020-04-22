@@ -68,6 +68,8 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(nil)
 		return
 	}
+
+	log.Output(1, "toksenw: "+res)
 	json.NewEncoder(w).Encode(res)
 	return
 }
