@@ -120,7 +120,7 @@ func (*controller) AddPlaceDescription(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func GetPlaceDescription(w http.ResponseWriter, r *http.Request) {
+func (*controller) GetPlaceDescription(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var res model.ResponseResult
