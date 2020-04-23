@@ -142,7 +142,7 @@ func (*controller) GetPlaceDescription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	description := model.PlaceDescription{
+	description := model.Description{
 		PlaceName:        placeDescription.PlaceName,
 		PlacePhotos:      placeDescription.PlacePhotos,
 		PlaceDescription: placeDescription.PlaceDescription,
