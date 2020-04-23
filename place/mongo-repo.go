@@ -163,3 +163,35 @@ func toCities(bs []*model.City) []*model.City {
 	}
 	return out
 }
+
+func (*repo) SaveDescription(place model.PlaceDescription) error {
+
+	collection, err := db.GetDBCollection("place_description")
+	if err != nil {
+		return err
+	}
+
+	_, err = collection.InsertOne(context.TODO(), place)
+	// Check if City Insertion Fails
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (*repo) GetDescription(placeName string) (*model.PlaceDescription, error) {
+
+	var description *model.PlaceDescription
+	collection, err := db.GetDBCollection("place_description")
+	if err != nil {
+		return nil, err
+	}
+
+	if placeName != "" {
+		err = collection.FindOne(context.TODO(), bson.D{{"placeName", placeName}}).Decode(&description)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return description, nil
+}
