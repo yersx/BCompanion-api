@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	utils "bcompanion/utils"
 )
@@ -79,12 +80,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	log.Printf("fileName %+v\n", handler.Header)
 
 	// 3. Generate new filename
-	nameFile, errNewPath := utils.GenerateNewPath()
-	if errNewPath != nil {
-		json.NewEncoder(w).Encode("Error generating path")
-		w.WriteHeader(404)
-		return
-	}
+	nameFile := handler.Filename + "_" + time.Now().String()
 
 	// 4. Read multipart file
 	buff, errReadFile := ioutil.ReadAll(file)
