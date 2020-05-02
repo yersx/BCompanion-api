@@ -10,7 +10,8 @@ import (
 	"bcompanion/user/controller"
 	userrepository "bcompanion/user/repository"
 
-	place "bcompanion/place"
+	"bcompanion/group"
+	"bcompanion/place"
 	place1 "bcompanion/place/place"
 )
 
@@ -19,11 +20,14 @@ var (
 	userService    userservice.UserService       = userservice.NewUserService(userRepository)
 	userController controller.UserController     = controller.NewUserController(userService)
 
-	placeRepository place.PlaceRepository = place.NewMongoRepository()
-	placeService    place.PlaceService    = place.NewPlaceService(placeRepository)
-	cityController  place.CityController  = place.NewCityController(placeService)
-
+	placeRepository place.PlaceRepository  = place.NewMongoRepository()
+	placeService    place.PlaceService     = place.NewPlaceService(placeRepository)
+	cityController  place.CityController   = place.NewCityController(placeService)
 	placeController place1.PlaceController = place1.NewPlaceController(placeService)
+
+	groupRepository group.GroupRepository = group.NewMongoRepository()
+	groupService    group.GroupService    = group.NewGroupService(groupRepository)
+	groupController group.GroupController = group.NewGroupController(groupService)
 
 	httpRouter router.Router = router.NewMuxRouter()
 )
@@ -43,6 +47,9 @@ func main() {
 
 	httpRouter.POST("/placeDescription/add", placeController.AddPlaceDescription)
 	httpRouter.GET("/placeDescription", placeController.GetPlaceDescription)
+
+	httpRouter.POST("/groups/createGroup", groupController.AddGroup)
+	httpRouter.GET("/groups/getByUser", groupController.GetGroups)
 
 	httpRouter.SERVE(port)
 }
