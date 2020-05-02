@@ -102,16 +102,18 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	cloudinaryPath := cloudinaryInfo.FilePath
 
 	group = model.Group{
-		Name:        groupName,
-		Description: groupDescription,
-		Links:       groupLinks,
-		Image:       cloudinaryPath,
-		Owner:       token,
+		Name:            groupName,
+		Description:     groupDescription,
+		Links:           groupLinks,
+		Image:           cloudinaryPath,
+		Owner:           token,
+		NumberOfMembers: "1",
+		NumberOfHikes:   "0",
 	}
 
-	err = groupService.AddGroup(group)
-	if err != nil {
-		json.NewEncoder(w).Encode("Can not add group")
+	res := groupService.AddGroup(group)
+	if res != "" {
+		json.NewEncoder(w).Encode(res)
 		w.WriteHeader(404)
 		return
 	}

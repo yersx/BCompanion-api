@@ -1,9 +1,11 @@
 package model
 
 type Group struct {
-	Name        string `json:"group_name" bson:"group_name"`
-	Description string `json:"group_description" bson:"group_description"`
-	Links       string `json:"group_links" bson:"group_links"`
-	Image       string `json:"-" bson:"group_photo"`
-	Owner       string `json:"-" bson:"group_owner"`
+	Name            string `json:"groupName" bson:"groupName"`
+	Description     string `json:"-" bson:"groupDescription"`
+	Links           string `json:"-" bson:"groupLinks"`
+	Image           string `json:"groupPhoto" bson:"groupPhoto"`
+	Owner           string `json:"-" bson:"groupOwner"`
+	NumberOfMembers string `json:"numberOfMembers" bson:"numberOfMembers"`
+	NumberOfHikes   string `json:"numberOfHikes" bson:"numberOfHikes"`
 }

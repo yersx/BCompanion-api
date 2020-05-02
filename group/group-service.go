@@ -5,7 +5,7 @@ import (
 )
 
 type GroupService interface {
-	AddGroup(group model.Group) error
+	AddGroup(group model.Group) string
 	GetGroups(token string) ([]*model.Group, error)
 }
 
@@ -20,7 +20,7 @@ func NewGroupService(repository GroupRepository) GroupService {
 	return &service{}
 }
 
-func (*service) AddGroup(group model.Group) error {
+func (*service) AddGroup(group model.Group) string {
 	return groupRepo.CreateGroup(group)
 }
 

@@ -14,19 +14,25 @@ func NewMongoRepository() GroupRepository {
 	return &repo{}
 }
 
-func (*repo) CreateGroup(group model.Group) error {
+func (*repo) CreateGroup(group model.Group) string {
 
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
-		return err
+		return "can not fing groups collection"
 	}
 
-	_, err = collection.InsertOne(context.TODO(), group)
-	// Check if Group Insertion Fails
+	var result model.Group
+	err = collection.FindOne(context.TODO(), bson.D{{"groupName", group.Name}}).Decode(&result)
 	if err != nil {
-		return err
+		_, err = collection.InsertOne(context.TODO(), group)
+		// Check if Group Insertion Fails
+		if err != nil {
+			return "can not add"
+		}
+		return ""
+	} else {
+		return "already existed"
 	}
-	return nil
 }
 
 func (*repo) GetGroups(token string) ([]*model.Group, error) {
