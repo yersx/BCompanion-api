@@ -14,19 +14,11 @@ func NewMongoRepository() GroupRepository {
 	return &repo{}
 }
 
-func (*repo) CreateGroup(group model.Group, token string) error {
+func (*repo) CreateGroup(group model.Group) error {
 
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
 		return err
-	}
-
-	group = model.Group{
-		Name:        group.Name,
-		Description: group.Description,
-		Links:       group.Links,
-		Image:       group.Image,
-		Owner:       token,
 	}
 
 	_, err = collection.InsertOne(context.TODO(), group)

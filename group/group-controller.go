@@ -4,6 +4,7 @@ import (
 	"bcompanion/model"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -28,25 +29,87 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var group model.Group
-	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &group)
+
+	GroupName, ok1 := r.URL.Query()["group_name"]
+	if !ok1 || len(GroupName[0]) < 1 {
+		json.NewEncoder(w).Encode(nil)
+		w.WriteHeader(404)
+		return
+	}
+	groupName := GroupName[0]
+
+	GroupDescription, ok1 := r.URL.Query()["group_description"]
+	if !ok1 || len(GroupDescription[0]) < 1 {
+		json.NewEncoder(w).Encode(nil)
+		w.WriteHeader(404)
+		return
+	}
+	groupDescription := GroupDescription[0]
+
+	GroupLinks, ok1 := r.URL.Query()["group_links"]
+	if !ok1 || len(GroupLinks[0]) < 1 {
+		json.NewEncoder(w).Encode(nil)
+		w.WriteHeader(404)
+		return
+	}
+	groupLinks := GroupLinks[0]
+
+	err := r.ParseMultipartForm(0)
 	if err != nil {
-		w.Write([]byte("No Fields Were Sent In"))
+		json.NewEncoder(w).Encode("Does not have image")
 		w.WriteHeader(404)
 		return
 	}
 
+	r.ParseMultipartForm(10 << 20)
+	file, handler, err := r.FormFile("group")
+	if err != nil {
+		json.NewEncoder(w).Encode("Error retrieving image")
+		w.WriteHeader(404)
+		return
+	}
+	defer file.Close()
+
+	log.Printf("fileName %+v\n", handler.Filename)
+	log.Printf("fileName %+v\n", handler.Size)
+	log.Printf("fileName %+v\n", handler.Header)
+
+	tempFile, err := ioutil.TempFile("temp-images", "upload-*.png")
+	if err != nil {
+		json.NewEncoder(w).Encode("Error creating temp image")
+		w.WriteHeader(404)
+		return
+	}
+	defer tempFile.Close()
+
+	fileBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		json.NewEncoder(w).Encode("Error reading file")
+		w.WriteHeader(404)
+		return
+	}
+	tempFile.Write(fileBytes)
+
+	log.Output(1, "successfully uploaded")
+
 	token := r.Header.Get("Authorization")
 
-	err = groupService.AddGroup(group, token)
+	group = model.Group{
+		Name:        groupName,
+		Description: groupDescription,
+		Links:       groupLinks,
+		Image:       tempFile.Name(),
+		Owner:       token,
+	}
+
+	err = groupService.AddGroup(group)
 	if err != nil {
-		w.Write([]byte("Can not add group"))
+		json.NewEncoder(w).Encode("Can not add group")
 		w.WriteHeader(404)
 		return
 	}
 
 	json.NewEncoder(w).Encode("Successfully added")
-	w.Write([]byte("Successfully added"))
 	return
 }
 
