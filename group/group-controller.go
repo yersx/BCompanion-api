@@ -62,7 +62,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseMultipartForm(10 << 20)
-	file, handler, err := r.FormFile("group_photo")
+	file, handler, err := r.FormFile("file")
 	if err != nil {
 		json.NewEncoder(w).Encode("Error retrieving image")
 		w.WriteHeader(404)
