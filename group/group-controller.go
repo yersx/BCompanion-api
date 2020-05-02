@@ -31,7 +31,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &group)
 	if err != nil {
-		json.NewEncoder(w).Encode("No Fields Were Sent In")
+		w.Write([]byte("No Fields Were Sent In"))
 		w.WriteHeader(404)
 		return
 	}
@@ -40,12 +40,13 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 
 	err = groupService.AddGroup(group, token)
 	if err != nil {
-		json.NewEncoder(w).Encode("Can not add group")
+		w.Write([]byte("Can not add group"))
 		w.WriteHeader(404)
 		return
 	}
 
 	json.NewEncoder(w).Encode("Successfully added")
+	w.Write([]byte("Successfully added"))
 	return
 }
 
