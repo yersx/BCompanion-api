@@ -69,7 +69,6 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
-
 	log.Printf("fileName %+v\n", handler.Filename)
 	log.Printf("fileName %+v\n", handler.Size)
 	log.Printf("fileName %+v\n", handler.Header)
