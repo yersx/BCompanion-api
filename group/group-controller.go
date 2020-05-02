@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	utils "bcompanion/utils"
 )
 
 type controller struct{}
@@ -76,30 +78,41 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	log.Printf("fileName %+v\n", handler.Size)
 	log.Printf("fileName %+v\n", handler.Header)
 
-	tempFile, err := ioutil.TempFile("temp-images", "upload-*.png")
-	if err != nil {
-		log.Printf("Error creating temp image")
-		json.NewEncoder(w).Encode("Error creating temp image")
+	// 3. Generate new filename
+	nameFile, errNewPath := utils.GenerateNewPath()
+	if errNewPath != nil {
+		json.NewEncoder(w).Encode("Error generating path")
 		w.WriteHeader(404)
 		return
 	}
-	defer tempFile.Close()
 
-	fileBytes, err := ioutil.ReadAll(file)
-	if err != nil {
+	// 4. Read multipart file
+	buff, errReadFile := ioutil.ReadAll(file)
+	if errReadFile != nil {
 		json.NewEncoder(w).Encode("Error reading file")
 		w.WriteHeader(404)
 		return
 	}
-	tempFile.Write(fileBytes)
 
-	log.Output(1, "successfully uploaded")
+	//5. Upload to cloudinary
+	resChannelUpload := utils.UploadImage(nameFile, buff)
+	cloudinaryInfo := <-resChannelUpload
+	close(resChannelUpload)
+	if cloudinaryInfo.Err != nil {
+		internalServerStatus := http.StatusInternalServerError
+		w.WriteHeader(internalServerStatus)
+		json.NewEncoder(w).Encode("internal server error with cloudinary")
+		return
+	}
+
+	cloudinaryPath := cloudinaryInfo.FilePath
+	log.Printf("fileName %+v\n", cloudinaryPath)
 
 	group = model.Group{
 		Name:        groupName,
 		Description: groupDescription,
 		Links:       groupLinks,
-		Image:       tempFile.Name(),
+		Image:       cloudinaryPath,
 		Owner:       token,
 	}
 

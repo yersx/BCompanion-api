@@ -30,6 +30,8 @@ github.com/googleapis/gax-go/v2
 # github.com/gorilla/mux v1.7.4
 ## explicit
 github.com/gorilla/mux
+# github.com/gotsunami/go-cloudinary v0.0.0-20170316181003-0ed519cc1119
+## explicit
 # github.com/joncalhoun/qson v0.0.0-20200214190643-0e0c0e4268e7
 ## explicit
 # github.com/klauspost/compress v1.10.3
@@ -39,9 +41,13 @@ github.com/klauspost/compress/huff0
 github.com/klauspost/compress/snappy
 github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
+# github.com/kyokomi/cloudinary v0.0.0-20170905133540-cf4c95b6ed45
+## explicit
+github.com/kyokomi/cloudinary
 # github.com/mongodb/mongo-go-driver v0.3.0
 ## explicit
-github.com/mongodb/mongo-go-driver/bson/primitive
+# github.com/outofpluto/goconfig v0.0.0-20121126125551-0b3e87a7e8f2
+## explicit
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
@@ -51,6 +57,9 @@ github.com/xdg/scram
 # github.com/xdg/stringprep v1.0.1-0.20180714160509-73f8eece6fdc
 ## explicit
 github.com/xdg/stringprep
+# github.com/ymizushi/go-cloudinary v0.0.0-20170814054829-f81a3c814e4e
+## explicit
+github.com/ymizushi/go-cloudinary
 # github.com/zmb3/gogetdoc v0.0.0-20190228002656-b37376c5da6a
 ## explicit
 # go.mongodb.org/mongo-driver v1.3.1
@@ -204,3 +213,10 @@ google.golang.org/grpc/tap
 # gopkg.in/ezzarghili/recaptcha-go.v4 v4.0.0
 ## explicit
 gopkg.in/ezzarghili/recaptcha-go.v4
+# gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
+## explicit
+gopkg.in/mgo.v2
+gopkg.in/mgo.v2/bson
+gopkg.in/mgo.v2/internal/json
+gopkg.in/mgo.v2/internal/sasl
+gopkg.in/mgo.v2/internal/scram

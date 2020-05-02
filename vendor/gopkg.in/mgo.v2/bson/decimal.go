@@ -1,13 +1,30 @@
-// Copyright (C) MongoDB, Inc. 2017-present.
+// BSON library for Go
 //
-// Licensed under the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License. You may obtain
-// a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+// Copyright (c) 2010-2012 - Gustavo Niemeyer <gustavo@niemeyer.net>
 //
-// Based on gopkg.in/mgo.v2/bson by Gustavo Niemeyer
-// See THIRD-PARTY-NOTICES for original license terms.
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above copyright notice,
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+// ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package primitive
+package bson
 
 import (
 	"fmt"
@@ -20,18 +37,6 @@ type Decimal128 struct {
 	h, l uint64
 }
 
-// NewDecimal128 creates a Decimal128 using the provide high and low uint64s.
-func NewDecimal128(h, l uint64) Decimal128 {
-	return Decimal128{h: h, l: l}
-}
-
-// GetBytes returns the underlying bytes of the BSON decimal value as two uint16 values. The first
-// contains the most first 8 bytes of the value and the second contains the latter.
-func (d Decimal128) GetBytes() (uint64, uint64) {
-	return d.h, d.l
-}
-
-// String returns a string representation of the decimal value.
 func (d Decimal128) String() string {
 	var pos int     // positive sign
 	var e int       // exponent
@@ -45,7 +50,7 @@ func (d Decimal128) String() string {
 	case 0x1F:
 		return "NaN"
 	case 0x1E:
-		return "-Infinity"[pos:]
+		return "-Inf"[pos:]
 	}
 
 	l = d.l
@@ -139,8 +144,6 @@ func dErr(s string) (Decimal128, error) {
 	return dNaN, fmt.Errorf("cannot parse %q as a decimal128", s)
 }
 
-//ParseDecimal128 takes the given string and attempts to parse it into a valid
-// Decimal128 value.
 func ParseDecimal128(s string) (Decimal128, error) {
 	orig := s
 	if s == "" {
