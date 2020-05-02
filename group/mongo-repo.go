@@ -33,7 +33,6 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 		Description:     group.Description,
 		Links:           group.Links,
 		Image:           group.Image,
-		Owner:           token,
 		NumberOfMembers: "1",
 		NumberOfHikes:   "0",
 		Members: []*model.Member{
