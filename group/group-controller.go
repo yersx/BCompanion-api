@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
 
 	utils "bcompanion/utils"
 )
@@ -80,7 +79,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	log.Printf("fileName %+v\n", handler.Header)
 
 	// 3. Generate new filename
-	nameFile := handler.Filename + "_" + time.Now().String()
+	nameFile := handler.Filename
 
 	// 4. Read multipart file
 	buff, errReadFile := ioutil.ReadAll(file)
@@ -101,7 +100,6 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cloudinaryPath := cloudinaryInfo.FilePath
-	log.Printf("fileName %+v\n", cloudinaryPath)
 
 	group = model.Group{
 		Name:        groupName,

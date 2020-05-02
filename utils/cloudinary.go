@@ -2,7 +2,6 @@ package utils
 
 import (
 	"bytes"
-	"log"
 
 	"golang.org/x/net/context"
 
@@ -16,8 +15,7 @@ type CloudynaryInfo struct {
 
 var (
 	CtxCloudinary  = NewCloudinary()
-	CloudinaryAuth = "cloudinary://365527915797683:u_kri0We3qcCmD0ojDkU9GhPetw@yers"
-	path           = "user_images/"
+	CloudinaryAuth = "cloudinary://365527915797683:u_kri0We3qcCmD0ojDkU9GhPetw@yersx"
 )
 
 func NewCloudinary() context.Context {
@@ -26,18 +24,12 @@ func NewCloudinary() context.Context {
 	return ctxCloud
 }
 
-func UploadImage(fileName string, image []byte) chan CloudynaryInfo {
-	ctx := context.Background()
-	ctx = cloudinary.NewContext(ctx, "cloudinary://365527915797683:u_kri0We3qcCmD0ojDkU9GhPetw@yersx")
-
-	cloudinary.UploadStaticImage(ctx, path+fileName, bytes.NewBuffer(image))
-
-	log.Printf("creation succeded")
-
+func UploadImage(nameFile string, buff []byte) chan CloudynaryInfo {
+	readFileCopied := bytes.NewBuffer(buff)
 	chanInfo := make(chan CloudynaryInfo)
 	go func() {
-		err := cloudinary.UploadStaticImage(ctx, path+fileName, bytes.NewBuffer(image))
-		chanInfo <- CloudynaryInfo{cloudinary.ResourceURL(ctx, path+fileName), err}
+		err := cloudinary.UploadStaticImage(CtxCloudinary, nameFile, readFileCopied)
+		chanInfo <- CloudynaryInfo{cloudinary.ResourceURL(CtxCloudinary, nameFile), err}
 	}()
 	return chanInfo
 }
