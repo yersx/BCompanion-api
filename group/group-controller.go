@@ -102,16 +102,13 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	cloudinaryPath := cloudinaryInfo.FilePath
 
 	group = model.Group{
-		Name:            groupName,
-		Description:     groupDescription,
-		Links:           groupLinks,
-		Image:           cloudinaryPath,
-		Owner:           token,
-		NumberOfMembers: "1",
-		NumberOfHikes:   "0",
+		Name:        groupName,
+		Description: groupDescription,
+		Links:       groupLinks,
+		Image:       cloudinaryPath,
 	}
 
-	res := groupService.AddGroup(group)
+	res := groupService.AddGroup(group, token)
 	if res != "" {
 		json.NewEncoder(w).Encode(res)
 		w.WriteHeader(404)
@@ -127,14 +124,14 @@ func (*controller) GetGroups(w http.ResponseWriter, r *http.Request) {
 
 	token := r.Header.Get("Authorization")
 
-	cities, err := groupService.GetGroups(token)
+	groups, err := groupService.GetGroups(token)
 	if err != nil {
 		json.NewEncoder(w).Encode("can not get groups")
 		w.WriteHeader(404)
 		return
 	}
 
-	json.NewEncoder(w).Encode(cities)
+	json.NewEncoder(w).Encode(groups)
 	return
 
 }

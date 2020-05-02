@@ -14,16 +14,44 @@ func NewMongoRepository() GroupRepository {
 	return &repo{}
 }
 
-func (*repo) CreateGroup(group model.Group) string {
+func (*repo) CreateGroup(group model.Group, token string) string {
 
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
 		return "can not fing groups collection"
 	}
 
+	userCollection, err := db.GetDBCollection("users")
+	var user *model.User
+	err = userCollection.FindOne(context.TODO(), bson.D{{"token", token}}).Decode(&user)
+	if err != nil {
+		return "can not find creater account"
+	}
+
+	group = model.Group{
+		Name:            group.Name,
+		Description:     group.Description,
+		Links:           group.Links,
+		Image:           group.Image,
+		Owner:           token,
+		NumberOfMembers: "1",
+		NumberOfHikes:   "0",
+		Members: []*model.Member{
+			{
+				Token:   token,
+				Name:    user.FirstName,
+				Surname: user.LastName,
+				Photo:   user.Photo,
+				Status:  "online",
+				Role:    "admin",
+			},
+		},
+	}
+
 	var result model.Group
 	err = collection.FindOne(context.TODO(), bson.D{{"groupName", group.Name}}).Decode(&result)
 	if err != nil {
+
 		_, err = collection.InsertOne(context.TODO(), group)
 		// Check if Group Insertion Fails
 		if err != nil {
