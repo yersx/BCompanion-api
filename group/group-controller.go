@@ -95,8 +95,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	cloudinaryInfo := <-resChannelUpload
 	close(resChannelUpload)
 	if cloudinaryInfo.Err != nil {
-		internalServerStatus := http.StatusInternalServerError
-		w.WriteHeader(internalServerStatus)
+		w.WriteHeader(404)
 		json.NewEncoder(w).Encode("internal server error with cloudinary")
 		return
 	}
