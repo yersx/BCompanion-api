@@ -16,6 +16,7 @@ type CloudynaryInfo struct {
 var (
 	CtxCloudinary  = NewCloudinary()
 	CloudinaryAuth = "cloudinary://365527915797683:u_kri0We3qcCmD0ojDkU9GhPetw@yersx"
+	path           = "user_images/"
 )
 
 func NewCloudinary() context.Context {
@@ -28,8 +29,8 @@ func UploadImage(nameFile string, buff []byte) chan CloudynaryInfo {
 	readFileCopied := bytes.NewBuffer(buff)
 	chanInfo := make(chan CloudynaryInfo)
 	go func() {
-		err := cloudinary.UploadStaticImage(CtxCloudinary, nameFile, readFileCopied)
-		chanInfo <- CloudynaryInfo{cloudinary.ResourceURL(CtxCloudinary, nameFile), err}
+		err := cloudinary.UploadStaticImage(CtxCloudinary, path+nameFile, readFileCopied)
+		chanInfo <- CloudynaryInfo{cloudinary.ResourceURL(CtxCloudinary, path+nameFile), err}
 	}()
 	return chanInfo
 }
