@@ -30,6 +30,9 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 
 	var group model.Group
 
+	token := r.Header.Get("Authorization")
+	log.Printf("token is %+v\n", token)
+
 	GroupName, ok1 := r.URL.Query()["group_name"]
 	if !ok1 || len(GroupName[0]) < 1 {
 		json.NewEncoder(w).Encode(nil)
@@ -91,8 +94,6 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	tempFile.Write(fileBytes)
 
 	log.Output(1, "successfully uploaded")
-
-	token := r.Header.Get("Authorization")
 
 	group = model.Group{
 		Name:        groupName,
