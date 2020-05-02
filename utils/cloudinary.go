@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"log"
 
 	"golang.org/x/net/context"
 
@@ -25,12 +26,18 @@ func NewCloudinary() context.Context {
 	return ctxCloud
 }
 
-func UploadImage(nameFile string, buff []byte) chan CloudynaryInfo {
-	readFileCopied := bytes.NewBuffer(buff)
+func UploadImage(fileName string, image []byte) chan CloudynaryInfo {
+	ctx := context.Background()
+	ctx = cloudinary.NewContext(ctx, "cloudinary://365527915797683:u_kri0We3qcCmD0ojDkU9GhPetw@yers")
+
+	cloudinary.UploadStaticImage(ctx, path+fileName, bytes.NewBuffer(image))
+
+	log.Printf("creation succeded")
+
 	chanInfo := make(chan CloudynaryInfo)
 	go func() {
-		err := cloudinary.UploadStaticImage(CtxCloudinary, path+nameFile, readFileCopied)
-		chanInfo <- CloudynaryInfo{cloudinary.ResourceURL(CtxCloudinary, path+nameFile), err}
+		err := cloudinary.UploadStaticImage(ctx, path+fileName, bytes.NewBuffer(image))
+		chanInfo <- CloudynaryInfo{cloudinary.ResourceURL(ctx, path+fileName), err}
 	}()
 	return chanInfo
 }
