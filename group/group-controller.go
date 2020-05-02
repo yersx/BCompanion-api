@@ -76,7 +76,9 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 
 	tempFile, err := ioutil.TempFile("temp-images", "upload-*.png")
 	if err != nil {
+		log.Printf("Error creating temp image")
 		json.NewEncoder(w).Encode("Error creating temp image")
+		w.WriteHeader(404)
 		return
 	}
 	defer tempFile.Close()
