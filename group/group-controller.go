@@ -56,7 +56,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseMultipartForm(0)
 	if err != nil {
-		json.NewEncoder(w).Encode("Does not have image")
+		w.Write([]byte("Does not have image"))
 		w.WriteHeader(404)
 		return
 	}
@@ -64,7 +64,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(10 << 20)
 	file, handler, err := r.FormFile("file")
 	if err != nil {
-		json.NewEncoder(w).Encode("Error retrieving image")
+		w.Write([]byte("Error retrieving image"))
 		w.WriteHeader(404)
 		return
 	}
@@ -76,7 +76,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	tempFile, err := ioutil.TempFile("temp-images", "upload-*.png")
 	if err != nil {
 		log.Printf("Error creating temp image")
-		json.NewEncoder(w).Encode("Error creating temp image")
+		w.Write([]byte("Error creating temp image"))
 		w.WriteHeader(404)
 		return
 	}
@@ -84,7 +84,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		json.NewEncoder(w).Encode("Error reading file")
+		w.Write([]byte("Error reading file"))
 		w.WriteHeader(404)
 		return
 	}
@@ -104,12 +104,12 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 
 	err = groupService.AddGroup(group)
 	if err != nil {
-		json.NewEncoder(w).Encode("Can not add group")
+		w.Write([]byte("Can not add group"))
 		w.WriteHeader(404)
 		return
 	}
 
-	json.NewEncoder(w).Encode("Successfully added")
+	w.Write([]byte("Successfully added"))
 	return
 }
 
