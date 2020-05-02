@@ -48,24 +48,25 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 
 	GroupLinks, ok1 := r.URL.Query()["group_links"]
 	if !ok1 || len(GroupLinks[0]) < 1 {
-		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
 		return
 	}
 	groupLinks := GroupLinks[0]
 
 	err := r.ParseMultipartForm(0)
 	if err != nil {
-		w.Write([]byte("Does not have image"))
+		log.Printf("Does not have image")
 		w.WriteHeader(404)
+		w.Write([]byte("Does not have image"))
 		return
 	}
 
 	r.ParseMultipartForm(10 << 20)
 	file, handler, err := r.FormFile("file")
 	if err != nil {
-		w.Write([]byte("Error retrieving image"))
 		w.WriteHeader(404)
+		w.Write([]byte("Error retrieving image"))
 		return
 	}
 	defer file.Close()
@@ -76,8 +77,8 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	tempFile, err := ioutil.TempFile("temp-images", "upload-*.png")
 	if err != nil {
 		log.Printf("Error creating temp image")
-		w.Write([]byte("Error creating temp image"))
 		w.WriteHeader(404)
+		w.Write([]byte("Error creating temp image"))
 		return
 	}
 	defer tempFile.Close()
