@@ -74,7 +74,7 @@ type fields struct {
 	NumberOfHikes   int `bson:"numberOfHikes"`
 }
 
-func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
+func (*repo) GetUserGroups(token string) ([]*model.GroupItem, error) {
 
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
@@ -106,10 +106,10 @@ func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
 	}
 	defer cursor.Close(context.TODO())
 
-	out := make([]*model.Group, 0)
+	out := make([]*model.GroupItem, 0)
 
 	for cursor.Next(context.TODO()) {
-		group := new(model.Group)
+		group := new(model.GroupItem)
 		err := cursor.Decode(group)
 		if err != nil {
 			return nil, err
@@ -123,8 +123,8 @@ func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
 	return toGroups(out), nil
 }
 
-func toGroup(b *model.Group) *model.Group {
-	return &model.Group{
+func toGroup(b *model.GroupItem) *model.GroupItem {
+	return &model.GroupItem{
 		Name:            b.Name,
 		Description:     b.Description,
 		Image:           b.Image,
@@ -133,8 +133,8 @@ func toGroup(b *model.Group) *model.Group {
 	}
 }
 
-func toGroups(bs []*model.Group) []*model.Group {
-	out := make([]*model.Group, len(bs))
+func toGroups(bs []*model.GroupItem) []*model.GroupItem {
+	out := make([]*model.GroupItem, len(bs))
 
 	for i, b := range bs {
 		out[i] = toGroup(b)
@@ -142,7 +142,7 @@ func toGroups(bs []*model.Group) []*model.Group {
 	return out
 }
 
-func (*repo) GetAllGroups() ([]*model.Group, error) {
+func (*repo) GetAllGroups() ([]*model.GroupItem, error) {
 
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {

@@ -13,6 +13,14 @@ type Group struct {
 	Members         []*Member        `json:"members" bson:"members"`
 }
 
+type GroupItem struct {
+	Name            string `json:"groupName" bson:"groupName"`
+	Description     string `json:"groupDescription" bson:"groupDescription"`
+	Image           string `json:"groupPhoto" bson:"groupPhoto"`
+	NumberOfMembers int32  `json:"numberOfMembers" bson:"numberOfMembers"`
+	NumberOfHikes   int32  `json:"numberOfHikes" bson:"numberOfHikes"`
+}
+
 type Member struct {
 	Token   string `json:"-" bson:"token"`
 	Name    string `json:"name" bson:"name"`
