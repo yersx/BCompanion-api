@@ -148,27 +148,35 @@ func (*repo) GetAllGroups() ([]*model.GroupItem, error) {
 		return nil, err
 	}
 
-	cursor, err := collection.Find(context.TODO(), bson.D{})
-	defer cursor.Close(context.TODO())
+	projection := fields{
+		ID:              0,
+		GroupName:       1,
+		GroupPhoto:      1,
+		NumberOfMembers: 1,
+		NumberOfHikes:   1,
+	}
 
+	cursor, err := collection.Find(
+		context.TODO(), bson.D{},
+		options.Find().SetProjection(projection))
 	if err != nil {
 		return nil, err
 	}
+	defer cursor.Close(context.TODO())
 
-	out := make([]*model.City, 0)
+	out := make([]*model.GroupItem, 0)
 
 	for cursor.Next(context.TODO()) {
-		city := new(model.City)
-		err := cursor.Decode(city)
+		group := new(model.GroupItem)
+		err := cursor.Decode(group)
 		if err != nil {
 			return nil, err
 		}
-
-		out = append(out, city)
+		out = append(out, group)
 	}
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	return toGroups(out), nil
 }
