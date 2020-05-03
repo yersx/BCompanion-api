@@ -7,8 +7,9 @@ type User struct {
 	Token       string `json:"-" bson:"token"`
 	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber"`
 	DateOfBirth string `json:"dateOfBirth" bson:"dateOfBirth,omitempty"`
-	Photo       string `json:"-" bson:"photo"`
 	City        string `json:"city"`
+	Photo       string `json:"-" bson:"photo"`
+	Status      bool   `json:"-" bson:"status"`
 }
 
 type Phone struct {

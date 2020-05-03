@@ -43,6 +43,7 @@ func (*repo) SignUser(user model.User, authType string) (string, int) {
 				// store the hashed password
 				user.Token = string(hash)
 				user.Photo = "https://i.ibb.co/VqncVzX/avatar.png"
+				user.Status = true
 
 				// Insert User
 				_, err = collection.InsertOne(context.TODO(), user)
