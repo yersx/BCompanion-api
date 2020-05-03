@@ -15,7 +15,6 @@ type Group struct {
 
 type GroupItem struct {
 	Name            string `json:"groupName" bson:"groupName"`
-	Description     string `json:"groupDescription" bson:"groupDescription"`
 	Image           string `json:"groupPhoto" bson:"groupPhoto"`
 	NumberOfMembers int32  `json:"numberOfMembers" bson:"numberOfMembers"`
 	NumberOfHikes   int32  `json:"numberOfHikes" bson:"numberOfHikes"`

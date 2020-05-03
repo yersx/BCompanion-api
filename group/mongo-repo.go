@@ -126,7 +126,6 @@ func (*repo) GetUserGroups(token string) ([]*model.GroupItem, error) {
 func toGroup(b *model.GroupItem) *model.GroupItem {
 	return &model.GroupItem{
 		Name:            b.Name,
-		Description:     b.Description,
 		Image:           b.Image,
 		NumberOfHikes:   b.NumberOfHikes,
 		NumberOfMembers: b.NumberOfMembers,
