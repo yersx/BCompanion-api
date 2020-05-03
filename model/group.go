@@ -5,8 +5,8 @@ type Group struct {
 	Description     string           `json:"groupDescription" bson:"groupDescription"`
 	Links           string           `json:"groupLinks" bson:"groupLinks"`
 	Image           string           `json:"groupPhoto" bson:"groupPhoto"`
-	NumberOfMembers int              `json:"numberOfMembers" bson:"numberOfMembers"`
-	NumberOfHikes   int              `json:"numberOfHikes" bson:"numberOfHikes"`
+	NumberOfMembers int32            `json:"numberOfMembers" bson:"numberOfMembers"`
+	NumberOfHikes   int32            `json:"numberOfHikes" bson:"numberOfHikes"`
 	CurrentHikes    []*HikeShortInfo `json:"currentHikes" bson:"currentHikes"`
 	HikesHistory    []*HikeShortInfo `json:"hikesHistory" bson:"hikesHistory"`
 	GroupMedia      []*Media         `json:"groupMedia" bson:"groupMedia"`
@@ -31,6 +31,6 @@ type HikeShortInfo struct {
 	HikePhoto         string `json:"hikePhoto" bson:"hikePhoto"`
 	PlaceName         string `json:"placeName" bson:"placeName"`
 	StartDate         string `json:"startDate" bson:"startDate"`
-	NumberOfMembers   int    `json:"numberOfMembers" bson:"numberOfMembers"`
+	NumberOfMembers   int32  `json:"numberOfMembers" bson:"numberOfMembers"`
 	WithOvernightStay bool   `json:"withOvernightStay" bson:"withOvernightStay"`
 }
