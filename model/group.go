@@ -18,7 +18,7 @@ type Member struct {
 	Name    string `json:"name" bson:"name"`
 	Surname string `json:"surname" bson:"surname"`
 	Photo   string `json:"photo" bson:"photo"`
-	Status  bool   `json:"status" bson:"status"`
+	Status  string `json:"status" bson:"status"`
 	Role    string `json:"role" bson:"role"`
 }
 

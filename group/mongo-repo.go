@@ -4,6 +4,7 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -65,14 +66,48 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 	}
 }
 
-func (*repo) GetGroups(token string) ([]*model.Group, error) {
+func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
 
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
 		return nil, err
 	}
 
-	cursor, err := collection.Find(context.TODO(), bson.D{{"group_owner", token}})
+	filter := bson.D{
+		{"members", bson.D{
+			{"$elemMatch", bson.D{
+				{"token", token},
+			},
+			}},
+		},
+	}
+
+	cursor, err := collection.Find(context.TODO(), filter)
+	defer cursor.Close(context.TODO())
+
+	var items bson.M
+	var groups []*model.Group
+	for cursor.Next(context.TODO()) {
+		if err = cursor.Decode(&items); err != nil {
+			return nil, err
+		}
+		log.Printf("found items %v", items)
+	}
+	bsonBytes, _ := bson.Marshal(items)
+	bson.Unmarshal(bsonBytes, &groups)
+	log.Printf("found groups %v", groups)
+
+	return groups, nil
+}
+
+func (*repo) GetAllGroups() ([]*model.Group, error) {
+
+	collection, err := db.GetDBCollection("groups")
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := collection.Find(context.TODO(), bson.D{})
 	defer cursor.Close(context.TODO())
 
 	if err != nil {

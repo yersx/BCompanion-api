@@ -9,7 +9,7 @@ type User struct {
 	DateOfBirth string `json:"dateOfBirth" bson:"dateOfBirth,omitempty"`
 	City        string `json:"city"`
 	Photo       string `json:"-" bson:"photo"`
-	Status      bool   `json:"-" bson:"status"`
+	Status      string `json:"-" bson:"status"`
 }
 
 type Phone struct {

@@ -18,7 +18,8 @@ var (
 
 type GroupController interface {
 	AddGroup(w http.ResponseWriter, r *http.Request)
-	GetGroups(w http.ResponseWriter, r *http.Request)
+	GetUserGroups(w http.ResponseWriter, r *http.Request)
+	GetAllGroups(w http.ResponseWriter, r *http.Request)
 }
 
 // NewPlaceController implements PlaceController
@@ -119,12 +120,27 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func (*controller) GetGroups(w http.ResponseWriter, r *http.Request) {
+func (*controller) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	token := r.Header.Get("Authorization")
 
-	groups, err := groupService.GetGroups(token)
+	groups, err := groupService.GetUserGroups(token)
+	if err != nil {
+		json.NewEncoder(w).Encode("can not get groups")
+		w.WriteHeader(404)
+		return
+	}
+
+	json.NewEncoder(w).Encode(groups)
+	return
+
+}
+
+func (*controller) GetAllGroups(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	groups, err := groupService.GetAllGroups()
 	if err != nil {
 		json.NewEncoder(w).Encode("can not get groups")
 		w.WriteHeader(404)

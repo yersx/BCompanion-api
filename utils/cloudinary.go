@@ -3,9 +3,8 @@ package utils
 import (
 	"bytes"
 
-	"golang.org/x/net/context"
-
 	"github.com/kyokomi/cloudinary"
+	"golang.org/x/net/context"
 )
 
 type CloudynaryInfo struct {
