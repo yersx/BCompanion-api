@@ -95,7 +95,7 @@ func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
 	}
 	bsonBytes, _ := bson.Marshal(items)
 	bson.Unmarshal(bsonBytes, &groups)
-	log.Printf("found groups %v", groups)
+	log.Printf("found items %v", groups)
 
 	return groups, nil
 }
