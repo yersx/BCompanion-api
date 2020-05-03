@@ -4,6 +4,7 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -161,6 +162,8 @@ func (*repo) GetAllGroups() ([]*model.GroupItem, error) {
 		options.Find().SetProjection(projection))
 	if err != nil {
 		return nil, err
+
+		log.Printf("get error")
 	}
 	defer cursor.Close(context.TODO())
 
@@ -170,11 +173,14 @@ func (*repo) GetAllGroups() ([]*model.GroupItem, error) {
 		group := new(model.GroupItem)
 		err := cursor.Decode(group)
 		if err != nil {
+
+			log.Printf("cycle error")
 			return nil, err
 		}
 		out = append(out, group)
 	}
 	if err := cursor.Err(); err != nil {
+		log.Printf("cursor error")
 		return nil, err
 	}
 
