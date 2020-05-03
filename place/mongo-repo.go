@@ -61,9 +61,6 @@ func (*repo) GetCities() ([]*model.City, error) {
 		return nil, err
 	}
 
-	log.Printf("found items %v", out)
-	log.Printf("found cities %v", toCities(out))
-
 	return toCities(out), nil
 }
 

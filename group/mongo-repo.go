@@ -4,9 +4,9 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
-	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type repo struct{}
@@ -66,6 +66,14 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 	}
 }
 
+type fields struct {
+	ID              int `bson:"_id"`
+	GroupName       int `bson:"groupName"`
+	GroupPhoto      int `bson:"groupPhoto"`
+	NumberOfMembers int `bson:"numberOfMembers"`
+	NumberOfHikes   int `bson:"numberOfHikes"`
+}
+
 func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
 
 	collection, err := db.GetDBCollection("groups")
@@ -82,22 +90,56 @@ func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
 		},
 	}
 
-	cursor, err := collection.Find(context.TODO(), filter)
+	projection := fields{
+		ID:              0,
+		GroupName:       1,
+		GroupPhoto:      1,
+		NumberOfMembers: 1,
+		NumberOfHikes:   1,
+	}
+
+	cursor, err := collection.Find(
+		context.TODO(), filter,
+		options.Find().SetProjection(projection))
+	if err != nil {
+		return nil, err
+	}
 	defer cursor.Close(context.TODO())
 
-	var items bson.M
-	var groups []*model.Group
+	out := make([]*model.Group, 0)
+
 	for cursor.Next(context.TODO()) {
-		if err = cursor.Decode(&items); err != nil {
+		group := new(model.Group)
+		err := cursor.Decode(group)
+		if err != nil {
 			return nil, err
 		}
-		log.Printf("found items %v", items)
+		out = append(out, group)
 	}
-	bsonBytes, _ := bson.Marshal(items)
-	bson.Unmarshal(bsonBytes, &groups)
-	log.Printf("found items %v", groups)
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
 
-	return groups, nil
+	return toGroups(out), nil
+}
+
+func toGroup(b *model.Group) *model.Group {
+	return &model.Group{
+		Name:            b.Name,
+		Description:     b.Description,
+		Image:           b.Image,
+		NumberOfHikes:   b.NumberOfHikes,
+		NumberOfMembers: b.NumberOfMembers,
+	}
+}
+
+func toGroups(bs []*model.Group) []*model.Group {
+	out := make([]*model.Group, len(bs))
+
+	for i, b := range bs {
+		out[i] = toGroup(b)
+	}
+	return out
 }
 
 func (*repo) GetAllGroups() ([]*model.Group, error) {
