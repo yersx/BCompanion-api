@@ -38,6 +38,8 @@ func NewUserController(service user.UserService) UserController {
 
 func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var user model.User
 	body, _ := ioutil.ReadAll(r.Body)
@@ -74,6 +76,8 @@ func (*controller) SignUser(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	// var res model.ResponseResult
 
 	Phone, ok1 := r.URL.Query()["phone_number"]
