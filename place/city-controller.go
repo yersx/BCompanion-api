@@ -26,6 +26,8 @@ func NewCityController(service PlaceService) CityController {
 
 func (*controller) AddCity(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var city model.City
 	body, _ := ioutil.ReadAll(r.Body)
@@ -54,6 +56,8 @@ func (*controller) AddCity(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) GetCities(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var res model.ResponseResult
 

@@ -30,6 +30,8 @@ func NewPlaceController(service place.PlaceService) PlaceController {
 
 func (*controller) AddPlace(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var place model.Place
 	body, _ := ioutil.ReadAll(r.Body)
@@ -67,6 +69,8 @@ func (*controller) AddPlace(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) GetPlaces(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var res model.ResponseResult
 
@@ -94,6 +98,8 @@ func (*controller) GetPlaces(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) AddPlaceDescription(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var place model.PlaceDescription
 	body, _ := ioutil.ReadAll(r.Body)
@@ -122,6 +128,8 @@ func (*controller) AddPlaceDescription(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) GetPlaceDescription(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var res model.ResponseResult
 

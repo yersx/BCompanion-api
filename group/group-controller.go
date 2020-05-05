@@ -30,6 +30,8 @@ func NewGroupController(service GroupService) GroupController {
 
 func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var group model.Group
 
@@ -122,6 +124,8 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	token := r.Header.Get("Authorization")
 
@@ -139,6 +143,8 @@ func (*controller) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) GetAllGroups(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	groups, err := groupService.GetAllGroups()
 	if err != nil {
