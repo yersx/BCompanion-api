@@ -182,3 +182,20 @@ func (*repo) GetAllGroups() ([]*model.GroupItem, error) {
 
 	return toGroups(out), nil
 }
+
+func (*repo) GetGroup(groupName string) (*model.Group, error) {
+
+	var description *model.Group
+	collection, err := db.GetDBCollection("groups")
+	if err != nil {
+		return nil, err
+	}
+
+	if groupName != "" {
+		err = collection.FindOne(context.TODO(), bson.D{{"groupName", groupName}}).Decode(&description)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return description, nil
+}

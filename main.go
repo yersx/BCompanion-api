@@ -51,6 +51,7 @@ func main() {
 	httpRouter.POST("/groups/createGroup", groupController.AddGroup)
 	httpRouter.GET("/groups/getByUser", groupController.GetUserGroups)
 	httpRouter.GET("/groups/getByActivity", groupController.GetAllGroups)
+	httpRouter.GET("/groups/getGroup", groupController.GetGroup)
 
 	httpRouter.SERVE(port)
 }

@@ -8,6 +8,7 @@ type GroupService interface {
 	AddGroup(group model.Group, token string) string
 	GetUserGroups(token string) ([]*model.GroupItem, error)
 	GetAllGroups() ([]*model.GroupItem, error)
+	GetGroup(groupName string) (*model.Group, error)
 }
 
 type service struct{}
@@ -31,4 +32,8 @@ func (*service) GetUserGroups(token string) ([]*model.GroupItem, error) {
 
 func (*service) GetAllGroups() ([]*model.GroupItem, error) {
 	return groupRepo.GetAllGroups()
+}
+
+func (*service) GetGroup(groupName string) (*model.Group, error) {
+	return groupRepo.GetGroup(groupName)
 }

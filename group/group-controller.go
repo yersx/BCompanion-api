@@ -20,6 +20,7 @@ type GroupController interface {
 	AddGroup(w http.ResponseWriter, r *http.Request)
 	GetUserGroups(w http.ResponseWriter, r *http.Request)
 	GetAllGroups(w http.ResponseWriter, r *http.Request)
+	GetGroup(w http.ResponseWriter, r *http.Request)
 }
 
 // NewPlaceController implements PlaceController
@@ -154,6 +155,35 @@ func (*controller) GetAllGroups(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(groups)
+	return
+
+}
+
+func (*controller) GetGroup(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var res model.ResponseResult
+
+	GroupName, ok1 := r.URL.Query()["group_name"]
+	if !ok1 || len(GroupName[0]) < 1 {
+		res.Message = "Url Param 'group_name' is missing"
+		json.NewEncoder(w).Encode(nil)
+		w.WriteHeader(404)
+		return
+	}
+	groupName := GroupName[0]
+
+	group, err := groupService.GetGroup(groupName)
+	if err != nil {
+		res.Message = err.Error()
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
+
+	json.NewEncoder(w).Encode(group)
 	return
 
 }
