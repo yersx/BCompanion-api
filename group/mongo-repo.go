@@ -42,12 +42,13 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 		GroupMedia:      []*model.Media{},
 		Members: []*model.Member{
 			{
-				Token:   token,
-				Name:    user.FirstName,
-				Surname: user.LastName,
-				Photo:   user.Photo,
-				Status:  user.Status,
-				Role:    "admin",
+				Token:       token,
+				Name:        user.FirstName,
+				Surname:     user.LastName,
+				Photo:       user.Photo,
+				PhoneNumber: user.PhoneNumber,
+				Status:      user.Status,
+				Role:        "admin",
 			},
 		},
 	}
