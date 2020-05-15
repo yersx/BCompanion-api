@@ -36,6 +36,7 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 		Image:           group.Image,
 		NumberOfMembers: 1,
 		NumberOfHikes:   0,
+		Admins:          user.PhoneNumber,
 		CurrentHikes:    []*model.HikeShortInfo{},
 		HikesHistory:    []*model.HikeShortInfo{},
 		GroupMedia:      []*model.Media{},

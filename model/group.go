@@ -8,6 +8,7 @@ type Group struct {
 	NumberOfMembers int32            `json:"numberOfMembers" bson:"numberOfMembers"`
 	NumberOfHikes   int32            `json:"numberOfHikes" bson:"numberOfHikes"`
 	CurrentHikes    []*HikeShortInfo `json:"upcomingHikes" bson:"upcomingHikes"`
+	Admins          string           `json:"admins" bson:"admins"`
 	HikesHistory    []*HikeShortInfo `json:"hikesHistory" bson:"hikesHistory"`
 	GroupMedia      []*Media         `json:"groupMedia" bson:"groupMedia"`
 	Members         []*Member        `json:"members" bson:"members"`
@@ -21,12 +22,13 @@ type GroupItem struct {
 }
 
 type Member struct {
-	Token   string `json:"-" bson:"token"`
-	Name    string `json:"name" bson:"name"`
-	Surname string `json:"surname" bson:"surname"`
-	Photo   string `json:"photo" bson:"photo"`
-	Status  string `json:"status" bson:"status"`
-	Role    string `json:"role" bson:"role"`
+	Token       string `json:"-" bson:"token"`
+	Name        string `json:"name" bson:"name"`
+	Surname     string `json:"surname" bson:"surname"`
+	Photo       string `json:"photo" bson:"photo"`
+	Status      string `json:"status" bson:"status"`
+	PhoneNumber string `json:"phoneNumber" bson:"phoneNumber"`
+	Role        string `json:"role" bson:"role"`
 }
 
 type Media struct {

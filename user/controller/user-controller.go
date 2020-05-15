@@ -213,8 +213,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"firstname":   result.FirstName,
-		"lastname":    result.LastName,
+		"name":        result.FirstName,
+		"surname":     result.LastName,
 		"phoneNumber": result.PhoneNumber,
 		"dateOfBirth": result.DateOfBirth,
 		"city":        result.City,
