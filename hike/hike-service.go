@@ -4,36 +4,26 @@ import (
 	"bcompanion/model"
 )
 
-type GroupService interface {
-	AddGroup(group model.Group, token string) string
-	GetUserGroups(token string) ([]*model.GroupItem, error)
-	GetAllGroups() ([]*model.GroupItem, error)
-	GetGroup(groupName string) (*model.Group, error)
+type HikeService interface {
+	AddHike(hike model.Hike) string
+	GetHike(hikeId string) (*model.Hike, error)
 }
 
 type service struct{}
 
 var (
-	groupRepo GroupRepository
+	hikeRepo HikeRepository
 )
 
-func NewGroupService(repository GroupRepository) GroupService {
-	groupRepo = repository
+func NewGroupService(repository HikeRepository) HikeService {
+	hikeRepo = repository
 	return &service{}
 }
 
-func (*service) AddGroup(group model.Group, token string) string {
-	return groupRepo.CreateGroup(group, token)
+func (*service) AddHike(hike model.Hike) string {
+	return hikeRepo.CreateHike(hike)
 }
 
-func (*service) GetUserGroups(token string) ([]*model.GroupItem, error) {
-	return groupRepo.GetUserGroups(token)
-}
-
-func (*service) GetAllGroups() ([]*model.GroupItem, error) {
-	return groupRepo.GetAllGroups()
-}
-
-func (*service) GetGroup(groupName string) (*model.Group, error) {
-	return groupRepo.GetGroup(groupName)
+func (*service) GetHike(hikeId string) (*model.Hike, error) {
+	return hikeRepo.GetHike(hikeId)
 }

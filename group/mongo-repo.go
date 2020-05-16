@@ -4,7 +4,6 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
-	"log"
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,7 +19,7 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
-		return "can not fing groups collection"
+		return "can not fins groups collection"
 	}
 
 	userCollection, err := db.GetDBCollection("users")
@@ -38,9 +37,9 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 		NumberOfMembers: "1",
 		NumberOfHikes:   0,
 		Admins:          user.PhoneNumber,
-		CurrentHikes:    []*model.HikeShortInfo{},
-		HikesHistory:    []*model.HikeShortInfo{},
-		GroupMedia:      []*model.Media{},
+		CurrentHikes:    nil,
+		HikesHistory:    nil,
+		GroupMedia:      nil,
 		Members: []*model.Member{
 			{
 				Token:       token,
@@ -67,14 +66,6 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 	} else {
 		return "already existed"
 	}
-}
-
-type fields struct {
-	ID              int `bson:"_id"`
-	GroupName       int `bson:"groupName"`
-	GroupPhoto      int `bson:"groupPhoto"`
-	NumberOfMembers int `bson:"numberOfMembers"`
-	NumberOfHikes   int `bson:"numberOfHikes"`
 }
 
 func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
@@ -182,7 +173,6 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 
 	groupNumber := len(group.Members)
 
-	log.Printf("group member count %v", groupNumber)
 	group.NumberOfMembers = strconv.Itoa(groupNumber)
 	group.NumberOfHikes = len(group.HikesHistory) + len(group.CurrentHikes)
 
