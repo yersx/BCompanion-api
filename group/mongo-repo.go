@@ -185,17 +185,21 @@ func (*repo) GetAllGroups() ([]*model.GroupItem, error) {
 
 func (*repo) GetGroup(groupName string) (*model.Group, error) {
 
-	var description *model.Group
+	var group *model.Group
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
 		return nil, err
 	}
 
 	if groupName != "" {
-		err = collection.FindOne(context.TODO(), bson.D{{"groupName", groupName}}).Decode(&description)
+		err = collection.FindOne(context.TODO(), bson.D{{"groupName", groupName}}).Decode(&group)
 		if err != nil {
 			return nil, err
 		}
 	}
-	return description, nil
+
+	group.NumberOfMembers = len(group.Members)
+	group.NumberOfHikes = len(group.HikesHistory) + len(group.CurrentHikes)
+
+	return group, nil
 }

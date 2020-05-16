@@ -5,12 +5,12 @@ type Group struct {
 	Description     string           `json:"groupDescription" bson:"groupDescription"`
 	Links           string           `json:"groupLinks" bson:"groupLinks"`
 	Image           string           `json:"groupPhoto" bson:"groupPhoto"`
-	NumberOfMembers int32            `json:"numberOfMembers" bson:"numberOfMembers"`
-	NumberOfHikes   int32            `json:"numberOfHikes" bson:"numberOfHikes"`
-	CurrentHikes    []*HikeShortInfo `json:"upcomingHikes" bson:"upcomingHikes"`
+	NumberOfMembers int              `json:"numberOfMembers" bson:"numberOfMembers"`
+	NumberOfHikes   int              `json:"numberOfHikes" bson:"numberOfHikes"`
+	CurrentHikes    []*HikeShortInfo `json:"upcomingHikes,omitempty" bson:"upcomingHikes"`
 	Admins          string           `json:"admins" bson:"admins"`
-	HikesHistory    []*HikeShortInfo `json:"hikesHistory" bson:"hikesHistory"`
-	GroupMedia      []*Media         `json:"groupMedia" bson:"groupMedia"`
+	HikesHistory    []*HikeShortInfo `json:"hikesHistory,omitempty" bson:"hikesHistory"`
+	GroupMedia      []*Media         `json:"groupMedia,omitempty" bson:"groupMedia"`
 	Members         []*Member        `json:"members" bson:"members"`
 }
 
