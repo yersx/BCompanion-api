@@ -121,7 +121,7 @@ func toGroup(b *model.Group) *model.Group {
 
 	groupNumber := len(b.Members)
 
-	log.Output(1, "groups member count: "+groupNumber)
+	log.Printf("groups member count %v", groupNumber)
 	b.NumberOfMembers = string(groupNumber)
 	return b
 }
@@ -183,7 +183,7 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 
 	groupNumber := len(group.Members)
 
-	log.Output(1, "group member count: "+groupNumber)
+	log.Printf("group member count %v", groupNumber)
 	group.NumberOfMembers = string(groupNumber)
 	group.NumberOfHikes = len(group.HikesHistory) + len(group.CurrentHikes)
 
