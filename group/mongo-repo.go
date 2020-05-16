@@ -177,7 +177,7 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 	}
 
 	group.NumberOfMembers = string(len(group.Members))
-	group.NumberOfHikes = len(group.HikesHistory) + len(group.CurrentHikes)
+	group.NumberOfHikes = len(group.Members) + len(group.CurrentHikes) + 2
 
 	return group, nil
 }
