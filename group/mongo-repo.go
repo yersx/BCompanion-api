@@ -4,6 +4,7 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -119,6 +120,8 @@ func toGroup(b *model.Group) *model.Group {
 	b.NumberOfHikes = len(b.HikesHistory) + len(b.CurrentHikes)
 
 	groupNumber := len(b.Members)
+
+	log.Output(1, "groups member count: "+groupNumber)
 	b.NumberOfMembers = string(groupNumber)
 	return b
 }
@@ -179,6 +182,8 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 	}
 
 	groupNumber := len(group.Members)
+
+	log.Output(1, "group member count: "+groupNumber)
 	group.NumberOfMembers = string(groupNumber)
 	group.NumberOfHikes = len(group.HikesHistory) + len(group.CurrentHikes)
 
