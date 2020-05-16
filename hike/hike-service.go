@@ -1,4 +1,4 @@
-package group
+package hike
 
 import (
 	"bcompanion/model"
@@ -15,7 +15,7 @@ var (
 	hikeRepo HikeRepository
 )
 
-func NewGroupService(repository HikeRepository) HikeService {
+func NewHikeService(repository HikeRepository) HikeService {
 	hikeRepo = repository
 	return &service{}
 }

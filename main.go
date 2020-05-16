@@ -11,6 +11,7 @@ import (
 	userrepository "bcompanion/user/repository"
 
 	"bcompanion/group"
+	"bcompanion/hike"
 	"bcompanion/place"
 	place1 "bcompanion/place/place"
 )
@@ -28,6 +29,10 @@ var (
 	groupRepository group.GroupRepository = group.NewMongoRepository()
 	groupService    group.GroupService    = group.NewGroupService(groupRepository)
 	groupController group.GroupController = group.NewGroupController(groupService)
+
+	hikeRepository hike.HikeRepository = hike.NewMongoRepository()
+	hikeService    hike.HikeService    = hike.NewHikeService(hikeRepository)
+	hikeController hike.HikeController = hike.NewHikeController(hikeService)
 
 	httpRouter router.Router = router.NewMuxRouter()
 )
@@ -53,5 +58,7 @@ func main() {
 	httpRouter.GET("/groups/getByActivity", groupController.GetAllGroups)
 	httpRouter.GET("/groups/getGroup", groupController.GetGroup)
 
+	httpRouter.POST("hikes/createHike", hikeController.AddHike)
+	httpRouter.GET("/hikes/getHike", hikeController.GetHike)
 	httpRouter.SERVE(port)
 }

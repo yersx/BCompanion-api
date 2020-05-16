@@ -7,10 +7,10 @@ type Group struct {
 	Image           string    `json:"groupPhoto" bson:"groupPhoto"`
 	NumberOfMembers string    `json:"numberOfMembers" bson:"numberOfMembers"`
 	NumberOfHikes   int       `json:"numberOfHikes" bson:"numberOfHikes"`
-	CurrentHikes    []*Hike   `json:"upcomingHikes,omitempty" bson:"upcomingHikes"`
+	CurrentHikes    []*Hike   `json:"upcomingHikes" bson:"upcomingHikes"`
 	Admins          string    `json:"admins" bson:"admins"`
-	HikesHistory    []*Hike   `json:"hikesHistory,omitempty" bson:"hikesHistory"`
-	GroupMedia      []*Media  `json:"groupMedia,omitempty" bson:"groupMedia"`
+	HikesHistory    []*Hike   `json:"hikesHistory" bson:"hikesHistory"`
+	GroupMedia      []*Media  `json:"groupMedia" bson:"groupMedia"`
 	Members         []*Member `json:"members" bson:"members"`
 }
 

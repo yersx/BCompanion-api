@@ -1,4 +1,4 @@
-package group
+package hike
 
 import (
 	"bcompanion/model"
