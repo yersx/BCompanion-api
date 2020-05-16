@@ -35,7 +35,7 @@ func (*controller) AddHike(w http.ResponseWriter, r *http.Request) {
 	err := json.Unmarshal(body, &hike)
 	if err != nil {
 		json.NewEncoder(w).Encode("can not get data")
-		w.WriteHeader(400)
+		w.WriteHeader(404)
 		return
 	}
 
