@@ -23,6 +23,9 @@ func (*repo) CreateHike(hike model.Hike) string {
 		return "can not find groups collection"
 	}
 	log.Printf("hikeAdmin %v\n", hike.Admins[0])
+
+	log.Output(1, "admin: "+hike.Admins[0])
+
 	log.Printf("hikeAdmins %v\n", hike.Admins)
 
 	userCollection, err := db.GetDBCollection("users")
