@@ -22,15 +22,11 @@ func (*repo) CreateHike(hike model.Hike) string {
 	if err != nil {
 		return "can not find groups collection"
 	}
-	log.Printf("hikeAdmin %v\n", hike.Admins[0])
-
-	log.Output(1, "admin: "+hike.Admins[0])
-
-	log.Printf("hikeAdmins %v\n", hike.Admins)
+	adminNumber := hike.Admins[0]
 
 	userCollection, err := db.GetDBCollection("users")
 	var user *model.User
-	err = userCollection.FindOne(context.TODO(), bson.D{{"phoneNumber", hike.Admins[0]}}).Decode(&user)
+	err = userCollection.FindOne(context.TODO(), bson.D{{"phoneNumber", adminNumber}}).Decode(&user)
 	if err != nil {
 		return "can not find creater account"
 	}
