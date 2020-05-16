@@ -6,6 +6,7 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type repo struct{}
@@ -33,7 +34,7 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 		Description:     group.Description,
 		Links:           group.Links,
 		Image:           group.Image,
-		NumberOfMembers: "1",
+		NumberOfMembers: 1,
 		NumberOfHikes:   0,
 		Admins:          user.PhoneNumber,
 		CurrentHikes:    []*model.HikeShortInfo{},
@@ -75,7 +76,7 @@ type fields struct {
 	NumberOfHikes   int `bson:"numberOfHikes"`
 }
 
-func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
+func (*repo) GetUserGroups(token string) ([]*model.GroupItem, error) {
 
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
@@ -91,17 +92,26 @@ func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
 		},
 	}
 
+	projection := fields{
+		ID:              0,
+		GroupName:       1,
+		GroupPhoto:      1,
+		NumberOfMembers: 1,
+		NumberOfHikes:   1,
+	}
+
 	cursor, err := collection.Find(
-		context.TODO(), filter)
+		context.TODO(), filter,
+		options.Find().SetProjection(projection))
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(context.TODO())
 
-	out := make([]*model.Group, 0)
+	out := make([]*model.GroupItem, 0)
 
 	for cursor.Next(context.TODO()) {
-		group := new(model.Group)
+		group := new(model.GroupItem)
 		err := cursor.Decode(group)
 		if err != nil {
 			return nil, err
@@ -115,14 +125,17 @@ func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
 	return toGroups(out), nil
 }
 
-func toGroup(b *model.Group) *model.Group {
-	b.NumberOfHikes = len(b.HikesHistory) + len(b.CurrentHikes)
-	b.NumberOfMembers = string(len(b.Members))
-	return b
+func toGroup(b *model.GroupItem) *model.GroupItem {
+	return &model.GroupItem{
+		Name:            b.Name,
+		Image:           b.Image,
+		NumberOfHikes:   b.NumberOfHikes,
+		NumberOfMembers: b.NumberOfMembers,
+	}
 }
 
-func toGroups(bs []*model.Group) []*model.Group {
-	out := make([]*model.Group, len(bs))
+func toGroups(bs []*model.GroupItem) []*model.GroupItem {
+	out := make([]*model.GroupItem, len(bs))
 
 	for i, b := range bs {
 		out[i] = toGroup(b)
@@ -130,24 +143,33 @@ func toGroups(bs []*model.Group) []*model.Group {
 	return out
 }
 
-func (*repo) GetAllGroups() ([]*model.Group, error) {
+func (*repo) GetAllGroups() ([]*model.GroupItem, error) {
 
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
 		return nil, err
 	}
 
+	projection := fields{
+		ID:              0,
+		GroupName:       1,
+		GroupPhoto:      1,
+		NumberOfMembers: 1,
+		NumberOfHikes:   1,
+	}
+
 	cursor, err := collection.Find(
-		context.TODO(), bson.D{})
+		context.TODO(), bson.D{},
+		options.Find().SetProjection(projection))
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(context.TODO())
 
-	out := make([]*model.Group, 0)
+	out := make([]*model.GroupItem, 0)
 
 	for cursor.Next(context.TODO()) {
-		group := new(model.Group)
+		group := new(model.GroupItem)
 		err := cursor.Decode(group)
 		if err != nil {
 			return nil, err
@@ -176,7 +198,7 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 		}
 	}
 
-	group.NumberOfMembers = string(len(group.Members))
+	group.NumberOfMembers = len(group.Members)
 	group.NumberOfHikes = len(group.HikesHistory) + len(group.CurrentHikes)
 
 	return group, nil

@@ -6,8 +6,8 @@ import (
 
 type GroupService interface {
 	AddGroup(group model.Group, token string) string
-	GetUserGroups(token string) ([]*model.Group, error)
-	GetAllGroups() ([]*model.Group, error)
+	GetUserGroups(token string) ([]*model.GroupItem, error)
+	GetAllGroups() ([]*model.GroupItem, error)
 	GetGroup(groupName string) (*model.Group, error)
 }
 
@@ -26,11 +26,11 @@ func (*service) AddGroup(group model.Group, token string) string {
 	return groupRepo.CreateGroup(group, token)
 }
 
-func (*service) GetUserGroups(token string) ([]*model.Group, error) {
+func (*service) GetUserGroups(token string) ([]*model.GroupItem, error) {
 	return groupRepo.GetUserGroups(token)
 }
 
-func (*service) GetAllGroups() ([]*model.Group, error) {
+func (*service) GetAllGroups() ([]*model.GroupItem, error) {
 	return groupRepo.GetAllGroups()
 }
 
