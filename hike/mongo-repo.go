@@ -8,7 +8,6 @@ import (
 
 	bsonmongo "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type repo struct{}
@@ -70,7 +69,7 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 		return nil, err
 	}
 
-	err = collection.FindOne(context.TODO(), bsonmongo.D{{"_id", bson.ObjectIdHex(hikeID)}}).Decode(&hike)
+	err = collection.FindOne(context.TODO(), bsonmongo.M{"_id": hikeID}).Decode(&hike)
 	if err != nil {
 		return nil, err
 	}
