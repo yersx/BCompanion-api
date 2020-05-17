@@ -3,7 +3,7 @@ package model
 import "gopkg.in/mgo.v2/bson"
 
 type Hike struct {
-	HikeID            bson.ObjectId `json:"hikeId" bson:"hikeId"`
+	HikeID            bson.ObjectId `json:"hikeId" bson:"_id"`
 	GroupName         *string       `json:"groupName" bson:"groupName"`
 	GroupPhoto        *string       `json:"groupPhoto" bson:"groupPhoto"`
 	PlaceName         *string       `json:"placeName" bson:"placeName"`
