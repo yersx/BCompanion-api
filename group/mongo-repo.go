@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
-	bsonmongo "gopkg.in/mgo.v2/bson"
 )
 
 type repo struct{}
@@ -112,6 +111,7 @@ func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
 
 func toGroup(b *model.Group) *model.Group {
 
+	b.HikesHistory = GetHike(b.Name)
 	numberOfHikes := len(b.HikesHistory) + len(b.CurrentHikes)
 	b.NumberOfHikes = strconv.Itoa(numberOfHikes)
 
@@ -174,9 +174,8 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 			return nil, err
 		}
 	}
-	if len(group.HikesHistoryRef) > 0 {
-		group.HikesHistory = GetHike(group.HikesHistoryRef)
-	}
+
+	group.HikesHistory = GetHike(groupName)
 
 	log.Println("hikeHistory %s\n", group.HikesHistory)
 
@@ -189,17 +188,16 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 	return group, nil
 }
 
-func GetHike(hikes []*bsonmongo.ObjectId) []*model.Hike {
-	hikesCollection, _ := db.GetDBCollection("hikes")
-	filter := bson.D{
-		{"_id", bson.D{
-			{"$in", bson.M{"$in": hikes}}},
-		},
+func GetHike(groupName string) []*model.Hike {
+
+	collection, err := db.GetDBCollection("hikes")
+	if err != nil {
+		return nil
 	}
 
-	cursor, err := hikesCollection.Find(
+	cursor, err := collection.Find(
 		context.TODO(),
-		filter)
+		bson.D{{"groupName", groupName}})
 	if err != nil {
 		return nil
 	}

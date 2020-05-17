@@ -68,7 +68,7 @@ type fields struct {
 func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 
 	var hike *model.Hike
-	collection, err := db.GetDBCollection("groups")
+	collection, err := db.GetDBCollection("hikes")
 	if err != nil {
 		return nil, err
 	}
