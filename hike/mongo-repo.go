@@ -70,8 +70,10 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 		return nil, err
 	}
 
+	id, _ := primitive.ObjectIDFromHex(hikeID)
+
 	log.Println("hikeId:" + hikeID)
-	err = collection.FindOne(context.TODO(), bsonmongo.M{"_id": hikeID}).Decode(&hike)
+	err = collection.FindOne(context.TODO(), bsonmongo.M{"_id": id}).Decode(&hike)
 	if err != nil {
 		return nil, err
 	}
