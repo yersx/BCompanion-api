@@ -44,20 +44,20 @@ func (*repo) CreateHike(hike model.Hike) string {
 		return "can not add hike"
 	}
 
-	collection, err := db.GetDBCollection("groups")
-	if err != nil {
-		return "can not find groups collection"
-	}
-	_, err2 := collection.UpdateOne(
-		context.TODO(),
-		bsonmongo.M{"groupName": hike.GroupName},
-		bsonmongo.D{
-			{"$push", bsonmongo.D{{"hikesHistoryRef", hike.HikeID}}},
-		},
-	)
-	if err2 != nil {
-		return "can not create hiking event"
-	}
+	// collection, err := db.GetDBCollection("groups")
+	// if err != nil {
+	// 	return "can not find groups collection"
+	// }
+	// _, err2 := collection.UpdateOne(
+	// 	context.TODO(),
+	// 	bsonmongo.M{"groupName": hike.GroupName},
+	// 	bsonmongo.D{
+	// 		{"$push", bsonmongo.D{{"hikesHistoryRef", hike.HikeID}}},
+	// 	},
+	// )
+	// if err2 != nil {
+	// 	return "can not create hiking event"
+	// }
 	return ""
 }
 
