@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	bsonmongo "go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -37,6 +38,7 @@ func (*repo) CreateHike(hike model.Hike) string {
 		},
 	}
 
+	hike.HikeID = primitive.NewObjectID()
 	hikesCollection, _ := db.GetDBCollection("hikes")
 	_, err = hikesCollection.InsertOne(context.TODO(), hike)
 	if err != nil {
