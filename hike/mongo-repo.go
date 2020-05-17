@@ -47,9 +47,9 @@ func (*repo) CreateHike(hike model.Hike) string {
 
 	result, err := collection.UpdateOne(
 		context.TODO(),
-		bson.M{"groupName": hike.GroupName},
-		bson.D{
-			{"$push", bson.D{{"hikesHistory", hike}}},
+		bsonmongo.M{"groupName": hike.GroupName},
+		bsonmongo.D{
+			{"$push", bsonmongo.D{{"hikesHistory", hike}}},
 		},
 	)
 	log.Printf("added result %v", result)
