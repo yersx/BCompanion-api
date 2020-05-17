@@ -23,7 +23,6 @@ func (*repo) CreateHike(hike model.Hike) string {
 	if err != nil {
 		return "can not find groups collection"
 	}
-	log.Output(1, "admin: "+hike.Admins[0])
 
 	userCollection, err := db.GetDBCollection("users")
 	var user *model.User
@@ -44,6 +43,7 @@ func (*repo) CreateHike(hike model.Hike) string {
 		},
 	}
 	hike.HikeID = bson.NewObjectId()
+	log.Println("NewObjectId: %s" + hike.HikeID)
 
 	result, err := collection.UpdateOne(
 		context.TODO(),
