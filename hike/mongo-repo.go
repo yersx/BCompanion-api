@@ -26,7 +26,7 @@ func (*repo) CreateHike(hike model.Hike) string {
 
 	userCollection, err := db.GetDBCollection("users")
 	var user *model.User
-	err = userCollection.FindOne(context.TODO(), bson.D{{"phoneNumber", "+77475652503"}}).Decode(&user)
+	err = userCollection.FindOne(context.TODO(), bson.D{{"token", "$2a$05$WXUjPTXGPdFu/E5zcsFWw.CiUt6K/6XzSgvpFMTS1ChuAeBXOUXbm"}}).Decode(&user)
 	if err != nil {
 		return "can not find creater account"
 	}
