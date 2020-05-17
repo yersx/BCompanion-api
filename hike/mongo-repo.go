@@ -73,7 +73,7 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 		return nil, err
 	}
 
-	err = collection.FindOne(context.TODO(), bsonmongo.D{{"HikeID", hikeID}}).Decode(&hike)
+	err = collection.FindOne(context.TODO(), bsonmongo.D{{"_id", hikeID}}).Decode(&hike)
 	if err != nil {
 		return nil, err
 	}
