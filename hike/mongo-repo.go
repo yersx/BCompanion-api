@@ -5,7 +5,6 @@ import (
 	"bcompanion/model"
 	"context"
 	"log"
-	"reflect"
 	"strconv"
 
 	"gopkg.in/mgo.v2/bson"
@@ -29,12 +28,9 @@ func (*repo) CreateHike(hike model.Hike) string {
 	if err != nil {
 		return "can not find users collection"
 	}
-
-	log.Println(reflect.TypeOf(hike.Admins[0]))
-	log.Printf("phoneNumber: " + hike.Admins[0])
 	var user *model.User
-	err = userCollection.FindOne(context.TODO(), bson.D{{"phoneNumber", hike.Admins[0]}}).Decode(&user)
-	if err != nil {
+	err2 := userCollection.FindOne(context.TODO(), bson.D{{"phoneNumber", hike.Admins[0]}}).Decode(&user)
+	if err2 != nil {
 		return "can not find creater account"
 	}
 
