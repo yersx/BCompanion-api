@@ -45,15 +45,14 @@ func (*repo) CreateHike(hike model.Hike) string {
 	hike.HikeID = bson.NewObjectId()
 	log.Println("NewObjectId: %s" + hike.HikeID)
 
-	result, err := collection.UpdateOne(
+	_, err2 := collection.UpdateOne(
 		context.TODO(),
 		bsonmongo.M{"groupName": hike.GroupName},
 		bsonmongo.D{
 			{"$push", bsonmongo.D{{"hikesHistory", hike}}},
 		},
 	)
-	log.Printf("added result %v", result)
-	if err != nil {
+	if err2 != nil {
 		return "can not create hiking event"
 	}
 	return ""
@@ -66,15 +65,7 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	filter := bsonmongo.D{
-		{"hikesHistory", bsonmongo.D{
-			{"$elemMatch", bsonmongo.D{
-				{"hikeId", hikeID},
-			},
-			}},
-		},
-	}
+	filter := bsonmongo.D{{"groupName", "Campit"}}
 
 	err = collection.FindOne(context.TODO(), filter).Decode(&hike)
 	if err != nil {
