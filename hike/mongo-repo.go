@@ -73,20 +73,7 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 		return nil, err
 	}
 
-	// projection := fields{
-	// 	HikesHistory: 1,
-	// }
-
-	filter := bsonmongo.D{
-		{"hikesHistory", bsonmongo.D{
-			{"$elemMatch", bsonmongo.D{
-				{"hikeId", hikeID},
-			},
-			}},
-		},
-	}
-
-	err = collection.FindOne(context.TODO(), filter).Decode(&hike)
+	err = collection.FindOne(context.TODO(), bsonmongo.D{{"HikeID", hikeID}}).Decode(&hike)
 	if err != nil {
 		return nil, err
 	}
@@ -97,3 +84,45 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 
 	return hike, nil
 }
+
+// func GetHike(hikeID string) []*model.Hike {
+// 	hikesCollection, _ := db.GetDBCollection("hikes")
+// 	cursor, err := hikesCollection.Find(
+// 		context.TODO(),
+// 		bson.M{"_id": hikeID})
+// 	if err != nil {
+// 		return nil
+// 	}
+// 	defer cursor.Close(context.TODO())
+
+// 	out := make([]*model.Hike, 0)
+
+// 	for cursor.Next(context.TODO()) {
+// 		hike := new(model.Hike)
+// 		err := cursor.Decode(hike)
+// 		if err != nil {
+// 			return nil
+// 		}
+// 		out = append(out, hike)
+// 	}
+// 	if err := cursor.Err(); err != nil {
+// 		return nil
+// 	}
+
+// 	return toHikes(out)
+// }
+
+// func toHike(b *model.Hike) *model.Hike {
+// 	numberOfMembers := len(b.Members)
+// 	b.NumberOfMembers = strconv.Itoa(numberOfMembers)
+// 	return b
+// }
+
+// func toHikes(bs []*model.Hike) []*model.Hike {
+// 	out := make([]*model.Hike, len(bs))
+
+// 	for i, b := range bs {
+// 		out[i] = toHike(b)
+// 	}
+// 	return out
+// }

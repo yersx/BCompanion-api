@@ -4,9 +4,11 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
+	"log"
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
+	bsonmongo "gopkg.in/mgo.v2/bson"
 )
 
 type repo struct{}
@@ -172,6 +174,11 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 			return nil, err
 		}
 	}
+	if len(group.HikesHistoryRef) > 0 {
+		group.HikesHistory = GetHike(group.HikesHistoryRef)
+	}
+
+	log.Println("hikeHistory %s\n", group.HikesHistory)
 
 	numberOfMembers := len(group.Members)
 	numberOfHikes := len(group.HikesHistory) + len(group.CurrentHikes)
@@ -180,4 +187,52 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 	group.NumberOfHikes = strconv.Itoa(numberOfHikes)
 
 	return group, nil
+}
+
+func GetHike(hikes []*bsonmongo.ObjectId) []*model.Hike {
+	hikesCollection, _ := db.GetDBCollection("hikes")
+	filter := bson.D{
+		{"_id", bson.D{
+			{"$in", bson.M{"$in": hikes}}},
+		},
+	}
+
+	cursor, err := hikesCollection.Find(
+		context.TODO(),
+		filter)
+	if err != nil {
+		return nil
+	}
+	defer cursor.Close(context.TODO())
+
+	out := make([]*model.Hike, 0)
+
+	for cursor.Next(context.TODO()) {
+		hike := new(model.Hike)
+		err := cursor.Decode(hike)
+		if err != nil {
+			return nil
+		}
+		out = append(out, hike)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil
+	}
+
+	return toHikes(out)
+}
+
+func toHike(b *model.Hike) *model.Hike {
+	numberOfMembers := len(b.Members)
+	b.NumberOfMembers = strconv.Itoa(numberOfMembers)
+	return b
+}
+
+func toHikes(bs []*model.Hike) []*model.Hike {
+	out := make([]*model.Hike, len(bs))
+
+	for i, b := range bs {
+		out[i] = toHike(b)
+	}
+	return out
 }
