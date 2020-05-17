@@ -1,17 +1,20 @@
 package model
 
+import "gopkg.in/mgo.v2/bson"
+
 type Group struct {
-	Name            string    `json:"groupName" bson:"groupName"`
-	Description     string    `json:"groupDescription" bson:"groupDescription"`
-	Links           string    `json:"groupLinks" bson:"groupLinks"`
-	Image           string    `json:"groupPhoto" bson:"groupPhoto"`
-	NumberOfMembers string    `json:"numberOfMembers" bson:"numberOfMembers"`
-	NumberOfHikes   string    `json:"numberOfHikes" bson:"numberOfHikes"`
-	CurrentHikes    []*Hike   `json:"upcomingHike,omitempty" bson:"upcomingHikes"`
-	Admins          string    `json:"admins" bson:"admins"`
-	HikesHistory    []*Hike   `json:"hikesHistory,omitempty" bson:"hikesHistory"`
-	GroupMedia      []*Media  `json:"groupMedia,omitempty" bson:"groupMedia"`
-	Members         []*Member `json:"members" bson:"members"`
+	Name            string           `json:"groupName" bson:"groupName"`
+	Description     string           `json:"groupDescription" bson:"groupDescription"`
+	Links           string           `json:"groupLinks" bson:"groupLinks"`
+	Image           string           `json:"groupPhoto" bson:"groupPhoto"`
+	NumberOfMembers string           `json:"numberOfMembers" bson:"numberOfMembers"`
+	NumberOfHikes   string           `json:"numberOfHikes" bson:"numberOfHikes"`
+	CurrentHikes    []*Hike          `json:"upcomingHike,omitempty" bson:"upcomingHikes"`
+	Admins          string           `json:"admins" bson:"admins"`
+	HikesHistoryRef []*bson.ObjectId `json:"-" bson:"hikesHistoryRef"`
+	HikesHistory    []*Hike          `json:"hikesHistory,omitempty" bson:"hikesHistory"`
+	GroupMedia      []*Media         `json:"groupMedia,omitempty" bson:"groupMedia"`
+	Members         []*Member        `json:"members" bson:"members"`
 }
 
 type Member struct {

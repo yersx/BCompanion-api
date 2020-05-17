@@ -4,7 +4,6 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
-	"log"
 	"strconv"
 
 	bsonmongo "go.mongodb.org/mongo-driver/bson"
@@ -18,11 +17,6 @@ func NewMongoRepository() HikeRepository {
 }
 
 func (*repo) CreateHike(hike model.Hike) string {
-
-	collection, err := db.GetDBCollection("groups")
-	if err != nil {
-		return "can not find groups collection"
-	}
 
 	userCollection, err := db.GetDBCollection("users")
 	var user *model.User
@@ -43,19 +37,32 @@ func (*repo) CreateHike(hike model.Hike) string {
 		},
 	}
 	hike.HikeID = bson.NewObjectId()
-	log.Println("NewObjectId: %s" + hike.HikeID)
 
+	hikesCollection, _ := db.GetDBCollection("hikes")
+	_, err = hikesCollection.InsertOne(context.TODO(), hike)
+	if err != nil {
+		return "can not add hike"
+	}
+
+	collection, err := db.GetDBCollection("groups")
+	if err != nil {
+		return "can not find groups collection"
+	}
 	_, err2 := collection.UpdateOne(
 		context.TODO(),
 		bsonmongo.M{"groupName": hike.GroupName},
 		bsonmongo.D{
-			{"$push", bsonmongo.D{{"hikesHistory", hike}}},
+			{"$push", bsonmongo.D{{"hikesHistoryRef", hike.HikeID}}},
 		},
 	)
 	if err2 != nil {
 		return "can not create hiking event"
 	}
 	return ""
+}
+
+type fields struct {
+	HikesHistory []*model.Hike `bson:"hikesHistory"`
 }
 
 func (*repo) GetHike(hikeID string) (*model.Hike, error) {
@@ -65,7 +72,19 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 	if err != nil {
 		return nil, err
 	}
-	filter := bsonmongo.D{{"groupName", "Campit"}}
+
+	// projection := fields{
+	// 	HikesHistory: 1,
+	// }
+
+	filter := bsonmongo.D{
+		{"hikesHistory", bsonmongo.D{
+			{"$elemMatch", bsonmongo.D{
+				{"hikeId", hikeID},
+			},
+			}},
+		},
+	}
 
 	err = collection.FindOne(context.TODO(), filter).Decode(&hike)
 	if err != nil {
