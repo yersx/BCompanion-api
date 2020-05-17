@@ -18,17 +18,13 @@ func NewMongoRepository() HikeRepository {
 
 func (*repo) CreateHike(hike model.Hike) string {
 
-	collection, err := db.GetDBCollection("groups")
-	if err != nil {
-		return "can not find groups collection"
-	}
 	log.Output(1, "admin: "+hike.Admins[0])
 
 	userCollection, err := db.GetDBCollection("users")
 	var user *model.User
-	err = userCollection.FindOne(context.TODO(), bson.D{{"token", "$2a$05$WXUjPTXGPdFu/E5zcsFWw.CiUt6K/6XzSgvpFMTS1ChuAeBXOUXbm"}}).Decode(&user)
+	err = userCollection.FindOne(context.TODO(), bson.D{{"surname", "Асылбеков"}}).Decode(&user)
 	if err != nil {
-		return "can not find creater account"
+		return "can not find admin account"
 	}
 
 	hike.Members = []*model.Member{
@@ -44,6 +40,10 @@ func (*repo) CreateHike(hike model.Hike) string {
 	}
 	hike.HikeID = bson.NewObjectId()
 
+	collection, err := db.GetDBCollection("groups")
+	if err != nil {
+		return "can not find groups collection"
+	}
 	result, err := collection.UpdateOne(
 		context.TODO(),
 		bson.M{"groupName": hike.GroupName},
