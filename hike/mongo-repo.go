@@ -36,7 +36,6 @@ func (*repo) CreateHike(hike model.Hike) string {
 			Role:        "admin",
 		},
 	}
-	hike.HikeID = bson.NewObjectId()
 
 	hikesCollection, _ := db.GetDBCollection("hikes")
 	_, err = hikesCollection.InsertOne(context.TODO(), hike)
@@ -61,10 +60,6 @@ func (*repo) CreateHike(hike model.Hike) string {
 	return ""
 }
 
-type fields struct {
-	HikesHistory []*model.Hike `bson:"hikesHistory"`
-}
-
 func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 
 	var hike *model.Hike
@@ -73,7 +68,7 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 		return nil, err
 	}
 
-	err = collection.FindOne(context.TODO(), bsonmongo.D{{"_id", hikeID}}).Decode(&hike)
+	err = collection.FindOne(context.TODO(), bsonmongo.D{{"_id", bson.ObjectIdHex(hikeID)}}).Decode(&hike)
 	if err != nil {
 		return nil, err
 	}
