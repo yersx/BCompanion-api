@@ -109,7 +109,9 @@ func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
 }
 
 func toGroup(b *model.Group) *model.Group {
-	b.NumberOfHikes = len(b.HikesHistory) + len(b.CurrentHikes)
+
+	numberOfHikes := len(b.HikesHistory) + len(b.CurrentHikes)
+	b.NumberOfHikes = strconv.Itoa(numberOfHikes)
 
 	groupNumber := len(b.Members)
 	b.NumberOfMembers = strconv.Itoa(groupNumber)
@@ -171,10 +173,11 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 		}
 	}
 
-	groupNumber := len(group.Members)
+	numberOfMembers := len(group.Members)
+	numberOfHikes := len(group.HikesHistory) + len(group.CurrentHikes)
 
-	group.NumberOfMembers = strconv.Itoa(groupNumber)
-	group.NumberOfHikes = len(group.HikesHistory) + len(group.CurrentHikes)
+	group.NumberOfMembers = strconv.Itoa(numberOfMembers)
+	group.NumberOfHikes = strconv.Itoa(numberOfHikes)
 
 	return group, nil
 }

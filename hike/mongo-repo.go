@@ -59,14 +59,6 @@ func (*repo) CreateHike(hike model.Hike) string {
 	return ""
 }
 
-type fields struct {
-	ID              int `bson:"_id"`
-	GroupName       int `bson:"groupName"`
-	GroupPhoto      int `bson:"groupPhoto"`
-	NumberOfMembers int `bson:"numberOfMembers"`
-	NumberOfHikes   int `bson:"numberOfHikes"`
-}
-
 func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 
 	var hike *model.Hike
@@ -75,10 +67,10 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 		return nil, err
 	}
 
-	filter := bson.D{
-		{"members", bson.D{
-			{"$elemMatch", bson.D{
-				{"hikesHistory", hikeID},
+	filter := bsonmongo.D{
+		{"hikesHistory", bsonmongo.D{
+			{"$elemMatch", bsonmongo.D{
+				{"hikeId", hikeID},
 			},
 			}},
 		},
