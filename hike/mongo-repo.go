@@ -4,6 +4,7 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
+	"log"
 	"strconv"
 
 	bsonmongo "go.mongodb.org/mongo-driver/bson"
@@ -69,10 +70,13 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 		return nil, err
 	}
 
+	log.Println("hikeId:" + hikeID)
 	err = collection.FindOne(context.TODO(), bsonmongo.M{"_id": hikeID}).Decode(&hike)
 	if err != nil {
 		return nil, err
 	}
+
+	log.Println("user: %s", hike)
 
 	hikeNumber := len(hike.Members)
 
