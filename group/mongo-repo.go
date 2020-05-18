@@ -4,7 +4,6 @@ import (
 	"bcompanion/config/db"
 	"bcompanion/model"
 	"context"
-	"log"
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -184,8 +183,9 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 	}
 
 	group.HikesHistory = GetHike(groupName)
-
-	log.Println("hikeHistory %s\n", group.HikesHistory)
+	if len(group.CurrentHikes) == 0 {
+		group.CurrentHikes = nil
+	}
 
 	numberOfMembers := len(group.Members)
 	numberOfHikes := len(group.HikesHistory) + len(group.CurrentHikes)
