@@ -107,9 +107,9 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 
 	group = model.Group{
 		Name:        groupName,
-		Description: groupDescription,
-		Links:       groupLinks,
-		Image:       cloudinaryPath,
+		Description: &groupDescription,
+		Links:       &groupLinks,
+		Image:       &cloudinaryPath,
 	}
 
 	res := groupService.AddGroup(group, token)

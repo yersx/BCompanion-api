@@ -37,7 +37,7 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 		Image:           group.Image,
 		NumberOfMembers: "1",
 		NumberOfHikes:   "0",
-		Admins:          user.PhoneNumber,
+		Admins:          []string{user.PhoneNumber},
 		CurrentHikes:    []*model.Hike{},
 		HikesHistory:    []*model.Hike{},
 		GroupMedia:      []*model.Media{},
@@ -117,6 +117,14 @@ func toGroup(b *model.Group) *model.Group {
 
 	groupNumber := len(b.Members)
 	b.NumberOfMembers = strconv.Itoa(groupNumber)
+
+	b.Description = nil
+	b.Links = nil
+	b.CurrentHikes = nil
+	b.Admins = nil
+	b.HikesHistory = nil
+	b.GroupMedia = nil
+	b.Admins = nil
 	return b
 }
 
