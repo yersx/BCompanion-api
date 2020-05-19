@@ -183,12 +183,16 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 	}
 
 	group.HikesHistory = GetHike(groupName)
-	if len(group.CurrentHikes) == 0 {
-		group.CurrentHikes = nil
-	}
 
 	numberOfMembers := len(group.Members)
 	numberOfHikes := len(group.HikesHistory) + len(group.CurrentHikes)
+
+	if len(group.CurrentHikes) == 0 {
+		group.CurrentHikes = nil
+	}
+	if len(group.HikesHistory) == 0 {
+		group.HikesHistory = nil
+	}
 
 	group.NumberOfMembers = strconv.Itoa(numberOfMembers)
 	group.NumberOfHikes = strconv.Itoa(numberOfHikes)
