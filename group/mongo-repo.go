@@ -200,6 +200,60 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 	return group, nil
 }
 
+func (*repo) JoinGroup(groupName string, token string) string {
+	collection, err := db.GetDBCollection("groups")
+	if err != nil {
+		return ""
+	}
+
+	userCollection, err := db.GetDBCollection("users")
+	var user *model.User
+	err = userCollection.FindOne(context.TODO(), bson.D{{"token", token}}).Decode(&user)
+	if err != nil {
+		return "can not find  account"
+	}
+	member := model.Member{
+		Token:       token,
+		Name:        user.FirstName,
+		Surname:     user.LastName,
+		Photo:       user.Photo,
+		PhoneNumber: user.PhoneNumber,
+		Status:      user.Status,
+		Role:        "user",
+	}
+
+	_, err2 := collection.UpdateOne(
+		context.TODO(),
+		bson.M{"groupName": groupName},
+		bson.D{
+			{"$push", bson.D{{"members", member}}},
+		},
+	)
+	if err2 != nil {
+		return "can not join the group"
+	}
+	return ""
+}
+
+func (*repo) LeaveGroup(groupName string, token string) string {
+	collection, err := db.GetDBCollection("groups")
+	if err != nil {
+		return ""
+	}
+
+	_, err2 := collection.UpdateOne(
+		context.TODO(),
+		bson.M{"groupName": groupName},
+		bson.D{
+			{"$pull", bson.D{{"members", token}}},
+		},
+	)
+	if err2 != nil {
+		return "can not leave the group"
+	}
+	return ""
+}
+
 func GetHike(groupName string) []*model.Hike {
 
 	collection, err := db.GetDBCollection("hikes")

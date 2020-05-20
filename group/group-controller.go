@@ -21,6 +21,9 @@ type GroupController interface {
 	GetUserGroups(w http.ResponseWriter, r *http.Request)
 	GetAllGroups(w http.ResponseWriter, r *http.Request)
 	GetGroup(w http.ResponseWriter, r *http.Request)
+
+	JoinGroup(w http.ResponseWriter, r *http.Request)
+	LeaveGroup(w http.ResponseWriter, r *http.Request)
 }
 
 // NewPlaceController implements PlaceController
@@ -185,5 +188,57 @@ func (*controller) GetGroup(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(group)
 	return
+}
 
+func (*controller) JoinGroup(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	token := r.Header.Get("Authorization")
+
+	GroupName, ok1 := r.URL.Query()["group_name"]
+	if !ok1 || len(GroupName[0]) < 1 {
+		json.NewEncoder(w).Encode("Url Param 'group_name' is missing")
+		w.WriteHeader(404)
+		return
+	}
+	groupName := GroupName[0]
+
+	response := groupService.JoinGroup(groupName, token)
+	if response != "" {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	json.NewEncoder(w).Encode(response)
+	return
+}
+
+func (*controller) LeaveGroup(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	token := r.Header.Get("Authorization")
+
+	GroupName, ok1 := r.URL.Query()["group_name"]
+	if !ok1 || len(GroupName[0]) < 1 {
+		json.NewEncoder(w).Encode("Url Param 'group_name' is missing")
+		w.WriteHeader(404)
+		w.WriteHeader(404)
+		return
+	}
+	groupName := GroupName[0]
+
+	response := groupService.LeaveGroup(groupName, token)
+	if response != "" {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	json.NewEncoder(w).Encode(response)
+	return
 }
