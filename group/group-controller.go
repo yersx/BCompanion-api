@@ -212,7 +212,7 @@ func (*controller) JoinGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode("Successfully joined to group")
 	return
 }
 
@@ -239,6 +239,6 @@ func (*controller) LeaveGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode("Successfully leaved the group")
 	return
 }
