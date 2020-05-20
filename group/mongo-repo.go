@@ -245,7 +245,7 @@ func (*repo) LeaveGroup(groupName string, token string) string {
 		context.TODO(),
 		bson.M{"groupName": groupName},
 		bson.D{
-			{"$pull", bson.D{{"members", token}}},
+			{"$pull", bson.D{{"members", bson.M{"token": token}}}},
 		},
 	)
 	if err2 != nil {
