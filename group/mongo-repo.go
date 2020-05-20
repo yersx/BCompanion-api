@@ -19,7 +19,7 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
-		return "can not fins groups collection"
+		return "can not find groups collection"
 	}
 
 	userCollection, err := db.GetDBCollection("users")
@@ -203,7 +203,7 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 func (*repo) JoinGroup(groupName string, token string) string {
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
-		return ""
+		return "can not find groups collection"
 	}
 
 	userCollection, err := db.GetDBCollection("users")
@@ -238,7 +238,7 @@ func (*repo) JoinGroup(groupName string, token string) string {
 func (*repo) LeaveGroup(groupName string, token string) string {
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
-		return ""
+		return "can not find groups collection"
 	}
 
 	_, err2 := collection.UpdateOne(
