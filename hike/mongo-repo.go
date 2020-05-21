@@ -140,6 +140,7 @@ func (*repo) JoinHike(hikeId string, token string) string {
 		return "can not find hikes collection"
 	}
 
+	log.Println("token is" + token)
 	userCollection, err := db.GetDBCollection("users")
 	var user *model.User
 	err = userCollection.FindOne(context.TODO(), bson.D{{"token", token}}).Decode(&user)
