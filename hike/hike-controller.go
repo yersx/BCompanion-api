@@ -16,6 +16,9 @@ var (
 type HikeController interface {
 	AddHike(w http.ResponseWriter, r *http.Request)
 	GetHike(w http.ResponseWriter, r *http.Request)
+
+	JoinHike(w http.ResponseWriter, r *http.Request)
+	LeaveHike(w http.ResponseWriter, r *http.Request)
 }
 
 // NewPlaceController implements PlaceController
@@ -75,4 +78,57 @@ func (*controller) GetHike(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(hike)
 	return
 
+}
+
+func (*controller) JoinHike(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	token := r.Header.Get("Authorization")
+
+	HikeID, ok1 := r.URL.Query()["hike_id"]
+	if !ok1 || len(HikeID[0]) < 1 {
+		json.NewEncoder(w).Encode("Url Param 'hike_id' is missing")
+		w.WriteHeader(404)
+		return
+	}
+	hikeID := HikeID[0]
+
+	response := hikeService.JoinHike(hikeID, token)
+	if response != "" {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	json.NewEncoder(w).Encode("Successfully joined to hiking event")
+	return
+}
+
+func (*controller) LeaveHike(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	token := r.Header.Get("Authorization")
+
+	HikeID, ok1 := r.URL.Query()["hike_id"]
+	if !ok1 || len(HikeID[0]) < 1 {
+		json.NewEncoder(w).Encode("Url Param 'hike_id' is missing")
+		w.WriteHeader(404)
+		w.WriteHeader(404)
+		return
+	}
+	hikeID := HikeID[0]
+
+	response := hikeService.LeaveHike(hikeID, token)
+	if response != "" {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	json.NewEncoder(w).Encode("Successfully leaved the hiking event")
+	return
 }
