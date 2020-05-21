@@ -219,7 +219,7 @@ func (*repo) JoinGroup(groupName string, token string) string {
 		Photo:       user.Photo,
 		PhoneNumber: user.PhoneNumber,
 		Status:      user.Status,
-		Role:        "user",
+		Role:        "",
 	}
 
 	_, err2 := collection.UpdateOne(

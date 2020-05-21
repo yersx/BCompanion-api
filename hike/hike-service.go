@@ -5,7 +5,7 @@ import (
 )
 
 type HikeService interface {
-	AddHike(hike model.Hike) string
+	AddHike(hike model.Hike, token string) string
 	GetHike(hikeId string) (*model.Hike, error)
 }
 
@@ -20,8 +20,8 @@ func NewHikeService(repository HikeRepository) HikeService {
 	return &service{}
 }
 
-func (*service) AddHike(hike model.Hike) string {
-	return hikeRepo.CreateHike(hike)
+func (*service) AddHike(hike model.Hike, token string) string {
+	return hikeRepo.CreateHike(hike, token)
 }
 
 func (*service) GetHike(hikeId string) (*model.Hike, error) {

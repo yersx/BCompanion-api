@@ -19,7 +19,7 @@ type Hike struct {
 	EndTime           *string            `json:"endTime" bson:"endTime"`
 	GatheringCity     *string            `json:"gatheringCity" bson:"gatheringCity"`
 	GatheringPlace    *string            `json:"gatheringPlace" bson:"gatheringPlace"`
-	Admins            []string           `json:"admins" bson:"admins"`
+	Admins            []*string          `json:"admins" bson:"admins"`
 	NumberOfMembers   string             `json:"numberOfMembers" bson:"numberOfMembers"`
 	Members           []*Member          `json:"members" bson:"members"`
 }

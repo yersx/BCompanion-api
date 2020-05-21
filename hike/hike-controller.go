@@ -29,6 +29,8 @@ func (*controller) AddHike(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
+	token := r.Header.Get("Authorization")
+
 	var hike model.Hike
 	body, _ := ioutil.ReadAll(r.Body)
 
@@ -39,7 +41,7 @@ func (*controller) AddHike(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res := hikeService.AddHike(hike)
+	res := hikeService.AddHike(hike, token)
 	if res != "" {
 		json.NewEncoder(w).Encode(res)
 		w.WriteHeader(404)

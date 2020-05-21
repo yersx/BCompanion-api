@@ -17,11 +17,11 @@ func NewMongoRepository() HikeRepository {
 	return &repo{}
 }
 
-func (*repo) CreateHike(hike model.Hike) string {
+func (*repo) CreateHike(hike model.Hike, token string) string {
 
 	userCollection, err := db.GetDBCollection("users")
 	var user *model.User
-	err = userCollection.FindOne(context.TODO(), bsonmongo.D{{"phoneNumber", hike.Admins[0]}}).Decode(&user)
+	err = userCollection.FindOne(context.TODO(), bsonmongo.D{{"token", token}}).Decode(&user)
 	if err != nil {
 		return "can not find creater account"
 	}
@@ -36,6 +36,10 @@ func (*repo) CreateHike(hike model.Hike) string {
 			Status:      user.Status,
 			Role:        "admin",
 		},
+	}
+
+	hike.Admins = []*string{
+		&user.PhoneNumber,
 	}
 
 	hike.HikeID = primitive.NewObjectID()
