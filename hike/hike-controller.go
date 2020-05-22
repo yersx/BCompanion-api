@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 )
 
 type controller struct{}
@@ -103,21 +102,6 @@ func (*controller) GetHikes(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(hike)
 	return
 
-}
-
-func toHike(b *model.Hike) *model.Hike {
-	numberOfMembers := len(b.Members)
-	b.NumberOfMembers = strconv.Itoa(numberOfMembers)
-	return b
-}
-
-func toHikes(bs []*model.Hike) []*model.Hike {
-	out := make([]*model.Hike, len(bs))
-
-	for i, b := range bs {
-		out[i] = toHike(b)
-	}
-	return out
 }
 
 func (*controller) JoinHike(w http.ResponseWriter, r *http.Request) {

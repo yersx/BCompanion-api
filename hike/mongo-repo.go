@@ -9,7 +9,6 @@ import (
 
 	bsonmongo "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type repo struct{}
@@ -124,16 +123,16 @@ func (*repo) GetHikes(groupName string) ([]*model.Hike, error) {
 		return nil, err
 	}
 
-	return toHikesList(out), nil
+	return toHikes(out), nil
 }
 
-func toHikee(b *model.Hike) *model.Hike {
+func toHike(b *model.Hike) *model.Hike {
 	numberOfMembers := len(b.Members)
 	b.NumberOfMembers = strconv.Itoa(numberOfMembers)
 	return b
 }
 
-func toHikesList(bs []*model.Hike) []*model.Hike {
+func toHikes(bs []*model.Hike) []*model.Hike {
 	out := make([]*model.Hike, len(bs))
 
 	for i, b := range bs {
@@ -230,7 +229,7 @@ func (*repo) LeaveHike(hikeId string, token string) string {
 		context.TODO(),
 		bsonmongo.M{"_id": hikeId},
 		bsonmongo.D{
-			{"$pull", bson.D{{"members", bson.M{"token": token}}}},
+			{"$pull", bsonmongo.D{{"members", bsonmongo.M{"token": token}}}},
 		},
 	)
 	if err2 != nil {
@@ -248,7 +247,7 @@ func GetHike(groupName string) []*model.Hike {
 
 	cursor, err := collection.Find(
 		context.TODO(),
-		bson.D{{"groupName", groupName}})
+		bsonmongo.D{{"groupName", groupName}})
 	if err != nil {
 		return nil
 	}
