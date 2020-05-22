@@ -16,6 +16,7 @@ var (
 type HikeController interface {
 	AddHike(w http.ResponseWriter, r *http.Request)
 	GetHike(w http.ResponseWriter, r *http.Request)
+	GetHikes(w http.ResponseWriter, r *http.Request)
 
 	JoinHike(w http.ResponseWriter, r *http.Request)
 	LeaveHike(w http.ResponseWriter, r *http.Request)
