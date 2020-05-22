@@ -92,6 +92,56 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 	return hike, nil
 }
 
+func (*repo) GetHikes(groupName string) ([]*model.Hike, error) {
+
+	collection, err := db.GetDBCollection("hikes")
+	if err != nil {
+		return nil, err
+	}
+	filter := bsonmongo.D{{}}
+	if groupName != "" {
+		filter = bsonmongo.D{{"groupName", groupName}}
+	}
+
+	cursor, err := collection.Find(
+		context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	out := make([]*model.Hike, 0)
+
+	for cursor.Next(context.TODO()) {
+		hike := new(model.Hike)
+		err := cursor.Decode(hike)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, hike)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return toHikesList(out), nil
+}
+
+func toHikee(b *model.Hike) *model.Hike {
+	numberOfMembers := len(b.Members)
+	b.NumberOfMembers = strconv.Itoa(numberOfMembers)
+	return b
+}
+
+func toHikesList(bs []*model.Hike) []*model.Hike {
+	out := make([]*model.Hike, len(bs))
+
+	for i, b := range bs {
+		out[i] = toHike(b)
+	}
+	return out
+}
+
 // func GetHike(hikeID string) []*model.Hike {
 // 	hikesCollection, _ := db.GetDBCollection("hikes")
 // 	cursor, err := hikesCollection.Find(
@@ -143,7 +193,7 @@ func (*repo) JoinHike(hikeId string, token string) string {
 	log.Println("token is" + token)
 	userCollection, err := db.GetDBCollection("users")
 	var user *model.User
-	err = userCollection.FindOne(context.TODO(), bson.D{{"token", token}}).Decode(&user)
+	err = userCollection.FindOne(context.TODO(), bsonmongo.D{{"token", token}}).Decode(&user)
 	if err != nil {
 		return "can not find  account"
 	}
@@ -159,9 +209,9 @@ func (*repo) JoinHike(hikeId string, token string) string {
 
 	_, err2 := collection.UpdateOne(
 		context.TODO(),
-		bson.M{"_id": hikeId},
-		bson.D{
-			{"$push", bson.D{{"members", member}}},
+		bsonmongo.M{"_id": hikeId},
+		bsonmongo.D{
+			{"$push", bsonmongo.D{{"members", member}}},
 		},
 	)
 	if err2 != nil {
@@ -178,8 +228,8 @@ func (*repo) LeaveHike(hikeId string, token string) string {
 
 	_, err2 := collection.UpdateOne(
 		context.TODO(),
-		bson.M{"_id": hikeId},
-		bson.D{
+		bsonmongo.M{"_id": hikeId},
+		bsonmongo.D{
 			{"$pull", bson.D{{"members", bson.M{"token": token}}}},
 		},
 	)
@@ -219,19 +269,4 @@ func GetHike(groupName string) []*model.Hike {
 	}
 
 	return toHikes(out)
-}
-
-func toHike(b *model.Hike) *model.Hike {
-	numberOfMembers := len(b.Members)
-	b.NumberOfMembers = strconv.Itoa(numberOfMembers)
-	return b
-}
-
-func toHikes(bs []*model.Hike) []*model.Hike {
-	out := make([]*model.Hike, len(bs))
-
-	for i, b := range bs {
-		out[i] = toHike(b)
-	}
-	return out
 }

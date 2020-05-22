@@ -8,6 +8,8 @@ type HikeService interface {
 	AddHike(hike model.Hike, token string) string
 	GetHike(hikeId string) (*model.Hike, error)
 
+	GetHikes(groupName string) ([]*model.Hike, error)
+
 	JoinHike(hikeId string, token string) string
 	LeaveHike(hikeId string, token string) string
 }
@@ -37,4 +39,8 @@ func (*service) JoinHike(hikeId string, token string) string {
 
 func (*service) LeaveHike(hikeId string, token string) string {
 	return hikeRepo.LeaveHike(hikeId, token)
+}
+
+func (*service) GetHikes(groupName string) ([]*model.Hike, error) {
+	return hikeRepo.GetHikes(groupName)
 }

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 type controller struct{}
@@ -78,6 +79,45 @@ func (*controller) GetHike(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(hike)
 	return
 
+}
+
+func (*controller) GetHikes(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	var groupName = ""
+	GroupName, ok1 := r.URL.Query()["group_name"]
+	if !ok1 || len(GroupName[0]) < 1 {
+
+	} else {
+		groupName = GroupName[0]
+	}
+
+	hike, err := hikeService.GetHikes(groupName)
+	if err != nil {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
+
+	json.NewEncoder(w).Encode(hike)
+	return
+
+}
+
+func toHike(b *model.Hike) *model.Hike {
+	numberOfMembers := len(b.Members)
+	b.NumberOfMembers = strconv.Itoa(numberOfMembers)
+	return b
+}
+
+func toHikes(bs []*model.Hike) []*model.Hike {
+	out := make([]*model.Hike, len(bs))
+
+	for i, b := range bs {
+		out[i] = toHike(b)
+	}
+	return out
 }
 
 func (*controller) JoinHike(w http.ResponseWriter, r *http.Request) {
