@@ -58,13 +58,13 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	}
 	groupDescription := GroupDescription[0]
 
+	var groupLinks *string
 	GroupLinks, ok1 := r.URL.Query()["group_links"]
 	if !ok1 || len(GroupLinks[0]) < 1 {
-		json.NewEncoder(w).Encode(nil)
-		w.WriteHeader(404)
-		return
+
+	} else {
+		groupLinks = &GroupLinks[0]
 	}
-	groupLinks := GroupLinks[0]
 
 	err := r.ParseMultipartForm(0)
 	if err != nil {
@@ -111,7 +111,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	group = model.Group{
 		Name:        groupName,
 		Description: &groupDescription,
-		Links:       &groupLinks,
+		Links:       groupLinks,
 		Image:       &cloudinaryPath,
 	}
 
