@@ -206,9 +206,10 @@ func (*repo) JoinHike(hikeId string, token string) string {
 		Role:        "",
 	}
 
+	objID, _ := primitive.ObjectIDFromHex(hikeId)
 	_, err2 := collection.UpdateOne(
 		context.TODO(),
-		bsonmongo.M{"_id": hikeId},
+		bsonmongo.M{"_id": objID},
 		bsonmongo.D{
 			{"$push", bsonmongo.D{{"members", member}}},
 		},
@@ -225,9 +226,10 @@ func (*repo) LeaveHike(hikeId string, token string) string {
 		return "can not find hikes collection"
 	}
 
+	objID, _ := primitive.ObjectIDFromHex(hikeId)
 	_, err2 := collection.UpdateOne(
 		context.TODO(),
-		bsonmongo.M{"_id": hikeId},
+		bsonmongo.M{"_id": objID},
 		bsonmongo.D{
 			{"$pull", bsonmongo.D{{"members", bsonmongo.M{"token": token}}}},
 		},
