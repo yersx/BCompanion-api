@@ -86,9 +86,10 @@ func (*repo) GetCitiesName() ([]*string, error) {
 	defer cursor.Close(context.TODO())
 
 	var episode bson.M
-	var cities model.Cities
+	var cities []*string
 	for cursor.Next(context.TODO()) {
 		if err = cursor.Decode(&episode); err != nil {
+			log.Printf("ups error")
 			return nil, err
 		}
 	}
@@ -96,7 +97,7 @@ func (*repo) GetCitiesName() ([]*string, error) {
 	bson.Unmarshal(bsonBytes, &cities)
 	log.Printf("found places %v", cities)
 
-	return cities.CityNames, nil
+	return cities, nil
 }
 
 func (*repo) SavePlace(place model.Place, city string) error {

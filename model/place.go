@@ -17,7 +17,7 @@ type Places struct {
 }
 
 type Cities struct {
-	CityNames []*string `json:"-" bson:"cityName"`
+	CityNames string `json:"-" bson:"cityName"`
 }
 
 type PlaceDescription struct {
