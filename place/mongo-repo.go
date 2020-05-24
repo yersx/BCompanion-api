@@ -65,7 +65,7 @@ func (*repo) GetCities() ([]*model.City, error) {
 	return toCities(out), nil
 }
 
-func (*repo) GetCitiesName() ([]*string, error) {
+func (*repo) GetCitiesName() ([]string, error) {
 
 	collection, err := db.GetDBCollection("cities")
 	if err != nil {
