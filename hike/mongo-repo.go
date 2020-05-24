@@ -146,6 +146,7 @@ var projection = bsonmongo.D{
 	{"startDate", 1},
 	{"gatheringCity", 1},
 	{"numberOfMembers", 1},
+	{"members", 1},
 }
 
 func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
