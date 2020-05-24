@@ -81,6 +81,7 @@ func (*repo) GetCitiesName() ([]*string, error) {
 		bson.M{},
 		options.Find().SetProjection(projection))
 	if err != nil {
+		log.Printf("ups error oo")
 		return nil, err
 	}
 	defer cursor.Close(context.TODO())
