@@ -117,6 +117,7 @@ func toGroup(b *model.Group) *model.Group {
 	groupNumber := len(b.Members)
 	b.NumberOfMembers = strconv.Itoa(groupNumber)
 
+	b.Members = nil
 	b.Description = nil
 	b.Links = nil
 	b.CurrentHikes = nil

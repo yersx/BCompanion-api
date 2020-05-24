@@ -6,9 +6,11 @@ import (
 	"context"
 	"log"
 	"strconv"
+	"time"
 
 	bsonmongo "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type repo struct{}
@@ -37,6 +39,13 @@ func (*repo) CreateHike(hike model.Hike, token string) string {
 			Role:        "admin",
 		},
 	}
+
+	layoutISO := "2006-01-02"
+	startDate, err := time.Parse(layoutISO, *hike.StartDate)
+	if err != nil {
+		return "not correct date"
+	}
+	hike.StartDateISO = &startDate
 
 	hike.Admins = []*string{
 		&user.PhoneNumber,
@@ -126,9 +135,56 @@ func (*repo) GetHikes(groupName string) ([]*model.Hike, error) {
 	return toHikes(out), nil
 }
 
+var projection = bsonmongo.D{
+	{"hikeId", 1},
+	{"groupName", 1},
+	{"groupPhoto", 1},
+	{"placeName", 1},
+	{"hikePhoto", 1},
+	{"hikeByCar", 1},
+	{"withOvernightStay", 1},
+	{"startDate", 1},
+	{"gatheringCity", 1},
+	{"numberOfMembers", 1},
+}
+
+func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
+
+	collection, err := db.GetDBCollection("hikes")
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := collection.Find(
+		context.TODO(),
+		bsonmongo.D{},
+		options.Find().SetProjection(projection))
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	out := make([]*model.Hike, 0)
+
+	for cursor.Next(context.TODO()) {
+		hike := new(model.Hike)
+		err := cursor.Decode(hike)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, hike)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return toHikes(out), nil
+}
+
 func toHike(b *model.Hike) *model.Hike {
 	numberOfMembers := len(b.Members)
 	b.NumberOfMembers = strconv.Itoa(numberOfMembers)
+	b.Members = nil
 	return b
 }
 

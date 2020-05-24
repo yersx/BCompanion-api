@@ -134,8 +134,8 @@ func (*controller) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 	token := r.Header.Get("Authorization")
 
 	groups, err := groupService.GetUserGroups(token)
-	if err != nil {
-		json.NewEncoder(w).Encode("can not get groups")
+	if err != nil || len(groups) < 1 {
+		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
 		return
 	}
@@ -152,7 +152,7 @@ func (*controller) GetAllGroups(w http.ResponseWriter, r *http.Request) {
 
 	groups, err := groupService.GetAllGroups()
 	if err != nil {
-		json.NewEncoder(w).Encode("can not get groups")
+		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
 		return
 	}

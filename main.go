@@ -67,7 +67,7 @@ func main() {
 	httpRouter.GET("/hikes/getHike", hikeController.GetHike)
 
 	httpRouter.GET("/hikes/getHikes", hikeController.GetHikes)
-	httpRouter.GET("/hikes/getUpcomingAll", hikeController.GetHikes)
+	httpRouter.GET("/hikes/getUpcomingAll", hikeController.GetUpcomingHikes)
 	httpRouter.GET("/hikes/getUpcomingByUser", hikeController.GetHikes)
 	httpRouter.GET("/hikes/getPastByUser", hikeController.GetHikes)
 

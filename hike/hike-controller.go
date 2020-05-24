@@ -17,6 +17,7 @@ type HikeController interface {
 	AddHike(w http.ResponseWriter, r *http.Request)
 	GetHike(w http.ResponseWriter, r *http.Request)
 	GetHikes(w http.ResponseWriter, r *http.Request)
+	GetUpcomingHikes(w http.ResponseWriter, r *http.Request)
 
 	JoinHike(w http.ResponseWriter, r *http.Request)
 	LeaveHike(w http.ResponseWriter, r *http.Request)
@@ -107,7 +108,27 @@ func (*controller) GetHikes(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(hike)
 	return
+}
 
+func (*controller) GetUpcomingHikes(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	hike, err := hikeService.GetUpcomingHikes()
+	if err != nil {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
+	if len(hike) < 1 {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
+
+	json.NewEncoder(w).Encode(hike)
+	return
 }
 
 func (*controller) JoinHike(w http.ResponseWriter, r *http.Request) {

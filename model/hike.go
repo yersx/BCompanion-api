@@ -1,6 +1,10 @@
 package model
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type Hike struct {
 	HikeID            primitive.ObjectID `json:"hikeId" bson:"_id"`
@@ -14,6 +18,7 @@ type Hike struct {
 	HikePrice         *string            `json:"hikePrice" bson:"hikePrice"`
 	WithOvernightStay bool               `json:"withOvernightStay" bson:"withOvernightStay"`
 	StartDate         *string            `json:"startDate" bson:"startDate"`
+	StartDateISO      *time.Time         `json:"-" bson:"startDateISO"`
 	StartTime         *string            `json:"startTime" bson:"startTime"`
 	EndDate           *string            `json:"endDate" bson:"endDate"`
 	EndTime           *string            `json:"endTime" bson:"endTime"`
