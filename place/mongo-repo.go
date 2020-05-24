@@ -78,7 +78,7 @@ func (*repo) GetCitiesName() ([]*string, error) {
 	}
 	cursor, err := collection.Find(
 		context.TODO(),
-		bson.M{},
+		bson.D{},
 		options.Find().SetProjection(projection))
 	defer cursor.Close(context.TODO())
 	if err != nil {
@@ -91,12 +91,14 @@ func (*repo) GetCitiesName() ([]*string, error) {
 		city := new(model.CityName)
 		err := cursor.Decode(city)
 		if err != nil {
+			log.Printf("error in cityName")
 			return nil, err
 		}
 
 		out = append(out, city)
 	}
 	if err := cursor.Err(); err != nil {
+		log.Printf("error in cityName here")
 		return nil, err
 	}
 
