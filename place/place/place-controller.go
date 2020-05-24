@@ -18,6 +18,7 @@ var (
 type PlaceController interface {
 	AddPlace(w http.ResponseWriter, r *http.Request)
 	GetPlaces(w http.ResponseWriter, r *http.Request)
+	GetPlacesName(w http.ResponseWriter, r *http.Request)
 	AddPlaceDescription(w http.ResponseWriter, r *http.Request)
 	GetPlaceDescription(w http.ResponseWriter, r *http.Request)
 }
@@ -83,7 +84,27 @@ func (*controller) GetPlaces(w http.ResponseWriter, r *http.Request) {
 	}
 	city := City[0]
 
-	cities, err := placeService.GetPlaces(city)
+	places, err := placeService.GetPlaces(city)
+	if err != nil {
+		res.Message = err.Error()
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
+
+	json.NewEncoder(w).Encode(places)
+	return
+
+}
+
+func (*controller) GetPlacesName(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var res model.ResponseResult
+
+	cities, err := placeService.GetPlacesName()
 	if err != nil {
 		res.Message = err.Error()
 		w.WriteHeader(404)

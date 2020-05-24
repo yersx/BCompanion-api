@@ -49,6 +49,7 @@ func main() {
 
 	httpRouter.POST("/place/add", placeController.AddPlace)
 	httpRouter.GET("/places/byCity", placeController.GetPlaces)
+	httpRouter.GET("/places/placesName", placeController.GetPlacesName)
 
 	httpRouter.POST("/placeDescription/add", placeController.AddPlaceDescription)
 	httpRouter.GET("/placeDescription", placeController.GetPlaceDescription)

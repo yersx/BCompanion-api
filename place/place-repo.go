@@ -8,6 +8,7 @@ type PlaceRepository interface {
 
 	SavePlace(place model.Place, city string) error
 	GetPlaces(city string) ([]*model.Place, error)
+	GetPlacesName() ([]*model.Place, error)
 
 	SaveDescription(place model.PlaceDescription) error
 	GetDescription(placeName string) (*model.PlaceDescription, error)
