@@ -6,7 +6,7 @@ import (
 	"context"
 	"log"
 
-	options "go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -137,21 +137,19 @@ func (*repo) GetPlacesName() ([]*string, error) {
 		return nil, err
 	}
 
-	projection := fields{
-		ID:     0,
-		Places: 1,
+	pipeline := []bson.M{
+		{"$project": bson.M{"places": 1}},
+		{"$unwind": "$places"},
 	}
-	cursor, err := collection.Find(
+
+	cursor, err := collection.Aggregate(
 		context.TODO(),
-		bson.D{},
-		options.Find().SetProjection(projection))
+		pipeline)
 	defer cursor.Close(context.TODO())
 
 	if err != nil {
 		return nil, err
 	}
-
-	log.Printf("cursor places: %v", cursor)
 	out := make([]*model.Place, 0)
 
 	for cursor.Next(context.TODO()) {
