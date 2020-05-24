@@ -99,6 +99,11 @@ func (*controller) GetHikes(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(nil)
 		return
 	}
+	if len(hike) < 1 {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
 
 	json.NewEncoder(w).Encode(hike)
 	return
