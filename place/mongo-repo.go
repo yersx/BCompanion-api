@@ -65,6 +65,40 @@ func (*repo) GetCities() ([]*model.City, error) {
 	return toCities(out), nil
 }
 
+func (*repo) GetCitiesName() ([]*string, error) {
+
+	collection, err := db.GetDBCollection("cities")
+	if err != nil {
+		return nil, err
+	}
+
+	projection := fields{
+		ID:       0,
+		CityName: 1,
+	}
+	cursor, err := collection.Find(
+		context.TODO(),
+		bson.M{},
+		options.Find().SetProjection(projection))
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var episode bson.M
+	var cities model.Cities
+	for cursor.Next(context.TODO()) {
+		if err = cursor.Decode(&episode); err != nil {
+			return nil, err
+		}
+	}
+	bsonBytes, _ := bson.Marshal(episode)
+	bson.Unmarshal(bsonBytes, &cities)
+	log.Printf("found places %v", cities)
+
+	return cities.CityNames, nil
+}
+
 func (*repo) SavePlace(place model.Place, city string) error {
 
 	collection, err := db.GetDBCollection("cities")
@@ -94,8 +128,9 @@ func (*repo) SavePlace(place model.Place, city string) error {
 }
 
 type fields struct {
-	ID     int `bson:"_id"`
-	Places int `bson:"places"`
+	ID       int `bson:"_id"`
+	Places   int `bson:"places"`
+	CityName int `bson:"cityName"`
 }
 
 func (*repo) GetPlaces(city string) ([]*model.Place, error) {
@@ -174,8 +209,6 @@ func (*repo) GetPlacesName() ([]*string, error) {
 }
 
 func toPlace(b *model.Place) *string {
-
-	log.Printf("placeNames: %v", b)
 	return &b.PlaceName
 
 }

@@ -7,6 +7,7 @@ import (
 type PlaceService interface {
 	SaveCity(city model.City) error
 	GetCities() ([]*model.City, error)
+	GetCitiesName() ([]*string, error)
 
 	AddPlace(place model.Place, city string) error
 	GetPlaces(city string) ([]*model.Place, error)
@@ -33,6 +34,10 @@ func (*service) SaveCity(city model.City) error {
 
 func (*service) GetCities() ([]*model.City, error) {
 	return placeRepo.GetCities()
+}
+
+func (*service) GetCitiesName() ([]*string, error) {
+	return placeRepo.GetCitiesName()
 }
 
 func (*service) AddPlace(place model.Place, city string) error {
