@@ -40,7 +40,7 @@ func (*repo) CreateHike(hike model.Hike, token string) string {
 		},
 	}
 
-	layoutISO := "22.11.2020"
+	layoutISO := "2020-12-20"
 	startDate, err := time.Parse(layoutISO, *hike.StartDate)
 	if err != nil {
 		return "not correct date"
