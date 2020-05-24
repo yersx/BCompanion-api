@@ -166,6 +166,7 @@ func (*repo) GetPlacesName() ([]*string, error) {
 		return nil, err
 	}
 
+	log.Printf("placeNames: %v", out)
 	return toPlaces(out), nil
 }
 
