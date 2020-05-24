@@ -85,22 +85,22 @@ func (*repo) GetCitiesName() ([]*string, error) {
 		return nil, err
 	}
 
-	out := make([]*string, 0)
+	out := make([]*model.CityName, 0)
 
 	for cursor.Next(context.TODO()) {
-		city := new(string)
+		city := new(model.CityName)
 		err := cursor.Decode(city)
 		if err != nil {
 			return nil, err
 		}
+
 		out = append(out, city)
 	}
-	log.Println("city names: %v", out)
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
 
-	return out, nil
+	return toCitiesName(out), nil
 }
 
 func (*repo) SavePlace(place model.Place, city string) error {
@@ -162,6 +162,7 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 		if err = cursor.Decode(&episode); err != nil {
 			return nil, err
 		}
+		log.Printf("found episode %v", episode)
 	}
 	bsonBytes, _ := bson.Marshal(episode)
 	bson.Unmarshal(bsonBytes, &places)
@@ -237,6 +238,15 @@ func toCities(bs []*model.City) []*model.City {
 
 	for i, b := range bs {
 		out[i] = toCity(b)
+	}
+	return out
+}
+
+func toCitiesName(bs []*model.CityName) []*string {
+	out := make([]*string, len(bs))
+
+	for i, b := range bs {
+		out[i] = &b.CityName
 	}
 	return out
 }
