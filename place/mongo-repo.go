@@ -151,6 +151,7 @@ func (*repo) GetPlacesName() ([]*string, error) {
 		return nil, err
 	}
 
+	log.Printf("cursor places: %v", cursor)
 	out := make([]*model.Place, 0)
 
 	for cursor.Next(context.TODO()) {
@@ -166,11 +167,12 @@ func (*repo) GetPlacesName() ([]*string, error) {
 		return nil, err
 	}
 
-	log.Printf("placeNames: %v", out)
 	return toPlaces(out), nil
 }
 
 func toPlace(b *model.Place) *string {
+
+	log.Printf("placeNames: %v", b)
 	return &b.PlaceName
 
 }
