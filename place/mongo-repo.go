@@ -85,6 +85,9 @@ func (*repo) GetCitiesName() ([]string, error) {
 		return nil, err
 	}
 
+	log.Printf("succeded")
+	log.Printf("succeded value %v", cursor)
+
 	out := make([]*model.CityName, 0)
 
 	for cursor.Next(context.TODO()) {
