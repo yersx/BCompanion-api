@@ -65,17 +65,16 @@ func (*repo) GetCities() ([]*model.City, error) {
 	return toCities(out), nil
 }
 
-func (*repo) GetCitiesName() ([]string, error) {
+func (*repo) GetCitiesName() ([]*string, error) {
 
 	collection, err := db.GetDBCollection("cities")
 	if err != nil {
 		return nil, err
 	}
-
-	projection := fields{
-		ID:       0,
-		CityName: 1,
+	projection := bson.D{
+		{"cityName", 1},
 	}
+
 	cursor, err := collection.Find(
 		context.TODO(),
 		bson.D{},
@@ -84,9 +83,6 @@ func (*repo) GetCitiesName() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	log.Printf("succeded")
-	log.Printf("succeded value %v", cursor)
 
 	out := make([]*model.CityName, 0)
 
@@ -135,9 +131,8 @@ func (*repo) SavePlace(place model.Place, city string) error {
 }
 
 type fields struct {
-	ID       int `bson:"_id"`
-	Places   int `bson:"places"`
-	CityName int `bson:"cityName"`
+	ID     int `bson:"_id"`
+	Places int `bson:"places"`
 }
 
 func (*repo) GetPlaces(city string) ([]*model.Place, error) {
@@ -245,12 +240,11 @@ func toCities(bs []*model.City) []*model.City {
 	return out
 }
 
-func toCitiesName(bs []*model.CityName) []string {
-	out := make([]string, len(bs))
+func toCitiesName(bs []*model.CityName) []*string {
+	out := make([]*string, len(bs))
 
-	log.Printf("we are here")
 	for i, b := range bs {
-		out[i] = b.CityName
+		out[i] = &b.CityName
 	}
 	return out
 }
