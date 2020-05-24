@@ -91,14 +91,12 @@ func (*repo) GetCitiesName() ([]*string, error) {
 		city := new(model.CityName)
 		err := cursor.Decode(city)
 		if err != nil {
-			log.Printf("error in cityName")
 			return nil, err
 		}
 
 		out = append(out, city)
 	}
 	if err := cursor.Err(); err != nil {
-		log.Printf("error in cityName here")
 		return nil, err
 	}
 
@@ -244,11 +242,12 @@ func toCities(bs []*model.City) []*model.City {
 	return out
 }
 
-func toCitiesName(bs []*model.CityName) []*string {
-	out := make([]*string, len(bs))
+func toCitiesName(bs []*model.CityName) []string {
+	out := make([]string, len(bs))
 
+	log.Printf("we are here")
 	for i, b := range bs {
-		out[i] = &b.CityName
+		out[i] = b.CityName
 	}
 	return out
 }
