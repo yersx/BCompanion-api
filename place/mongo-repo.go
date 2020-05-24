@@ -80,25 +80,27 @@ func (*repo) GetCitiesName() ([]*string, error) {
 		context.TODO(),
 		bson.M{},
 		options.Find().SetProjection(projection))
+	defer cursor.Close(context.TODO())
 	if err != nil {
-		log.Printf("ups error oo")
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
 
-	var episode bson.M
-	var cities []*string
+	out := make([]*string, 0)
+
 	for cursor.Next(context.TODO()) {
-		if err = cursor.Decode(&episode); err != nil {
-			log.Printf("ups error")
+		city := new(string)
+		err := cursor.Decode(city)
+		if err != nil {
 			return nil, err
 		}
+		out = append(out, city)
 	}
-	bsonBytes, _ := bson.Marshal(episode)
-	bson.Unmarshal(bsonBytes, &cities)
-	log.Printf("found places %v", cities)
+	log.Println("city names: %v", out)
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
 
-	return cities, nil
+	return out, nil
 }
 
 func (*repo) SavePlace(place model.Place, city string) error {
@@ -149,10 +151,10 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 		context.TODO(),
 		bson.M{"cityName": city},
 		options.Find().SetProjection(projection))
+	defer cursor.Close(context.TODO())
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
 
 	var episode bson.M
 	var places model.Places
@@ -160,7 +162,6 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 		if err = cursor.Decode(&episode); err != nil {
 			return nil, err
 		}
-		log.Printf("found episode %v", episode)
 	}
 	bsonBytes, _ := bson.Marshal(episode)
 	bson.Unmarshal(bsonBytes, &places)
