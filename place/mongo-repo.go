@@ -131,7 +131,7 @@ func (*repo) GetPlaces(city string) ([]*model.Place, error) {
 	return places.Places, nil
 }
 
-func (*repo) GetPlacesName() ([]*model.Place, error) {
+func (*repo) GetPlacesName() ([]*string, error) {
 	collection, err := db.GetDBCollection("cities")
 	if err != nil {
 		return nil, err
@@ -143,38 +143,39 @@ func (*repo) GetPlacesName() ([]*model.Place, error) {
 	}
 	cursor, err := collection.Find(
 		context.TODO(),
-		bson.M{},
+		bson.D{},
 		options.Find().SetProjection(projection))
+	defer cursor.Close(context.TODO())
+
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
 
-	var episode bson.M
-	var places model.Places
+	out := make([]*model.Place, 0)
+
 	for cursor.Next(context.TODO()) {
-		if err = cursor.Decode(&episode); err != nil {
+		place := new(model.Place)
+		err := cursor.Decode(place)
+		if err != nil {
 			return nil, err
 		}
-		log.Printf("found placeName %v", episode)
-	}
-	bsonBytes, _ := bson.Marshal(episode)
-	bson.Unmarshal(bsonBytes, &places)
-	log.Printf("found places %v", places)
 
-	return places.Places, nil
+		out = append(out, place)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return toPlaces(out), nil
 }
 
-func toPlace(b *model.Place) *model.Place {
-	return &model.Place{
-		PlaceName:  b.PlaceName,
-		PlacePhoto: b.PlacePhoto,
-		CityName:   b.CityName,
-	}
+func toPlace(b *model.Place) *string {
+	return &b.PlaceName
+
 }
 
-func toPlaces(bs []*model.Place) []*model.Place {
-	out := make([]*model.Place, len(bs))
+func toPlaces(bs []*model.Place) []*string {
+	out := make([]*string, len(bs))
 
 	for i, b := range bs {
 		out[i] = toPlace(b)

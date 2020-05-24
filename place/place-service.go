@@ -10,7 +10,7 @@ type PlaceService interface {
 
 	AddPlace(place model.Place, city string) error
 	GetPlaces(city string) ([]*model.Place, error)
-	GetPlacesName() ([]*model.Place, error)
+	GetPlacesName() ([]*string, error)
 
 	AddPlaceDescription(place model.PlaceDescription) error
 	GetPlaceDescription(placeName string) (*model.PlaceDescription, error)
@@ -43,7 +43,7 @@ func (*service) GetPlaces(city string) ([]*model.Place, error) {
 	return placeRepo.GetPlaces(city)
 }
 
-func (*service) GetPlacesName() ([]*model.Place, error) {
+func (*service) GetPlacesName() ([]*string, error) {
 	return placeRepo.GetPlacesName()
 }
 
