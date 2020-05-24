@@ -6,6 +6,7 @@ import (
 	"context"
 	"log"
 
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -137,9 +138,13 @@ func (*repo) GetPlacesName() ([]*string, error) {
 		return nil, err
 	}
 
-	pipeline := []bson.M{
-		{"$project": bson.M{"places": 1}},
-		{"$unwind": "$places"},
+	pipeline := mongo.Pipeline{
+		bson.D{{"$unwind", "$places"}},
+		bson.D{{"$project", bson.D{
+			{"placeName", "$places.placeName"},
+			{"placePhoto", "$places.placePhoto"},
+			{"cityName", "$places.cityName"},
+		}}},
 	}
 
 	cursor, err := collection.Aggregate(
