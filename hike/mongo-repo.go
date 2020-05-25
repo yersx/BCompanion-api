@@ -6,10 +6,12 @@ import (
 	"context"
 	"log"
 	"strconv"
+	"time"
 
 	bsonmongo "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type repo struct{}
@@ -148,9 +150,56 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 		return nil, err
 	}
 
+	currentTime := time.Now().UTC()
+	filter := bson.D{
+		{"startDateISO", bson.D{
+			{"$gt", currentTime}},
+		},
+	}
 	cursor, err := collection.Find(
 		context.TODO(),
-		bsonmongo.D{},
+		filter,
+		options.Find().SetProjection(projection))
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	out := make([]*model.Hike, 0)
+
+	for cursor.Next(context.TODO()) {
+		hike := new(model.Hike)
+		err := cursor.Decode(hike)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, hike)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return toHikes(out), nil
+}
+
+func (*repo) GetUpcomingHikesByUser(token string) ([]*model.Hike, error) {
+
+	collection, err := db.GetDBCollection("hikes")
+	if err != nil {
+		return nil, err
+	}
+
+	filter := bson.D{
+		{"members", bson.D{
+			{"$elemMatch", bson.D{
+				{"token", token},
+			},
+			}},
+		},
+	}
+	cursor, err := collection.Find(
+		context.TODO(),
+		filter,
 		options.Find().SetProjection(projection))
 	if err != nil {
 		return nil, err

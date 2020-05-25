@@ -49,3 +49,7 @@ func (*service) GetHikes(groupName string) ([]*model.Hike, error) {
 func (*service) GetUpcomingHikes() ([]*model.Hike, error) {
 	return hikeRepo.GetUpcomingHikes()
 }
+
+func (*service) GetUpcomingHikesByUser(token string) ([]*model.Hike, error) {
+	return hikeRepo.GetUpcomingHikesByUser(token)
+}
