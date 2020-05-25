@@ -142,7 +142,6 @@ var projection = bsonmongo.D{
 	{"gatheringCity", 1},
 	{"numberOfMembers", 1},
 	{"members", 1},
-	{"startDateISO", 1},
 }
 
 func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
@@ -159,7 +158,7 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 	cursor, err := collection.Find(
 		context.TODO(),
 		filter,
-		options.Find().SetProjection(projection))
+	)
 	if err != nil {
 		log.Printf("error in current")
 		return nil, err
