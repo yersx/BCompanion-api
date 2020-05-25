@@ -112,6 +112,7 @@ func (*repo) GetHikes(groupName string) ([]*model.Hike, error) {
 	}
 	defer cursor.Close(context.TODO())
 
+	log.Printf("current hikes gethikes")
 	out := make([]*model.Hike, 0)
 
 	for cursor.Next(context.TODO()) {
@@ -160,10 +161,12 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 		filter,
 		options.Find().SetProjection(projection))
 	if err != nil {
+		log.Printf("error in current")
 		return nil, err
 	}
 	defer cursor.Close(context.TODO())
 
+	log.Printf("current hikes %v", cursor)
 	out := make([]*model.Hike, 0)
 
 	for cursor.Next(context.TODO()) {
