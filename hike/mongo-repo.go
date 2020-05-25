@@ -151,11 +151,9 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 	}
 
 	currentTime := time.Now().UTC()
-	filter := bson.D{
-		{"startDateISO", bson.D{
-			{"$gt", currentTime}},
-		},
-	}
+	filter := bson.D{{"startDateISO", bson.D{{"$gt", currentTime}}}}
+
+	log.Printf("currentTime %v", currentTime)
 	cursor, err := collection.Find(
 		context.TODO(),
 		filter,
