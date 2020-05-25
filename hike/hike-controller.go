@@ -54,7 +54,7 @@ func (*controller) AddHike(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	startDateStr := s[2] + "-" + s[1] + "-" + s[0]
-	layoutISO := "2006-11-12"
+	layoutISO := "2006-01-02"
 	startDate, err := time.Parse(layoutISO, startDateStr)
 	if err != nil {
 		json.NewEncoder(w).Encode("not correct date")
