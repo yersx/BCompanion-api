@@ -6,7 +6,6 @@ import (
 	"context"
 	"log"
 	"strconv"
-	"time"
 
 	bsonmongo "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -39,13 +38,6 @@ func (*repo) CreateHike(hike model.Hike, token string) string {
 			Role:        "admin",
 		},
 	}
-
-	layoutISO := "2006-01-02"
-	startDate, err := time.Parse(layoutISO, *hike.StartDate)
-	if err != nil {
-		return "not correct date"
-	}
-	hike.StartDateISO = &startDate
 
 	hike.Admins = []*string{
 		&user.PhoneNumber,

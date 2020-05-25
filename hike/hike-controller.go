@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
+	"time"
 )
 
 type controller struct{}
@@ -45,6 +47,21 @@ func (*controller) AddHike(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
+	s := strings.Split(*hike.StartDate, ".")
+	if len(s) != 3 {
+		json.NewEncoder(w).Encode("not correct date")
+		w.WriteHeader(404)
+		return
+	}
+	startDateStr := s[2] + "-" + s[1] + "-" + s[0]
+	layoutISO := "2006-01-02"
+	startDate, err := time.Parse(layoutISO, startDateStr)
+	if err != nil {
+		json.NewEncoder(w).Encode("not correct date")
+		w.WriteHeader(404)
+		return
+	}
+	hike.StartDateISO = &startDate
 
 	res := hikeService.AddHike(hike, token)
 	if res != "" {
