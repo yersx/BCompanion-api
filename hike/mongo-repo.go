@@ -151,7 +151,7 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 		return nil, err
 	}
 
-	currentTime := time.Now().Format("01.02.2006")
+	currentTime := time.Now().Format("02.01.2006")
 	filter := bson.D{{"startDate", bson.D{{"$gt", currentTime}}}}
 
 	log.Printf("currentTime %v", currentTime)
