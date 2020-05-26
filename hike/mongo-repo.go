@@ -156,7 +156,7 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 	log.Printf("currentTime %v", currentTime)
 	cursor, err := collection.Find(
 		context.TODO(),
-		bson.D{{"startDate", bson.D{{"$gt", currentTime}}}})
+		bson.D{{}})
 	if err != nil {
 		log.Printf("error in current")
 		return nil, err
