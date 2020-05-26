@@ -150,12 +150,12 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 		return nil, err
 	}
 
-	currentTime := time.Now().Format("02.01.2006")
+	currentTime := time.Now().UTC
 
 	log.Printf("currentTime %v", currentTime)
 	cursor, err := collection.Find(
 		context.TODO(),
-		bsonmongo.D{{"startDate", bsonmongo.D{{"$gt", currentTime}}}})
+		bsonmongo.D{{"startDateISO", bsonmongo.D{{"$gt", currentTime}}}})
 	if err != nil {
 		log.Printf("error in current")
 		return nil, err
