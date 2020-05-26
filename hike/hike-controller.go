@@ -38,6 +38,11 @@ func (*controller) AddHike(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	token := r.Header.Get("Authorization")
+	if len(token) < 1 {
+		json.NewEncoder(w).Encode("no token sent")
+		w.WriteHeader(404)
+		return
+	}
 
 	var hike model.Hike
 	body, _ := ioutil.ReadAll(r.Body)

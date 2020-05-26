@@ -40,7 +40,11 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	var group model.Group
 
 	token := r.Header.Get("Authorization")
-	log.Printf("token is %+v\n", token)
+	if len(token) < 1 {
+		json.NewEncoder(w).Encode("no token sent")
+		w.WriteHeader(404)
+		return
+	}
 
 	GroupName, ok1 := r.URL.Query()["group_name"]
 	if !ok1 || len(GroupName[0]) < 1 {
@@ -132,6 +136,11 @@ func (*controller) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	token := r.Header.Get("Authorization")
+	if len(token) < 1 {
+		json.NewEncoder(w).Encode("no token sent")
+		w.WriteHeader(404)
+		return
+	}
 
 	groups, err := groupService.GetUserGroups(token)
 	if err != nil || len(groups) < 1 {
