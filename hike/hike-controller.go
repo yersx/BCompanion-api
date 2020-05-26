@@ -4,7 +4,6 @@ import (
 	"bcompanion/model"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -156,17 +155,12 @@ func (*controller) GetUpcomingHikesByUser(w http.ResponseWriter, r *http.Request
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	token := r.Header.Get("Authorization")
-	log.Printf("token is %+v\n", token)
-
-	GroupName, ok1 := r.URL.Query()["group_name"]
-	if !ok1 || len(GroupName[0]) < 1 {
+	if len(token) < 1 {
 		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
 		return
 	}
-	groupName := GroupName[0]
-
-	hike, err := hikeService.GetUpcomingHikesByUser(groupName)
+	hike, err := hikeService.GetUpcomingHikesByUser(token)
 	if err != nil {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)
