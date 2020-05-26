@@ -162,13 +162,13 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 	}
 	defer cursor.Close(context.TODO())
 
-	log.Printf("current hikes %v", cursor)
 	out := make([]*model.Hike, 0)
 
 	for cursor.Next(context.TODO()) {
 		hike := new(model.Hike)
 		err := cursor.Decode(hike)
 		if err != nil {
+			log.Printf("error in cursor")
 			return nil, err
 		}
 		out = append(out, hike)
@@ -177,6 +177,7 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 		return nil, err
 	}
 
+	log.Printf("no error")
 	return toHikes(out), nil
 }
 
