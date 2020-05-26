@@ -11,7 +11,6 @@ import (
 	bsonmongo "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type repo struct{}
@@ -156,7 +155,7 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 	log.Printf("currentTime %v", currentTime)
 	cursor, err := collection.Find(
 		context.TODO(),
-		bson.D{})
+		bsonmongo.D{{"startDate", bsonmongo.D{{"$gt", currentTime}}}})
 	if err != nil {
 		log.Printf("error in current")
 		return nil, err
@@ -188,17 +187,17 @@ func (*repo) GetUpcomingHikesByUser(token string) ([]*model.Hike, error) {
 		return nil, err
 	}
 
-	filter := bson.D{
-		{"members", bson.D{
-			{"$elemMatch", bson.D{
-				{"token", token},
-			},
-			}},
-		},
-	}
+	// filter := bson.D{
+	// 	{"members", bson.D{
+	// 		{"$elemMatch", bson.D{
+	// 			{"token", token},
+	// 		},
+	// 		}},
+	// 	},
+	// }
 	cursor, err := collection.Find(
 		context.TODO(),
-		filter,
+		bsonmongo.D{},
 		options.Find().SetProjection(projection))
 	if err != nil {
 		return nil, err

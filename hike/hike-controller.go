@@ -4,6 +4,7 @@ import (
 	"bcompanion/model"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -20,6 +21,7 @@ type HikeController interface {
 	GetHike(w http.ResponseWriter, r *http.Request)
 	GetHikes(w http.ResponseWriter, r *http.Request)
 	GetUpcomingHikes(w http.ResponseWriter, r *http.Request)
+	GetUpcomingHikesByUser(w http.ResponseWriter, r *http.Request)
 
 	JoinHike(w http.ResponseWriter, r *http.Request)
 	LeaveHike(w http.ResponseWriter, r *http.Request)
@@ -133,6 +135,38 @@ func (*controller) GetUpcomingHikes(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	hike, err := hikeService.GetUpcomingHikes()
+	if err != nil {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
+	if len(hike) < 1 {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
+
+	json.NewEncoder(w).Encode(hike)
+	return
+}
+
+func (*controller) GetUpcomingHikesByUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	token := r.Header.Get("Authorization")
+	log.Printf("token is %+v\n", token)
+
+	GroupName, ok1 := r.URL.Query()["group_name"]
+	if !ok1 || len(GroupName[0]) < 1 {
+		json.NewEncoder(w).Encode(nil)
+		w.WriteHeader(404)
+		return
+	}
+	groupName := GroupName[0]
+
+	hike, err := hikeService.GetUpcomingHikesByUser(groupName)
 	if err != nil {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)

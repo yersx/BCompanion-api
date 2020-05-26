@@ -10,6 +10,7 @@ type HikeService interface {
 
 	GetHikes(groupName string) ([]*model.Hike, error)
 	GetUpcomingHikes() ([]*model.Hike, error)
+	GetUpcomingHikesByUser(token string) ([]*model.Hike, error)
 
 	JoinHike(hikeId string, token string) string
 	LeaveHike(hikeId string, token string) string
