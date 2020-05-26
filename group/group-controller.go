@@ -137,7 +137,7 @@ func (*controller) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 
 	token := r.Header.Get("Authorization")
 	if len(token) < 1 {
-		json.NewEncoder(w).Encode("no token sent")
+		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
 		return
 	}
