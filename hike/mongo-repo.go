@@ -111,7 +111,6 @@ func (*repo) GetHikes(groupName string) ([]*model.Hike, error) {
 	}
 	defer cursor.Close(context.TODO())
 
-	log.Printf("current hikes gethikes")
 	out := make([]*model.Hike, 0)
 
 	for cursor.Next(context.TODO()) {
@@ -194,6 +193,49 @@ func (*repo) GetUpcomingHikesByUser(token string) ([]*model.Hike, error) {
 			}},
 		},
 		{"startDateISO", bsonmongo.D{{"$gt", currentTime}}},
+	}
+	cursor, err := collection.Find(
+		context.TODO(),
+		filter,
+		options.Find().SetProjection(projection))
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	out := make([]*model.Hike, 0)
+
+	for cursor.Next(context.TODO()) {
+		hike := new(model.Hike)
+		err := cursor.Decode(hike)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, hike)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return toHikes(out), nil
+}
+
+func (*repo) GetPastHikesByUser(token string) ([]*model.Hike, error) {
+
+	collection, err := db.GetDBCollection("hikes")
+	if err != nil {
+		return nil, err
+	}
+	currentTime := time.Now().UTC()
+
+	filter := bsonmongo.D{
+		{"members", bsonmongo.D{
+			{"$elemMatch", bsonmongo.D{
+				{"token", token},
+			},
+			}},
+		},
+		{"startDateISO", bsonmongo.D{{"$lt", currentTime}}},
 	}
 	cursor, err := collection.Find(
 		context.TODO(),
