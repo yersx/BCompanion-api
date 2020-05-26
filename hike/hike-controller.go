@@ -87,7 +87,7 @@ func (*controller) GetHike(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	HikeId, ok1 := r.URL.Query()["hikeId"]
+	HikeId, ok1 := r.URL.Query()["hike_id"]
 	if !ok1 || len(HikeId[0]) < 1 {
 		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
