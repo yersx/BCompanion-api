@@ -187,18 +187,20 @@ func (*repo) GetUpcomingHikesByUser(token string) ([]*model.Hike, error) {
 	if err != nil {
 		return nil, err
 	}
+	currentTime := time.Now().UTC()
 
-	// filter := bson.D{
-	// 	{"members", bson.D{
-	// 		{"$elemMatch", bson.D{
-	// 			{"token", token},
-	// 		},
-	// 		}},
-	// 	},
-	// }
+	filter := bsonmongo.D{
+		{"members", bsonmongo.D{
+			{"$elemMatch", bsonmongo.D{
+				{"token", token},
+			},
+			}},
+		},
+		{"startDateISO", bsonmongo.D{{"$gt", currentTime}}},
+	}
 	cursor, err := collection.Find(
 		context.TODO(),
-		bsonmongo.D{},
+		filter,
 		options.Find().SetProjection(projection))
 	if err != nil {
 		return nil, err
