@@ -157,7 +157,6 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 		context.TODO(),
 		bsonmongo.D{{"startDateISO", bsonmongo.D{{"$gt", currentTime}}}})
 	if err != nil {
-		log.Printf("error in current")
 		return nil, err
 	}
 	defer cursor.Close(context.TODO())
@@ -168,7 +167,6 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 		hike := new(model.Hike)
 		err := cursor.Decode(hike)
 		if err != nil {
-			log.Printf("error in cursor")
 			return nil, err
 		}
 		out = append(out, hike)
@@ -177,7 +175,6 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 		return nil, err
 	}
 
-	log.Printf("no error")
 	return toHikes(out), nil
 }
 
