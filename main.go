@@ -43,7 +43,7 @@ func main() {
 
 	httpRouter.POST("/users/authorize", userController.SignUser)
 	httpRouter.GET("/users/getUser", userController.FindUser)
-	httpRouter.GET("/users/getToken", userController.FindUser)
+	httpRouter.GET("/users/getToken", userController.FindToken)
 
 	httpRouter.POST("/city/add", cityController.AddCity)
 	httpRouter.GET("/cities", cityController.GetCities)
