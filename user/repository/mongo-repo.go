@@ -6,6 +6,7 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -100,4 +101,29 @@ func (*repo) FindUser(phoneNumber string) (*model.User, error) {
 		}
 	}
 	return user, nil
+}
+
+func (*repo) FindToken(phoneNumber string) (*string, error) {
+
+	type Token struct {
+		Token string `bson:"token"`
+	}
+	var token *Token
+	collection, err := db.GetDBCollection("users")
+	if err != nil {
+		return nil, err
+	}
+
+	type fields struct {
+		Token int `bson:"token"`
+	}
+	projection := fields{
+		Token: 1,
+	}
+	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", phoneNumber}}, options.FindOne().SetProjection(projection)).Decode(&token)
+	if err != nil {
+		return nil, err
+	}
+
+	return &token.Token, nil
 }

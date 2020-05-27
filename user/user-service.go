@@ -8,6 +8,7 @@ import (
 type UserService interface {
 	SignUser(user model.User, authType string) (string, int)
 	FindUser(phoneNumber string) (*model.User, error)
+	FindToken(phoneNumber string) (*string, error)
 }
 
 type service struct{}
@@ -27,4 +28,8 @@ func (*service) SignUser(user model.User, authType string) (string, int) {
 
 func (*service) FindUser(phoneNumber string) (*model.User, error) {
 	return repo.FindUser(phoneNumber)
+}
+
+func (*service) FindToken(phoneNumber string) (*string, error) {
+	return repo.FindToken(phoneNumber)
 }

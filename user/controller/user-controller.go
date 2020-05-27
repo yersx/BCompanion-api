@@ -29,6 +29,7 @@ var (
 type UserController interface {
 	SignUser(w http.ResponseWriter, r *http.Request)
 	FindUser(w http.ResponseWriter, r *http.Request)
+	FindToken(w http.ResponseWriter, r *http.Request)
 }
 
 func NewUserController(service user.UserService) UserController {
@@ -100,6 +101,34 @@ func (*controller) FindUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Printf("result %s", result)
+	json.NewEncoder(w).Encode(result)
+	return
+}
+
+func (*controller) FindToken(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	// var res model.ResponseResult
+
+	Phone, ok1 := r.URL.Query()["phone_number"]
+	if !ok1 || len(Phone[0]) < 1 {
+		// res.Message = "Url Param 'phone_number' is missing"
+		json.NewEncoder(w).Encode(nil)
+		w.WriteHeader(404)
+		return
+	}
+	phone := Phone[0]
+	log.Output(1, "phone: "+phone)
+
+	result, err := userService.FindToken(phone)
+	if err != nil || result == nil {
+		// res.Message = err.Error()
+		log.Output(1, "error 404")
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
 	json.NewEncoder(w).Encode(result)
 	return
 }
