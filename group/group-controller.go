@@ -150,6 +150,7 @@ func (*controller) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(groups) < 1 {
 		json.NewEncoder(w).Encode(nil)
+		w.WriteHeader(404)
 		return
 	}
 
