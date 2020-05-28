@@ -17,6 +17,7 @@ type CityController interface {
 	AddCity(w http.ResponseWriter, r *http.Request)
 	GetCities(w http.ResponseWriter, r *http.Request)
 	GetCitiesName(w http.ResponseWriter, r *http.Request)
+	GetCityCoordinates(w http.ResponseWriter, r *http.Request)
 }
 
 // NewPlaceController implements PlaceController
@@ -80,11 +81,33 @@ func (*controller) GetCitiesName(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var res model.ResponseResult
-
 	cities, err := placeService.GetCitiesName()
 	if err != nil {
-		res.Message = err.Error()
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
+
+	json.NewEncoder(w).Encode(cities)
+	return
+
+}
+
+func (*controller) GetCityCoordinates(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	City, ok1 := r.URL.Query()["city_name"]
+	if !ok1 || len(City[0]) < 1 {
+		json.NewEncoder(w).Encode(nil)
+		w.WriteHeader(404)
+		return
+	}
+	city := City[0]
+
+	cities, err := placeService.GetCityCoordinates(city)
+	if err != nil {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)
 		return

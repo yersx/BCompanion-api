@@ -102,6 +102,33 @@ func (*repo) GetCitiesName() ([]*string, error) {
 	return toCitiesName(out), nil
 }
 
+func (*repo) GetCityCoordinates(city string) ([]*float64, error) {
+
+	type Coordinate struct {
+		Coordinates []*float64 `bson:"coordinates"`
+	}
+	var coordinate *Coordinate
+
+	collection, err := db.GetDBCollection("cities")
+	if err != nil {
+		return nil, err
+	}
+
+	type fields struct {
+		Coordinate int `bson:"coordinates"`
+	}
+	projection := fields{
+		Coordinate: 1,
+	}
+
+	err = collection.FindOne(context.TODO(), bson.M{"cityName": city}, options.FindOne().SetProjection(projection)).Decode(&coordinate)
+	if err != nil {
+		return nil, err
+	}
+
+	return coordinate.Coordinates, nil
+}
+
 func (*repo) SavePlace(place model.Place, city string) error {
 
 	collection, err := db.GetDBCollection("cities")

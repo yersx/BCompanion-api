@@ -73,11 +73,8 @@ func (*controller) GetPlaces(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var res model.ResponseResult
-
 	City, ok1 := r.URL.Query()["city_name"]
 	if !ok1 || len(City[0]) < 1 {
-		res.Message = "Url Param 'city_name' is missing"
 		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
 		return
@@ -86,7 +83,6 @@ func (*controller) GetPlaces(w http.ResponseWriter, r *http.Request) {
 
 	places, err := placeService.GetPlaces(city)
 	if err != nil {
-		res.Message = err.Error()
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)
 		return
