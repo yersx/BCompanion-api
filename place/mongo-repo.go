@@ -349,6 +349,7 @@ func (*repo) GetPlacesRoutes(city string) ([]*model.PlaceRoute, error) {
 	defer cursor.Close(context.TODO())
 	if err != nil {
 		return nil, err
+		log.Println("cursor error!")
 	}
 
 	out := make([]*model.PlaceRoute, 0)
@@ -357,13 +358,14 @@ func (*repo) GetPlacesRoutes(city string) ([]*model.PlaceRoute, error) {
 		route := new(model.PlaceRoute)
 		err := cursor.Decode(route)
 		if err != nil {
+			log.Println("cycle error!")
 			return nil, err
 		}
-
 		out = append(out, route)
 	}
 	log.Println("routes: %v", out)
 	if err := cursor.Err(); err != nil {
+		log.Println("some error!")
 		return nil, err
 	}
 	return toRoutes(out), nil
