@@ -206,7 +206,7 @@ func (*controller) GetPlacesRoutesByCity(w http.ResponseWriter, r *http.Request)
 	}
 	city := City[0]
 
-	routes, err := placeService.GetPlaceRoute(city)
+	routes, err := placeService.GetPlacesRoutes(city)
 	if err != nil {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)
