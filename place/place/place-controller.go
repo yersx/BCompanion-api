@@ -171,8 +171,6 @@ func (*controller) GetPlaceDescription(w http.ResponseWriter, r *http.Request) {
 		PlaceName:        placeDescription.PlaceName,
 		PlacePhotos:      placeDescription.PlacePhotos,
 		PlaceDescription: placeDescription.PlaceDescription,
-		Lattitude:        placeDescription.Lattitude,
-		Longitude:        placeDescription.Longitude,
 	}
 
 	json.NewEncoder(w).Encode(description)
