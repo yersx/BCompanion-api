@@ -14,4 +14,5 @@ type PlaceRepository interface {
 
 	SaveDescription(place model.PlaceDescription) error
 	GetDescription(placeName string) (*model.Description, error)
+	GetPlaceRoute(placeName string) (*model.PlaceRoute, error)
 }

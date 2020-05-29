@@ -21,6 +21,7 @@ type PlaceController interface {
 	GetPlacesName(w http.ResponseWriter, r *http.Request)
 	AddPlaceDescription(w http.ResponseWriter, r *http.Request)
 	GetPlaceDescription(w http.ResponseWriter, r *http.Request)
+	GetPlaceRoute(w http.ResponseWriter, r *http.Request)
 }
 
 // NewPlaceController implements PlaceController
@@ -148,11 +149,8 @@ func (*controller) GetPlaceDescription(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var res model.ResponseResult
-
 	Place, ok1 := r.URL.Query()["place_name"]
 	if !ok1 || len(Place[0]) < 1 {
-		res.Message = "Url Param 'place_name' is missing"
 		json.NewEncoder(w).Encode(nil)
 		w.WriteHeader(404)
 		return
@@ -161,7 +159,30 @@ func (*controller) GetPlaceDescription(w http.ResponseWriter, r *http.Request) {
 
 	placeDescription, err := placeService.GetPlaceDescription(place)
 	if err != nil {
-		res.Message = err.Error()
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(nil)
+		return
+	}
+	json.NewEncoder(w).Encode(placeDescription)
+	return
+
+}
+
+func (*controller) GetPlaceRoute(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	Place, ok1 := r.URL.Query()["place_name"]
+	if !ok1 || len(Place[0]) < 1 {
+		json.NewEncoder(w).Encode(nil)
+		w.WriteHeader(404)
+		return
+	}
+	place := Place[0]
+
+	placeDescription, err := placeService.GetPlaceRoute(place)
+	if err != nil {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)
 		return

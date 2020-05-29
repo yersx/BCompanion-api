@@ -307,3 +307,20 @@ func (*repo) GetDescription(placeName string) (*model.Description, error) {
 	}
 	return description, nil
 }
+
+func (*repo) GetPlaceRoute(placeName string) (*model.PlaceRoute, error) {
+
+	var route *model.PlaceRoute
+	collection, err := db.GetDBCollection("place_description")
+	if err != nil {
+		return nil, err
+	}
+
+	if placeName != "" {
+		err = collection.FindOne(context.TODO(), bson.D{{"placeName", placeName}}).Decode(&route)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return route, nil
+}

@@ -37,5 +37,15 @@ type Description struct {
 	PlaceName        *string `json:"placeName" bson:"placeName"`
 	PlacePhotos      *string `json:"placePhotos" bson:"placePhotos"`
 	PlaceDescription *string `json:"placeDescription" bson:"placeDescription"`
-	// JsonPhoto        string   `json:"placePhotos" bson:"-"`
+}
+
+type PlaceRoute struct {
+	PlaceName          *string  `json:"placeName" bson:"placeName"`
+	PlacePhotos        *string  `json:"placePhotos" bson:"placePhotos"`
+	City               *string  `json:"cityName" bson:"cityName"`
+	Lattitude          *float64 `json:"latitude" bson:"latitude"`
+	Longitude          *float64 `json:"longitude" bson:"longitude"`
+	RouteByCarText     *string  `json:"routeByCarText" bson:"routeByCarText"`
+	RouteByWalkingText *string  `json:"routeByWalkingText" bson:"routeByWalkingText"`
+	RouteMap           *string  `json:"routeMap" bson:"routeMap"`
 }
