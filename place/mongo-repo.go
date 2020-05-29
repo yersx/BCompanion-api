@@ -324,3 +324,61 @@ func (*repo) GetPlaceRoute(placeName string) (*model.PlaceRoute, error) {
 	}
 	return route, nil
 }
+
+func (*repo) GetPlacesRoutes(city string) ([]*model.PlaceRoute, error) {
+
+	collection, err := db.GetDBCollection("place_description")
+	if err != nil {
+		return nil, err
+	}
+	projection := bson.D{
+		{"placeName", 1},
+		{"cityName", 1},
+		{"placePhotos", 1},
+		{"latitude", 1},
+		{"longitude", 1},
+		{"routeByCarText", 1},
+		{"routeByWalkingText", 1},
+		{"routeMap", 1},
+	}
+
+	cursor, err := collection.Find(
+		context.TODO(),
+		bson.M{"cityName": city},
+		options.Find().SetProjection(projection))
+	defer cursor.Close(context.TODO())
+	if err != nil {
+		return nil, err
+	}
+
+	out := make([]*model.PlaceRoute, 0)
+
+	for cursor.Next(context.TODO()) {
+		route := new(model.PlaceRoute)
+		err := cursor.Decode(route)
+		if err != nil {
+			return nil, err
+		}
+
+		out = append(out, route)
+	}
+	log.Println("routes: %v", out)
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+	return toRoutes(out), nil
+}
+
+// func toRoute(b *model.PlaceRoute) *model.PlaceRoute {
+// 	return b
+// }
+
+func toRoutes(bs []*model.PlaceRoute) []*model.PlaceRoute {
+	out := make([]*model.PlaceRoute, len(bs))
+
+	for i, b := range bs {
+		out[i] = b
+	}
+	log.Println("routes in func: %v", out)
+	return out
+}

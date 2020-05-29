@@ -17,6 +17,7 @@ type PlaceService interface {
 	AddPlaceDescription(place model.PlaceDescription) error
 	GetPlaceDescription(placeName string) (*model.Description, error)
 	GetPlaceRoute(placeName string) (*model.PlaceRoute, error)
+	GetPlacesRoutes(city string) ([]*model.PlaceRoute, error)
 }
 
 type service struct{}
@@ -68,4 +69,8 @@ func (*service) GetPlaceDescription(placeName string) (*model.Description, error
 
 func (*service) GetPlaceRoute(placeName string) (*model.PlaceRoute, error) {
 	return placeRepo.GetPlaceRoute(placeName)
+}
+
+func (*service) GetPlacesRoutes(city string) ([]*model.PlaceRoute, error) {
+	return placeRepo.GetPlacesRoutes(city)
 }

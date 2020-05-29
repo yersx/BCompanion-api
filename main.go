@@ -58,6 +58,7 @@ func main() {
 	httpRouter.GET("/placeDescription", placeController.GetPlaceDescription)
 
 	httpRouter.GET("/placeRoute", placeController.GetPlaceRoute)
+	httpRouter.GET("/placesRoutesByCity", placeController.GetPlacesRoutesByCity)
 
 	httpRouter.POST("/groups/createGroup", groupController.AddGroup)
 	httpRouter.GET("/groups/getByUser", groupController.GetUserGroups)
