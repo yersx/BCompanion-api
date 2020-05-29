@@ -198,7 +198,7 @@ func (*controller) GetUpcomingHikesByPlace(w http.ResponseWriter, r *http.Reques
 	place := Place[0]
 
 	hike, err := hikeService.GetUpcomingHikesByPlace(place)
-	if err != nil {
+	if err != nil || len(hike) < 1 {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)
 		return
@@ -272,7 +272,6 @@ func (*controller) LeaveHike(w http.ResponseWriter, r *http.Request) {
 	HikeID, ok1 := r.URL.Query()["hike_id"]
 	if !ok1 || len(HikeID[0]) < 1 {
 		json.NewEncoder(w).Encode("Url Param 'hike_id' is missing")
-		w.WriteHeader(404)
 		w.WriteHeader(404)
 		return
 	}
