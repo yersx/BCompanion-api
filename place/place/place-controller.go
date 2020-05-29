@@ -4,6 +4,7 @@ import (
 	"bcompanion/model"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	place "bcompanion/place"
@@ -211,6 +212,8 @@ func (*controller) GetPlacesRoutesByCity(w http.ResponseWriter, r *http.Request)
 		json.NewEncoder(w).Encode(nil)
 		return
 	}
+
+	log.Println("no error")
 	json.NewEncoder(w).Encode(routes)
 	return
 }

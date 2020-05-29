@@ -329,6 +329,7 @@ func (*repo) GetPlacesRoutes(city string) ([]*model.PlaceRoute, error) {
 
 	collection, err := db.GetDBCollection("place_description")
 	if err != nil {
+		log.Println("connection error!")
 		return nil, err
 	}
 	projection := bson.D{
