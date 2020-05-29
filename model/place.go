@@ -21,12 +21,15 @@ type CityName struct {
 }
 
 type PlaceDescription struct {
-	PlaceName        string `json:"placeName" bson:"placeName"`
-	PlacePhotos      string `json:"placePhotos" bson:"placePhotos"`
-	City             string `json:"city" bson:"city"`
-	PlaceDescription string `json:"placeDescription" bson:"placeDescription"`
-	Lattitude        string `json:"lat" bson:"lat"`
-	Longitude        string `json:"long" bson:"long"`
+	PlaceName          *string  `json:"placeName" bson:"placeName"`
+	PlacePhotos        *string  `json:"placePhotos" bson:"placePhotos"`
+	PlaceDescription   *string  `json:"placeDescription" bson:"placeDescription"`
+	City               *string  `json:"cityName" bson:"cityName"`
+	Lattitude          *float64 `json:"latitude" bson:"latitude"`
+	Longitude          *float64 `json:"longitude" bson:"longitude"`
+	RouteByCarText     *string  `json:"routeByCarText" bson:"routeByCarText"`
+	RouteByWalkingText *string  `json:"routeByWalkingText" bson:"routeByWalkingText"`
+	RouteMap           *string  `json:"routeMap" bson:"routeMap"`
 	// JsonPhoto        string   `json:"placePhotos" bson:"-"`
 }
 
