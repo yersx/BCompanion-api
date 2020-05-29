@@ -348,10 +348,11 @@ func (*repo) GetPlacesRoutes(city string) ([]*model.PlaceRoute, error) {
 		options.Find().SetProjection(projection))
 	defer cursor.Close(context.TODO())
 	if err != nil {
-		return nil, err
 		log.Println("cursor error!")
+		return nil, err
 	}
 
+	log.Output(1, "continue")
 	out := make([]*model.PlaceRoute, 0)
 
 	for cursor.Next(context.TODO()) {
