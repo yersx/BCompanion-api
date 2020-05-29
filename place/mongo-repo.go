@@ -291,9 +291,9 @@ func (*repo) SaveDescription(place model.PlaceDescription) error {
 	return nil
 }
 
-func (*repo) GetDescription(placeName string) (*model.PlaceDescription, error) {
+func (*repo) GetDescription(placeName string) (*model.Description, error) {
 
-	var description *model.PlaceDescription
+	var description *model.Description
 	collection, err := db.GetDBCollection("place_description")
 	if err != nil {
 		return nil, err

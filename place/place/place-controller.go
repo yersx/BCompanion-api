@@ -166,14 +166,7 @@ func (*controller) GetPlaceDescription(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(nil)
 		return
 	}
-
-	description := model.Description{
-		PlaceName:        placeDescription.PlaceName,
-		PlacePhotos:      placeDescription.PlacePhotos,
-		PlaceDescription: placeDescription.PlaceDescription,
-	}
-
-	json.NewEncoder(w).Encode(description)
+	json.NewEncoder(w).Encode(placeDescription)
 	return
 
 }
