@@ -263,6 +263,43 @@ func (*repo) GetPastHikesByUser(token string) ([]*model.Hike, error) {
 	return toHikes(out), nil
 }
 
+func (*repo) GetUpcomingHikesByPlace(place string) ([]*model.Hike, error) {
+
+	collection, err := db.GetDBCollection("hikes")
+	if err != nil {
+		return nil, err
+	}
+	currentTime := time.Now().UTC()
+
+	filter := bsonmongo.D{
+		{"placeName", place},
+		{"startDateISO", bsonmongo.D{{"$gt", currentTime}}},
+	}
+	cursor, err := collection.Find(
+		context.TODO(),
+		filter,
+		options.Find().SetProjection(projection))
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	out := make([]*model.Hike, 0)
+
+	for cursor.Next(context.TODO()) {
+		hike := new(model.Hike)
+		err := cursor.Decode(hike)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, hike)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+	return toHikes(out), nil
+}
+
 func toHike(b *model.Hike) *model.Hike {
 	numberOfMembers := len(b.Members)
 	b.NumberOfMembers = strconv.Itoa(numberOfMembers)

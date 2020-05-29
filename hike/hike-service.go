@@ -12,6 +12,7 @@ type HikeService interface {
 	GetUpcomingHikes() ([]*model.Hike, error)
 	GetUpcomingHikesByUser(token string) ([]*model.Hike, error)
 	GetPastHikesByUser(token string) ([]*model.Hike, error)
+	GetUpcomingHikesByPlace(place string) ([]*model.Hike, error)
 
 	JoinHike(hikeId string, token string) string
 	LeaveHike(hikeId string, token string) string
@@ -50,6 +51,10 @@ func (*service) GetHikes(groupName string) ([]*model.Hike, error) {
 
 func (*service) GetUpcomingHikes() ([]*model.Hike, error) {
 	return hikeRepo.GetUpcomingHikes()
+}
+
+func (*service) GetUpcomingHikesByPlace(place string) ([]*model.Hike, error) {
+	return hikeRepo.GetUpcomingHikesByPlace(place)
 }
 
 func (*service) GetUpcomingHikesByUser(token string) ([]*model.Hike, error) {

@@ -329,7 +329,6 @@ func (*repo) GetPlacesRoutes(city string) ([]*model.PlaceRoute, error) {
 
 	collection, err := db.GetDBCollection("place_description")
 	if err != nil {
-		log.Println("connection error!")
 		return nil, err
 	}
 	projection := bson.D{
@@ -349,18 +348,15 @@ func (*repo) GetPlacesRoutes(city string) ([]*model.PlaceRoute, error) {
 		options.Find().SetProjection(projection))
 	defer cursor.Close(context.TODO())
 	if err != nil {
-		log.Println("cursor error!")
 		return nil, err
 	}
 
-	log.Output(1, "continue")
 	out := make([]*model.PlaceRoute, 0)
 
 	for cursor.Next(context.TODO()) {
 		route := new(model.PlaceRoute)
 		err := cursor.Decode(route)
 		if err != nil {
-			log.Println("cycle error!")
 			return nil, err
 		}
 		out = append(out, route)

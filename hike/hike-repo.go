@@ -10,6 +10,7 @@ type HikeRepository interface {
 	GetUpcomingHikes() ([]*model.Hike, error)
 	GetUpcomingHikesByUser(token string) ([]*model.Hike, error)
 	GetPastHikesByUser(token string) ([]*model.Hike, error)
+	GetUpcomingHikesByPlace(place string) ([]*model.Hike, error)
 
 	JoinHike(hikeId string, token string) string
 	LeaveHike(hikeId string, token string) string
