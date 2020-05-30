@@ -351,6 +351,7 @@ func (*repo) GetPlacesRoutes(city string) ([]*model.PlaceRoute, error) {
 		return nil, err
 	}
 
+	log.Println("no error in placesRoutesByCity")
 	out := make([]*model.PlaceRoute, 0)
 
 	for cursor.Next(context.TODO()) {

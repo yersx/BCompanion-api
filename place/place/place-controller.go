@@ -4,6 +4,7 @@ import (
 	"bcompanion/model"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	place "bcompanion/place"
@@ -205,6 +206,7 @@ func (*controller) GetPlacesRoutesByCity(w http.ResponseWriter, r *http.Request)
 	}
 	city := City[0]
 
+	log.Println("no error in placesRoutesByCity before mongo call")
 	routes, err := placeService.GetPlacesRoutes(city)
 	if err != nil {
 		w.WriteHeader(404)
