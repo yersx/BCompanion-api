@@ -51,6 +51,9 @@ github.com/kyokomi/cloudinary
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
+# github.com/rs/cors v1.7.0
+## explicit
+github.com/rs/cors
 # github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c
 ## explicit
 github.com/xdg/scram
@@ -118,6 +121,7 @@ golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
 golang.org/x/crypto/pbkdf2
 # golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
+## explicit
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
 golang.org/x/net/http/httpguts

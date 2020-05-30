@@ -18,12 +18,14 @@ require (
 	github.com/mongodb/mongo-go-driver v0.3.0 // indirect
 	github.com/outofpluto/goconfig v0.0.0-20121126125551-0b3e87a7e8f2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/rs/cors v1.7.0
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
 	github.com/xdg/stringprep v1.0.1-0.20180714160509-73f8eece6fdc // indirect
 	github.com/ymizushi/go-cloudinary v0.0.0-20170814054829-f81a3c814e4e // indirect
 	github.com/zmb3/gogetdoc v0.0.0-20190228002656-b37376c5da6a // indirect
 	go.mongodb.org/mongo-driver v1.3.1
 	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59
+	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
 	golang.org/x/text v0.3.2 // indirect
 	golang.org/x/tools v0.0.0-20200329025819-fd4102a86c65 // indirect
