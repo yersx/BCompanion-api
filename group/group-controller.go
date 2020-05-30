@@ -210,6 +210,7 @@ func (*controller) JoinGroup(w http.ResponseWriter, r *http.Request) {
 
 	token := r.Header.Get("Authorization")
 
+	log.Printf("joining group token: %v", token)
 	GroupName, ok1 := r.URL.Query()["group_name"]
 	if !ok1 || len(GroupName[0]) < 1 {
 		json.NewEncoder(w).Encode("Url Param 'group_name' is missing")
