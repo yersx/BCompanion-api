@@ -127,7 +127,7 @@ func (*controller) AddPlaceDescription(w http.ResponseWriter, r *http.Request) {
 
 	err := json.Unmarshal(body, &place)
 	if err != nil {
-		response.Message = "No Fields Were Sent In"
+		response.Message = err.Error()
 		json.NewEncoder(w).Encode(response)
 		w.WriteHeader(400)
 		return
