@@ -1,9 +1,5 @@
 package model
 
-import (
-	"encoding/json"
-)
-
 type City struct {
 	CityName  string  `json:"cityName" bson:"cityName"`
 	CityPhoto string  `json:"cityPhoto" bson:"cityPhoto"`
@@ -25,15 +21,15 @@ type CityName struct {
 }
 
 type PlaceDescription struct {
-	PlaceName          *string          `json:"placeName" bson:"placeName"`
-	PlacePhotos        *string          `json:"placePhotos" bson:"placePhotos"`
-	PlaceDescription   *string          `json:"placeDescription" bson:"placeDescription"`
-	City               *string          `json:"cityName" bson:"cityName"`
-	Lattitude          *float64         `json:"latitude" bson:"latitude"`
-	Longitude          *float64         `json:"longitude" bson:"longitude"`
-	RouteByCarText     *string          `json:"routeByCarText" bson:"routeByCarText"`
-	RouteByWalkingText *string          `json:"routeByWalkingText" bson:"routeByWalkingText"`
-	RouteMap           *json.RawMessage `json:"routeMap" bson:"routeMap"`
+	PlaceName          *string  `json:"placeName" bson:"placeName"`
+	PlacePhotos        *string  `json:"placePhotos" bson:"placePhotos"`
+	PlaceDescription   *string  `json:"placeDescription" bson:"placeDescription"`
+	City               *string  `json:"cityName" bson:"cityName"`
+	Lattitude          *float64 `json:"latitude" bson:"latitude"`
+	Longitude          *float64 `json:"longitude" bson:"longitude"`
+	RouteByCarText     *string  `json:"routeByCarText" bson:"routeByCarText"`
+	RouteByWalkingText *string  `json:"routeByWalkingText" bson:"routeByWalkingText"`
+	RouteMap           *string  `json:"routeMap" bson:"routeMap"`
 	// JsonPhoto        string   `json:"placePhotos" bson:"-"`
 }
 
