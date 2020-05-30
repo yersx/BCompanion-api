@@ -239,6 +239,7 @@ func (*controller) GetPastHikesByUser(w http.ResponseWriter, r *http.Request) {
 func (*controller) JoinHike(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
 
 	token := r.Header.Get("Authorization")
