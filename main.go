@@ -14,6 +14,7 @@ import (
 	"bcompanion/hike"
 	"bcompanion/place"
 	place1 "bcompanion/place/place"
+	"bcompanion/weather"
 )
 
 var (
@@ -29,6 +30,10 @@ var (
 	groupRepository group.GroupRepository = group.NewMongoRepository()
 	groupService    group.GroupService    = group.NewGroupService(groupRepository)
 	groupController group.GroupController = group.NewGroupController(groupService)
+
+	weatherRepository weather.WeatherRepository = weather.NewMongoRepository()
+	weatherService    weather.WeatherService    = weather.NewWeatherService(weatherRepository)
+	weatherController weather.WeatherController = weather.NewWeatherController(weatherService)
 
 	hikeRepository hike.HikeRepository = hike.NewMongoRepository()
 	hikeService    hike.HikeService    = hike.NewHikeService(hikeRepository)
@@ -79,6 +84,8 @@ func main() {
 
 	httpRouter.POST("/hikes/joinHike", hikeController.JoinHike)
 	httpRouter.POST("/hikes/leaveHike", hikeController.LeaveHike)
+
+	httpRouter.GET("/weather/week", weatherController.GetWeekWeather)
 
 	httpRouter.SERVE(port)
 }
