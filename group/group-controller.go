@@ -203,7 +203,10 @@ func (*controller) GetGroup(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) JoinGroup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode("OKOK")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 
 	token := r.Header.Get("Authorization")
 	log.Println(" Authorization")
@@ -221,6 +224,7 @@ func (*controller) JoinGroup(w http.ResponseWriter, r *http.Request) {
 	response := groupService.JoinGroup(groupName, token)
 	if response != "" {
 		w.WriteHeader(404)
+		log.Println("response %v", response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
