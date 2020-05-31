@@ -33,14 +33,14 @@ func (*controller) GetWeekWeather(w http.ResponseWriter, r *http.Request) {
 	}
 	city := City[0]
 
-	cities, err := weatherService.GetWeekWeather(city)
+	weather, err := weatherService.GetWeekWeather(city)
 	if err != nil {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)
 		return
 	}
 
-	json.NewEncoder(w).Encode(cities)
+	json.NewEncoder(w).Encode(weather)
 	return
 
 }
