@@ -26,7 +26,7 @@ func NewMuxRouter() Router {
 }
 
 func (*muxRouter) GET(uri string, f func(w http.ResponseWriter, r *http.Request)) {
-	muxDispatcher.HandleFunc(uri, f).Methods("GET")
+	muxDispatcher.HandleFunc(uri, f).Methods("GET", "OPTIONS")
 	handler = c.Handler(muxDispatcher)
 }
 
