@@ -176,21 +176,19 @@ func (*service) GetDayWeather(place string, date string) ([]*model.WeatherHourRe
 		return nil, nil
 	}
 
-	log.Println("respo Body: %v", resp.Body)
 	var we model.WeatherHour
 	if err = json.NewDecoder(resp.Body).Decode(&we); err != nil {
 		log.Println("decoder error %v", err)
 		return nil, err
 	}
-	log.Println("here in hour")
-	out := make([]*model.WeatherHourResponse, 23)
+	out := make([]*model.WeatherHourResponse, 0, len(we.Hourly))
 
-	for i, b := range we.Hourly {
+	for _, b := range we.Hourly {
 		dateTime := time.Unix(b.Date, 0)
 		if dateTime.Format("02.01.2006") == date {
 			hours, minutes, _ := dateTime.Clock()
 			timeInString := fmt.Sprintf("%d:%02d", hours, minutes)
-			out[i] = &model.WeatherHourResponse{
+			item := &model.WeatherHourResponse{
 				PlaceName:   place,
 				Hour:        timeInString,
 				Date:        dateTime.Format("02.01.2006"),
@@ -198,6 +196,7 @@ func (*service) GetDayWeather(place string, date string) ([]*model.WeatherHourRe
 				Description: b.Weather[0].Description,
 				Degree:      fmt.Sprintf("%.1f", b.Temp),
 			}
+			out = append(out, item)
 		}
 	}
 
