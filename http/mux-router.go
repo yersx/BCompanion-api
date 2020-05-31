@@ -30,10 +30,12 @@ func NewMuxRouter() Router {
 func (*muxRouter) GET(uri string, f func(w http.ResponseWriter, r *http.Request)) {
 	muxDispatcher.HandleFunc(uri, f).Methods("GET", "OPTIONS")
 	post = "get"
+	handler = c.Handler(muxDispatcher)
 }
 
 func (*muxRouter) POST(uri string, f func(w http.ResponseWriter, r *http.Request)) {
 	muxDispatcher.HandleFunc(uri, f).Methods("POST", "OPTIONS")
+	log.Println("post")
 	post = "post"
 	handler = c.Handler(muxDispatcher)
 }
