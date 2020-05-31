@@ -85,8 +85,8 @@ func (*service) GetWeekWeather(place string) ([]*model.WeatherDay, error) {
 			PlaceName:   place,
 			Date:        dateTime.Format("02.01.2006"),
 			Image:       "https://img.icons8.com/ios/50/000000/moderate-rain.png",
-			DayDegree:   FloatToString(b.Temp.Morning),
-			NightDegree: FloatToString(b.Temp.Night),
+			DayDegree:   FloatToStringP1(b.Temp.Morning),
+			NightDegree: FloatToStringP1(b.Temp.Night),
 		}
 	}
 
@@ -96,4 +96,8 @@ func (*service) GetWeekWeather(place string) ([]*model.WeatherDay, error) {
 func FloatToString(input_num float64) string {
 	// convert a float number to a string
 	return strconv.FormatFloat(input_num, 'f', 6, 64)
+}
+func FloatToStringP1(input_num float64) string {
+	// convert a float number to a string
+	return strconv.FormatFloat(input_num, 'f', 1, 64)
 }
