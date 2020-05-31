@@ -34,7 +34,7 @@ func (*controller) GetWeekWeather(w http.ResponseWriter, r *http.Request) {
 	city := City[0]
 
 	weather, err := weatherService.GetWeekWeather(city)
-	if err != nil {
+	if err != nil || weather == nil {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(nil)
 		return

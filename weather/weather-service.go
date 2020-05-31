@@ -38,13 +38,9 @@ func (*service) GetWeekWeather(place string) (*model.Weather, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	log.Println("get place point1 : %v", w.Lattitude)
-	log.Println("get place point2 : %v", w.Longitude)
 	lat := FloatToString(*w.Lattitude)
-	long := FloatToString(*w.Lattitude)
+	long := FloatToString(*w.Longitude)
 
-	log.Println(lat + " long: " + long)
 	query := url.Values{}
 	query.Set("lat", lat)
 	query.Set("lon", long)
@@ -82,6 +78,6 @@ func (*service) GetWeekWeather(place string) (*model.Weather, error) {
 }
 
 func FloatToString(input_num float64) string {
-	// to convert a float number to a string
+	// convert a float number to a string
 	return strconv.FormatFloat(input_num, 'f', 6, 64)
 }
