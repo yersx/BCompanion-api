@@ -34,7 +34,6 @@ func (*muxRouter) GET(uri string, f func(w http.ResponseWriter, r *http.Request)
 func (*muxRouter) POST(uri string, f func(w http.ResponseWriter, r *http.Request)) {
 	muxDispatcher.HandleFunc(uri, f).Methods("POST", "OPTIONS")
 	methodType = "Post"
-	handler = c.Handler(muxDispatcher)
 }
 
 func (*muxRouter) SERVE(port string) {
@@ -42,6 +41,6 @@ func (*muxRouter) SERVE(port string) {
 	if methodType == "Get" {
 		http.ListenAndServe(":"+port, muxDispatcher)
 	} else {
-		http.ListenAndServe(":"+port, handler)
+		http.ListenAndServe(":"+port, muxDispatcher)
 	}
 }
