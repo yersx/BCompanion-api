@@ -118,11 +118,11 @@ func (*service) GetWeekWeather(place string) ([]*model.WeatherDay, error) {
 			Day:         owWeekDays[dateTime.Weekday().String()],
 			Date:        dateTime.Format("02.01.2006"),
 			Image:       owIconNames[b.Weather[0].Icon],
-			DayDegree:   fmt.Sprintf("%f", b.Temp.Day),
-			NightDegree: fmt.Sprintf("%f", b.Temp.Night),
+			DayDegree:   fmt.Sprintf("%.1f", b.Temp.Day),
+			NightDegree: fmt.Sprintf("%.1f", b.Temp.Night),
 			Humidity:    strconv.Itoa(b.Humidity),
 			Clouds:      strconv.Itoa(b.Clouds),
-			WindSpeed:   fmt.Sprintf("%f", b.WindSpeed),
+			WindSpeed:   fmt.Sprintf("%.1f", b.WindSpeed),
 		}
 	}
 
@@ -183,20 +183,20 @@ func (*service) GetDayWeather(place string, date string) ([]*model.WeatherHourRe
 		return nil, err
 	}
 
-	out := make([]*model.WeatherHourResponse, len(we.Hourly))
+	out := make([]*model.WeatherHourResponse, 24)
 
 	for i, b := range we.Hourly {
 		dateTime := time.Unix(b.Date, 0)
 		if dateTime.Format("02.01.2006") == date {
 			hours, minutes, _ := dateTime.Clock()
-			currUTCTimeInString := fmt.Sprintf("%d:%02d", hours, minutes)
+			timeInString := fmt.Sprintf("%d:%02d", hours, minutes)
 			out[i] = &model.WeatherHourResponse{
 				PlaceName:   place,
-				Hour:        currUTCTimeInString,
+				Hour:        timeInString,
 				Date:        dateTime.Format("02.01.2006"),
 				Image:       owIconNames[b.Weather[0].Icon],
 				Description: b.Weather[0].Description,
-				Degree:      fmt.Sprintf("%f", b.Temp),
+				Degree:      fmt.Sprintf("%.1f", b.Temp),
 			}
 		}
 	}
