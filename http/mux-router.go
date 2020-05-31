@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -41,6 +42,7 @@ func (*muxRouter) SERVE(port string) {
 	if methodType == "Get" {
 		http.ListenAndServe(":"+port, muxDispatcher)
 	} else {
+		log.Println("post method")
 		http.ListenAndServe(":"+port, muxDispatcher)
 	}
 }
