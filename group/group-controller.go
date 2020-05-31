@@ -131,6 +131,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 func (*controller) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	token := r.Header.Get("Authorization")
 	if len(token) < 1 {
