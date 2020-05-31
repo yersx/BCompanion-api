@@ -2,7 +2,6 @@ package router
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -19,8 +18,8 @@ var (
 )
 var (
 	muxDispatcher = mux.NewRouter()
-	methodType    = ""
-	handler       = c.Handler(muxDispatcher)
+
+	handler = c.Handler(muxDispatcher)
 )
 
 func NewMuxRouter() Router {
@@ -29,20 +28,15 @@ func NewMuxRouter() Router {
 
 func (*muxRouter) GET(uri string, f func(w http.ResponseWriter, r *http.Request)) {
 	muxDispatcher.HandleFunc(uri, f).Methods("GET", "OPTIONS")
-	methodType = "Get"
+	handler = c.Handler(muxDispatcher)
 }
 
 func (*muxRouter) POST(uri string, f func(w http.ResponseWriter, r *http.Request)) {
 	muxDispatcher.HandleFunc(uri, f).Methods("POST", "OPTIONS")
-	methodType = "Post"
+	handler = c.Handler(muxDispatcher)
 }
 
 func (*muxRouter) SERVE(port string) {
 	fmt.Printf("Mux HTTP server running on port %v", port)
-	if methodType == "Get" {
-		http.ListenAndServe(":"+port, muxDispatcher)
-	} else {
-		log.Println("post method")
-		http.ListenAndServe(":"+port, muxDispatcher)
-	}
+	http.ListenAndServe(":"+port, handler)
 }
