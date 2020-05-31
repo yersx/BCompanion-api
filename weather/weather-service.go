@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 type WeatherService interface {
@@ -38,9 +39,15 @@ func (*service) GetWeekWeather(place string) (*model.Weather, error) {
 		return nil, err
 	}
 
+	log.Println("get place point1 : %v", w.Lattitude)
+	log.Println("get place point2 : %v", w.Longitude)
+	lat := FloatToString(*w.Lattitude)
+	long := FloatToString(*w.Lattitude)
+
+	log.Println(lat + " long: " + long)
 	query := url.Values{}
-	query.Set("lat", fmt.Sprintf("%f", w.Lattitude))
-	query.Set("lon", fmt.Sprintf("%f", w.Longitude))
+	query.Set("lat", lat)
+	query.Set("lon", long)
 	query.Set("appid", apiKey)
 	query.Set("lang", lang)
 
@@ -72,4 +79,9 @@ func (*service) GetWeekWeather(place string) (*model.Weather, error) {
 		return nil, err
 	}
 	return &we, nil
+}
+
+func FloatToString(input_num float64) string {
+	// to convert a float number to a string
+	return strconv.FormatFloat(input_num, 'f', 6, 64)
 }

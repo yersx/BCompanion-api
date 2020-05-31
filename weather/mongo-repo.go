@@ -39,6 +39,5 @@ func (*repo) GetPlaceCoordinates(place string) (*model.Coordinate, error) {
 		return nil, err
 		log.Println("get place points error: %v", err.Error())
 	}
-	log.Println("get place points : %v", coordinate)
 	return coordinate, nil
 }
