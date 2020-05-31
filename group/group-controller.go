@@ -34,7 +34,13 @@ func NewGroupController(service GroupService) GroupController {
 
 func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		log.Println(" Authorization")
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	var group model.Group
 
 	token := r.Header.Get("Authorization")
@@ -237,6 +243,13 @@ func (*controller) JoinGroup(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) LeaveGroup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		log.Println(" Authorization")
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 
 	token := r.Header.Get("Authorization")
 

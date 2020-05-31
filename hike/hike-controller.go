@@ -37,6 +37,12 @@ func NewHikeController(service HikeService) HikeController {
 
 func (*controller) AddHike(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 
 	token := r.Header.Get("Authorization")
 	if len(token) < 1 {
@@ -236,6 +242,12 @@ func (*controller) GetPastHikesByUser(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) JoinHike(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 
 	token := r.Header.Get("Authorization")
 
@@ -260,6 +272,12 @@ func (*controller) JoinHike(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) LeaveHike(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 
 	token := r.Header.Get("Authorization")
 
