@@ -86,6 +86,7 @@ func main() {
 	httpRouter.POST("/hikes/leaveHike", hikeController.LeaveHike)
 
 	httpRouter.GET("/weather/week", weatherController.GetWeekWeather)
+	httpRouter.GET("/weather/day", weatherController.GetDayWeather)
 
 	httpRouter.SERVE(port)
 }

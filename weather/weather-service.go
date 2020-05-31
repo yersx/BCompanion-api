@@ -13,6 +13,7 @@ import (
 
 type WeatherService interface {
 	GetWeekWeather(place string) ([]*model.WeatherDay, error)
+	GetDayWeather(place string, day string) ([]*model.WeatherDay, error)
 }
 
 type service struct{}
@@ -135,4 +136,67 @@ func FloatToString(input_num float64) string {
 func FloatToStringP1(input_num float64) string {
 	// convert a float number to a string
 	return strconv.FormatFloat(input_num, 'f', 1, 64)
+}
+
+func (*service) GetDayWeather(place string, date string) ([]*model.WeatherDay, error) {
+	w, err := weatherRepo.GetPlaceCoordinates(place)
+	if err != nil {
+		return nil, err
+	}
+	lat := FloatToString(*w.Lattitude)
+	long := FloatToString(*w.Longitude)
+
+	query := url.Values{}
+	query.Set("lat", lat)
+	query.Set("lon", long)
+	query.Set("appid", apiKey)
+	query.Set("lang", lang)
+	query.Set("units", units)
+
+	url := fmt.Sprintf("%s?%s", owAPI, query.Encode())
+
+	log.Println("getting URL %s", url)
+
+	var request *http.Request
+	if request, err = http.NewRequest("GET", url, nil); err != nil {
+		log.Println("request error %v", err)
+		return nil, err
+	}
+
+	var resp *http.Response
+	if resp, err = client.Do(request); err != nil {
+		log.Println("response error %v", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		return nil, nil
+	}
+
+	log.Println("respo Body: %v", resp.Body)
+	var we model.Weather
+	if err = json.NewDecoder(resp.Body).Decode(&we); err != nil {
+		log.Println("decoder error %v", err)
+		return nil, err
+	}
+
+	out := make([]*model.WeatherDay, len(we.Daily))
+
+	for i, b := range we.Daily {
+		dateTime := time.Unix(b.Date, 0)
+		out[i] = &model.WeatherDay{
+			PlaceName:   place,
+			Day:         owWeekDays[dateTime.Weekday().String()],
+			Date:        dateTime.Format("02.01.2006"),
+			Image:       owIconNames[b.Weather[0].Icon],
+			DayDegree:   FloatToStringP1(b.Temp.Day),
+			NightDegree: FloatToStringP1(b.Temp.Night),
+			Humidity:    strconv.Itoa(b.Humidity),
+			Clouds:      strconv.Itoa(b.Clouds),
+			WindSpeed:   FloatToStringP1(b.WindSpeed),
+		}
+	}
+
+	return out, nil
 }
