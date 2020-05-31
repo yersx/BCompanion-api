@@ -83,8 +83,8 @@ func (*service) GetWeekWeather(place string) ([]*model.WeatherDay, error) {
 		dateTime := time.Unix(b.Date, 0)
 		out[i] = &model.WeatherDay{
 			PlaceName:   place,
-			Date:        dateTime.Format("13.02.2006"),
-			Image:       "link",
+			Date:        dateTime.Format("02.01.2006"),
+			Image:       "https://img.icons8.com/ios/50/000000/moderate-rain.png",
 			DayDegree:   FloatToString(b.Temp.Morning),
 			NightDegree: FloatToString(b.Temp.Night),
 		}
