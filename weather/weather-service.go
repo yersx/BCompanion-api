@@ -29,6 +29,27 @@ const (
 	owAPI  = "https://api.openweathermap.org/data/2.5/onecall"
 )
 
+var owIconNames = map[string]string{
+	"01d": "https://img.icons8.com/wired/64/000000/sun.png",
+	"01n": "https://img.icons8.com/wired/64/000000/sun.png",
+	"02d": "https://img.icons8.com/wired/64/000000/partly-cloudy-day.png",
+	"02n": "https://img.icons8.com/wired/64/000000/partly-cloudy-night.png",
+	"03d": "https://img.icons8.com/wired/64/000000/cloud.png",
+	"03n": "https://img.icons8.com/wired/64/000000/cloud.png",
+	"04d": "https://img.icons8.com/wired/64/000000/clouds.png",
+	"04n": "https://img.icons8.com/wired/64/000000/clouds.png",
+	"09d": "https://img.icons8.com/ios/50/000000/light-rain.png",
+	"09n": "https://img.icons8.com/ios/50/000000/light-rain.png",
+	"10d": "https://img.icons8.com/ios/50/000000/moderate-rain.png",
+	"10n": "https://img.icons8.com/ios/50/000000/moderate-rain.png",
+	"11d": "https://img.icons8.com/wired/64/000000/storm.png",
+	"11n": "https://img.icons8.com/wired/64/000000/storm.png",
+	"13d": "https://img.icons8.com/wired/64/000000/snow.png",
+	"13n": "https://img.icons8.com/wired/64/000000/snow.png",
+	"50d": "https://img.icons8.com/wired/64/000000/foggy-night-1.png",
+	"50n": "https://img.icons8.com/wired/64/000000/foggy-night-1.png",
+}
+
 func NewWeatherService(repository WeatherRepository) WeatherService {
 	weatherRepo = repository
 	return &service{}
@@ -83,10 +104,14 @@ func (*service) GetWeekWeather(place string) ([]*model.WeatherDay, error) {
 		dateTime := time.Unix(b.Date, 0)
 		out[i] = &model.WeatherDay{
 			PlaceName:   place,
+			Day:         dateTime.Weekday().String(),
 			Date:        dateTime.Format("02.01.2006"),
-			Image:       "https://img.icons8.com/ios/50/000000/moderate-rain.png",
+			Image:       owIconNames[b.Weather[0].Icon],
 			DayDegree:   FloatToStringP1(b.Temp.Day),
 			NightDegree: FloatToStringP1(b.Temp.Night),
+			Humidity:    FloatToStringP1(b.Humidity),
+			Clouds:      FloatToStringP1(b.Clouds),
+			WindSpeed:   FloatToStringP1(b.WindSpeed),
 		}
 	}
 
