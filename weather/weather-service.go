@@ -109,8 +109,8 @@ func (*service) GetWeekWeather(place string) ([]*model.WeatherDay, error) {
 			Image:       owIconNames[b.Weather[0].Icon],
 			DayDegree:   FloatToStringP1(b.Temp.Day),
 			NightDegree: FloatToStringP1(b.Temp.Night),
-			Humidity:    FloatToStringP1(b.Humidity),
-			Clouds:      FloatToStringP1(b.Clouds),
+			Humidity:    strconv.Itoa(b.Humidity),
+			Clouds:      strconv.Itoa(b.Clouds),
 			WindSpeed:   FloatToStringP1(b.WindSpeed),
 		}
 	}

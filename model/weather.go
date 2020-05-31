@@ -8,9 +8,9 @@ type Coordinate struct {
 type Weather struct {
 	Daily []struct {
 		Date      int64   `json:"dt"`
-		Humidity  float64 `json:"humidity"`
+		Humidity  int     `json:"humidity"`
 		WindSpeed float64 `json:"wind_speed"`
-		Clouds    float64 `json:"clouds"`
+		Clouds    int     `json:"clouds"`
 		Temp      struct {
 			Day   float64 `json:"day"`
 			Night float64 `json:"night"`
