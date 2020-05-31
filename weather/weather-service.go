@@ -182,8 +182,8 @@ func (*service) GetDayWeather(place string, date string) ([]*model.WeatherHourRe
 		log.Println("decoder error %v", err)
 		return nil, err
 	}
-
-	out := make([]*model.WeatherHourResponse, 24)
+	log.Println("here in hour")
+	out := make([]*model.WeatherHourResponse, 23)
 
 	for i, b := range we.Hourly {
 		dateTime := time.Unix(b.Date, 0)
