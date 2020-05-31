@@ -203,6 +203,7 @@ func (*controller) GetGroup(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) JoinGroup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode("OKOK")
 
 	token := r.Header.Get("Authorization")
 	log.Println(" Authorization")
