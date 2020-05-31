@@ -13,7 +13,7 @@ import (
 
 type WeatherService interface {
 	GetWeekWeather(place string) ([]*model.WeatherDay, error)
-	GetDayWeather(place string, day string) ([]*model.WeatherDay, error)
+	GetDayWeather(place string, day string) ([]*model.WeatherHourResponse, error)
 }
 
 type service struct{}
@@ -118,11 +118,11 @@ func (*service) GetWeekWeather(place string) ([]*model.WeatherDay, error) {
 			Day:         owWeekDays[dateTime.Weekday().String()],
 			Date:        dateTime.Format("02.01.2006"),
 			Image:       owIconNames[b.Weather[0].Icon],
-			DayDegree:   FloatToStringP1(b.Temp.Day),
-			NightDegree: FloatToStringP1(b.Temp.Night),
+			DayDegree:   fmt.Sprintf("%f", b.Temp.Day),
+			NightDegree: fmt.Sprintf("%f", b.Temp.Night),
 			Humidity:    strconv.Itoa(b.Humidity),
 			Clouds:      strconv.Itoa(b.Clouds),
-			WindSpeed:   FloatToStringP1(b.WindSpeed),
+			WindSpeed:   fmt.Sprintf("%f", b.WindSpeed),
 		}
 	}
 
@@ -133,12 +133,13 @@ func FloatToString(input_num float64) string {
 	// convert a float number to a string
 	return strconv.FormatFloat(input_num, 'f', 6, 64)
 }
-func FloatToStringP1(input_num float64) string {
-	// convert a float number to a string
-	return strconv.FormatFloat(input_num, 'f', 1, 64)
-}
 
-func (*service) GetDayWeather(place string, date string) ([]*model.WeatherDay, error) {
+// func FloatToStringP1(input_num float32) string {
+// 	// convert a float number to a string
+// 	return strconv.FormatFloat(input_num, 'f', 1, 32)
+// }
+
+func (*service) GetDayWeather(place string, date string) ([]*model.WeatherHourResponse, error) {
 	w, err := weatherRepo.GetPlaceCoordinates(place)
 	if err != nil {
 		return nil, err
@@ -152,6 +153,7 @@ func (*service) GetDayWeather(place string, date string) ([]*model.WeatherDay, e
 	query.Set("appid", apiKey)
 	query.Set("lang", lang)
 	query.Set("units", units)
+	query.Set("exclude", "current,daily")
 
 	url := fmt.Sprintf("%s?%s", owAPI, query.Encode())
 
@@ -175,26 +177,27 @@ func (*service) GetDayWeather(place string, date string) ([]*model.WeatherDay, e
 	}
 
 	log.Println("respo Body: %v", resp.Body)
-	var we model.Weather
+	var we model.WeatherHour
 	if err = json.NewDecoder(resp.Body).Decode(&we); err != nil {
 		log.Println("decoder error %v", err)
 		return nil, err
 	}
 
-	out := make([]*model.WeatherDay, len(we.Daily))
+	out := make([]*model.WeatherHourResponse, len(we.Hourly))
 
-	for i, b := range we.Daily {
+	for i, b := range we.Hourly {
 		dateTime := time.Unix(b.Date, 0)
-		out[i] = &model.WeatherDay{
-			PlaceName:   place,
-			Day:         owWeekDays[dateTime.Weekday().String()],
-			Date:        dateTime.Format("02.01.2006"),
-			Image:       owIconNames[b.Weather[0].Icon],
-			DayDegree:   FloatToStringP1(b.Temp.Day),
-			NightDegree: FloatToStringP1(b.Temp.Night),
-			Humidity:    strconv.Itoa(b.Humidity),
-			Clouds:      strconv.Itoa(b.Clouds),
-			WindSpeed:   FloatToStringP1(b.WindSpeed),
+		if dateTime.Format("02.01.2006") == date {
+			hours, minutes, _ := dateTime.Clock()
+			currUTCTimeInString := fmt.Sprintf("%d:%02d", hours, minutes)
+			out[i] = &model.WeatherHourResponse{
+				PlaceName:   place,
+				Hour:        currUTCTimeInString,
+				Date:        dateTime.Format("02.01.2006"),
+				Image:       owIconNames[b.Weather[0].Icon],
+				Description: b.Weather[0].Description,
+				Degree:      fmt.Sprintf("%f", b.Temp),
+			}
 		}
 	}
 

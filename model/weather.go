@@ -9,11 +9,11 @@ type Weather struct {
 	Daily []struct {
 		Date      int64   `json:"dt"`
 		Humidity  int     `json:"humidity"`
-		WindSpeed float64 `json:"wind_speed"`
+		WindSpeed float32 `json:"wind_speed"`
 		Clouds    int     `json:"clouds"`
 		Temp      struct {
-			Day   float64 `json:"day"`
-			Night float64 `json:"night"`
+			Day   float32 `json:"day"`
+			Night float32 `json:"night"`
 		} `json:"temp"`
 		Weather []struct {
 			Description string `json:"description"`
@@ -26,6 +26,17 @@ type Weather struct {
 	} `json:"weather"`
 }
 
+type WeatherHour struct {
+	Hourly []struct {
+		Date    int64   `json:"dt"`
+		Temp    float32 `json:"temp"`
+		Weather []struct {
+			Description string `json:"description"`
+			Icon        string `json:"icon"`
+		} `json:"weather"`
+	} `json:"hourly"`
+}
+
 type WeatherDay struct {
 	PlaceName   string `json:"placeName"`
 	Date        string `json:"date"`
@@ -36,4 +47,13 @@ type WeatherDay struct {
 	Humidity    string `json:"humidity"`
 	WindSpeed   string `json:"wind_speed"`
 	Clouds      string `json:"clouds"`
+}
+
+type WeatherHourResponse struct {
+	PlaceName   string `json:"placeName"`
+	Date        string `json:"date"`
+	Hour        string `json:"hour"`
+	Image       string `json:"image"`
+	Description string `json:"description"`
+	Degree      string `json:"degree"`
 }
