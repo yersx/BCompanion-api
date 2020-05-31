@@ -19,3 +19,12 @@ type Weather struct {
 	} `json:"daily"`
 	Timezone string `json:"timezone"`
 }
+
+type WeatherDay struct {
+	PlaceName   string `json:"placeName"`
+	Date        string `json:"date"`
+	Day         string `json:"day"`
+	Image       string `json:"image"`
+	DayDegree   string `json:"dayDegree"`
+	NightDegree string `json:"nightDegree"`
+}

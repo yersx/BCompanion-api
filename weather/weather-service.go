@@ -8,10 +8,11 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 )
 
 type WeatherService interface {
-	GetWeekWeather(place string) (*model.Weather, error)
+	GetWeekWeather(place string) ([]*model.WeatherDay, error)
 }
 
 type service struct{}
@@ -33,7 +34,7 @@ func NewWeatherService(repository WeatherRepository) WeatherService {
 	return &service{}
 }
 
-func (*service) GetWeekWeather(place string) (*model.Weather, error) {
+func (*service) GetWeekWeather(place string) ([]*model.WeatherDay, error) {
 	w, err := weatherRepo.GetPlaceCoordinates(place)
 	if err != nil {
 		return nil, err
@@ -46,6 +47,7 @@ func (*service) GetWeekWeather(place string) (*model.Weather, error) {
 	query.Set("lon", long)
 	query.Set("appid", apiKey)
 	query.Set("lang", lang)
+	query.Set("units", units)
 
 	url := fmt.Sprintf("%s?%s", owAPI, query.Encode())
 
@@ -74,7 +76,21 @@ func (*service) GetWeekWeather(place string) (*model.Weather, error) {
 		log.Println("decoder error %v", err)
 		return nil, err
 	}
-	return &we, nil
+
+	out := make([]*model.WeatherDay, len(we.Daily))
+
+	for i, b := range we.Daily {
+		dateTime := time.Unix(b.Date, 0)
+		out[i] = &model.WeatherDay{
+			PlaceName:   "Almaty",
+			Date:        dateTime.Format("2006-01-02"),
+			Image:       "link",
+			DayDegree:   FloatToString(b.Temp.Morning),
+			NightDegree: FloatToString(b.Temp.Night),
+		}
+	}
+
+	return out, nil
 }
 
 func FloatToString(input_num float64) string {
