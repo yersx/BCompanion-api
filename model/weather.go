@@ -9,8 +9,8 @@ type Weather struct {
 	Daily []struct {
 		Date int64 `json:"dt"`
 		Temp struct {
-			Morning float64 `json:"morn"`
-			Night   float64 `json:"night"`
+			Day   float64 `json:"day"`
+			Night float64 `json:"night"`
 		} `json:"temp"`
 		Weather []struct {
 			Description string `json:"description"`
