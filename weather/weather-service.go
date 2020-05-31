@@ -50,6 +50,16 @@ var owIconNames = map[string]string{
 	"50n": "https://img.icons8.com/wired/64/000000/foggy-night-1.png",
 }
 
+var owWeekDays = map[string]string{
+	"Monday":    "Пн",
+	"Tuesday":   "Вт",
+	"Wednesday": "Ср",
+	"Thursday":  "Чт",
+	"Friday":    "Пт",
+	"Saturday":  "Сб",
+	"Sunday":    "Вс",
+}
+
 func NewWeatherService(repository WeatherRepository) WeatherService {
 	weatherRepo = repository
 	return &service{}
@@ -104,7 +114,7 @@ func (*service) GetWeekWeather(place string) ([]*model.WeatherDay, error) {
 		dateTime := time.Unix(b.Date, 0)
 		out[i] = &model.WeatherDay{
 			PlaceName:   place,
-			Day:         dateTime.Weekday().String(),
+			Day:         owWeekDays[dateTime.Weekday().String()],
 			Date:        dateTime.Format("02.01.2006"),
 			Image:       owIconNames[b.Weather[0].Icon],
 			DayDegree:   FloatToStringP1(b.Temp.Day),
