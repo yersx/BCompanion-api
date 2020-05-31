@@ -13,6 +13,7 @@ var (
 
 type WeatherController interface {
 	GetWeekWeather(w http.ResponseWriter, r *http.Request)
+	GetDayWeather(w http.ResponseWriter, r *http.Request)
 }
 
 func NewWeatherController(service WeatherService) WeatherController {
