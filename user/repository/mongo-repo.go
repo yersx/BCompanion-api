@@ -6,6 +6,7 @@ import (
 	"bcompanion/hike"
 	"bcompanion/model"
 	"context"
+	"log"
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -194,11 +195,14 @@ func (*repo) UpdateImage(image string, token string) string {
 		return "can not connect to database"
 	}
 
+	log.Println(image)
+	log.Println(token)
+
 	_, err2 := collection.UpdateOne(
 		context.TODO(),
 		bson.M{"token": token},
 		bson.D{
-			{"$push", bson.D{{"photo", image}}},
+			{"$pull", bson.D{{"photo", image}}},
 		},
 	)
 	if err2 != nil {

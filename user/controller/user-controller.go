@@ -188,9 +188,6 @@ func (*controller) UpdateUserPhoto(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
-	log.Printf("fileName %+v\n", token+handler.Filename)
-	log.Printf("fileName %+v\n", handler.Size)
-	log.Printf("fileName %+v\n", handler.Header)
 
 	// 3. Generate new filename
 	nameFile := token + handler.Filename
