@@ -7,5 +7,5 @@ type UserRepository interface {
 	FindUser(phoneNumber string) (*model.User, error)
 	FindUserProfile(phoneNumber string) (*model.UserProfile, error)
 	FindToken(phoneNumber string) (*string, error)
-	UpdateImage(imageLink string, token string) string
+	UpdateImage(image string, token string) string
 }

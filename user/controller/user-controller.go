@@ -188,7 +188,7 @@ func (*controller) UpdateUserPhoto(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
-	log.Printf("fileName %+v\n", handler.Filename)
+	log.Printf("fileName %+v\n", token+handler.Filename)
 	log.Printf("fileName %+v\n", handler.Size)
 	log.Printf("fileName %+v\n", handler.Header)
 
@@ -217,6 +217,7 @@ func (*controller) UpdateUserPhoto(w http.ResponseWriter, r *http.Request) {
 
 	res := userService.UpdateImage(cloudinaryPath, token)
 	if res != "" {
+		log.Println(res)
 		json.NewEncoder(w).Encode(res)
 		w.WriteHeader(404)
 		return
