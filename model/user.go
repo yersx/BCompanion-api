@@ -27,3 +27,18 @@ type AuthData struct {
 	Code   string `json:"code"`
 	Phone  string `json:"phone"`
 }
+
+type UserProfile struct {
+	FirstName         string   `json:"name"`
+	LastName          string   `json:"surname"`
+	PhoneNumber       string   `json:"phoneNumber"`
+	DateOfBirth       string   `json:"dateOfBirth"`
+	City              string   `json:"city"`
+	Photo             string   `json:"photo"`
+	Status            string   `json:"status"`
+	UpcomingHikes     []*Hike  `json:"upcomingHikes"`
+	HikesHistory      []*Hike  `json:"hikesHistory"`
+	NumberOfPastHikes string   `json:"numberOfPastHikes" bson:"-"`
+	Groups            []*Group `json:"groups" bson:"groups"`
+	NumberOfGroups    string   `json:"numberOfGroups" bson:"-"`
+}

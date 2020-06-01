@@ -2,8 +2,11 @@ package repository
 
 import (
 	"bcompanion/config/db"
+	"bcompanion/group"
+	"bcompanion/hike"
 	"bcompanion/model"
 	"context"
+	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -126,4 +129,62 @@ func (*repo) FindToken(phoneNumber string) (*string, error) {
 	}
 
 	return &token.Token, nil
+}
+
+func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
+
+	var up *model.UserProfile
+	var user *model.User
+	collection, err := db.GetDBCollection("users")
+	if err != nil {
+		return nil, err
+	}
+
+	if phoneNumber != "" {
+		err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", phoneNumber}}).Decode(&user)
+		if err != nil {
+			return nil, err
+		}
+	}
+	up.FirstName = user.FirstName
+	up.LastName = user.PhoneNumber
+	up.LastName = phoneNumber
+	up.DateOfBirth = user.DateOfBirth
+	up.City = user.City
+	up.Photo = user.Photo
+	up.Status = user.Status
+
+	upcomingHikes, err := hike.GetUpcomingByUser(user.Token)
+	if err != nil {
+		return nil, err
+	}
+	if len(upcomingHikes) < 1 {
+		upcomingHikes = nil
+	}
+	up.UpcomingHikes = upcomingHikes
+
+	pastHikes, err := hike.GetPastbyUser(user.Token)
+	if err != nil {
+		return nil, err
+	}
+	if len(pastHikes) < 1 {
+		pastHikes = nil
+	}
+
+	up.HikesHistory = append(upcomingHikes, pastHikes...)
+	numberOfPastHikes := len(pastHikes)
+	up.NumberOfPastHikes = strconv.Itoa(numberOfPastHikes)
+
+	userGroups, err := group.UserGroups(user.Token)
+	if err != nil {
+		return nil, err
+	}
+	if len(userGroups) < 1 {
+		userGroups = nil
+	}
+	numberOfGroups := len(userGroups)
+	up.NumberOfGroups = strconv.Itoa(numberOfGroups)
+	up.Groups = userGroups
+
+	return up, nil
 }

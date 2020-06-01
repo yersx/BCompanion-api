@@ -7,7 +7,7 @@ type Group struct {
 	Image           *string   `json:"groupPhoto" bson:"groupPhoto"`
 	NumberOfMembers string    `json:"numberOfMembers" bson:"numberOfMembers"`
 	NumberOfHikes   string    `json:"numberOfHikes" bson:"numberOfHikes"`
-	CurrentHikes    []*Hike   `json:"upcomingHike" bson:"upcomingHikes"`
+	CurrentHikes    []*Hike   `json:"upcomingHikes" bson:"upcomingHikes"`
 	Admins          []string  `json:"admins" bson:"admins"`
 	HikesHistory    []*Hike   `json:"hikesHistory" bson:"hikesHistory"`
 	GroupMedia      []*Media  `json:"groupMedia,omitempty" bson:"groupMedia"`

@@ -69,7 +69,10 @@ func (*repo) CreateGroup(group model.Group, token string) string {
 }
 
 func (*repo) GetUserGroups(token string) ([]*model.Group, error) {
+	return UserGroups(token)
+}
 
+func UserGroups(token string) ([]*model.Group, error) {
 	collection, err := db.GetDBCollection("groups")
 	if err != nil {
 		return nil, err

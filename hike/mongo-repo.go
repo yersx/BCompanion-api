@@ -178,6 +178,10 @@ func (*repo) GetUpcomingHikes() ([]*model.Hike, error) {
 }
 
 func (*repo) GetUpcomingHikesByUser(token string) ([]*model.Hike, error) {
+	return GetUpcomingByUser(token)
+}
+
+func GetUpcomingByUser(token string) ([]*model.Hike, error) {
 
 	collection, err := db.GetDBCollection("hikes")
 	if err != nil {
@@ -221,7 +225,10 @@ func (*repo) GetUpcomingHikesByUser(token string) ([]*model.Hike, error) {
 }
 
 func (*repo) GetPastHikesByUser(token string) ([]*model.Hike, error) {
+	return GetPastbyUser(token)
+}
 
+func GetPastbyUser(token string) ([]*model.Hike, error) {
 	collection, err := db.GetDBCollection("hikes")
 	if err != nil {
 		return nil, err
