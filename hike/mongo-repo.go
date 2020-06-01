@@ -84,7 +84,28 @@ func (*repo) GetHike(hikeID string) (*model.Hike, error) {
 		return nil, err
 	}
 
-	log.Println("user: %s", hike)
+	type GroupPhoto struct {
+		Photo *string `bson:"groupPhoto"`
+	}
+	var photo *GroupPhoto
+
+	groupCollection, err := db.GetDBCollection("groups")
+	if err != nil {
+		return nil, err
+	}
+
+	type fields struct {
+		Photo int `bson:"groupPhoto"`
+	}
+	projection := fields{
+		Photo: 1,
+	}
+
+	err = groupCollection.FindOne(context.TODO(), bsonmongo.M{"groupName": hike.GroupName}, options.FindOne().SetProjection(projection)).Decode(&photo)
+	if err != nil {
+		return nil, err
+	}
+	hike.GroupPhoto = photo.Photo
 
 	hikeNumber := len(hike.Members)
 
