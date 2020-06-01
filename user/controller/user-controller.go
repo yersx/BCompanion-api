@@ -126,7 +126,7 @@ func (*controller) FindUserProfile(w http.ResponseWriter, r *http.Request) {
 	phone := Phone[0]
 	log.Output(1, "phone: "+phone)
 
-	result, err := userService.FindUser(phone)
+	result, err := userService.FindUserProfile(phone)
 	if err != nil {
 		log.Output(1, "error 404")
 		w.WriteHeader(404)
