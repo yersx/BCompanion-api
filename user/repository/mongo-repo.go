@@ -147,13 +147,13 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 		}
 	}
 	log.Println("user data %v", user)
-	up.FirstName = user.FirstName
-	up.LastName = user.PhoneNumber
-	up.LastName = phoneNumber
-	up.DateOfBirth = user.DateOfBirth
-	up.City = user.City
-	up.Photo = user.Photo
-	up.Status = user.Status
+	// up.FirstName = user.FirstName
+	// up.LastName = user.PhoneNumber
+	// up.LastName = phoneNumber
+	// up.DateOfBirth = user.DateOfBirth
+	// up.City = user.City
+	// up.Photo = user.Photo
+	// up.Status = user.Status
 
 	// upcomingHikes, err := hike.GetUpcomingByUser(user.Token)
 	// if err != nil {
