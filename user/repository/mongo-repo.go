@@ -147,16 +147,14 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 			return nil, err
 		}
 	}
-	log.Println("start")
 	up.FirstName = user.FirstName
 	up.LastName = user.LastName
-	up.LastName = user.PhoneNumber
+	up.PhoneNumber = user.PhoneNumber
 	up.DateOfBirth = user.DateOfBirth
 	up.City = user.City
 	up.Photo = user.Photo
 	up.Status = user.Status
 
-	log.Println("end")
 	upcomingHikes, err := hike.GetUpcomingByUser(user.Token)
 	if err != nil {
 		return nil, err
@@ -174,7 +172,6 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 	if len(pastHikes) < 1 {
 		pastHikes = nil
 	}
-
 	up.HikesHistory = append(upcomingHikes, pastHikes...)
 	numberOfPastHikes := len(pastHikes)
 	up.NumberOfPastHikes = strconv.Itoa(numberOfPastHikes)
