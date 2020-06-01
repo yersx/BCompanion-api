@@ -3,9 +3,9 @@ package repository
 import (
 	"bcompanion/config/db"
 	"bcompanion/group"
-	"bcompanion/hike"
 	"bcompanion/model"
 	"context"
+	"log"
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -146,6 +146,7 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 			return nil, err
 		}
 	}
+	log.Println("user data %v", user)
 	up.FirstName = user.FirstName
 	up.LastName = user.PhoneNumber
 	up.LastName = phoneNumber
@@ -154,31 +155,33 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 	up.Photo = user.Photo
 	up.Status = user.Status
 
-	upcomingHikes, err := hike.GetUpcomingByUser(user.Token)
-	if err != nil {
-		return nil, err
-	}
-	if len(upcomingHikes) < 1 {
-		upcomingHikes = nil
-	}
-	up.UpcomingHikes = upcomingHikes
+	// upcomingHikes, err := hike.GetUpcomingByUser(user.Token)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if len(upcomingHikes) < 1 {
+	// 	upcomingHikes = nil
+	// }
+	// up.UpcomingHikes = upcomingHikes
 
-	pastHikes, err := hike.GetPastbyUser(user.Token)
-	if err != nil {
-		return nil, err
-	}
-	if len(pastHikes) < 1 {
-		pastHikes = nil
-	}
+	// pastHikes, err := hike.GetPastbyUser(user.Token)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if len(pastHikes) < 1 {
+	// 	pastHikes = nil
+	// }
 
-	up.HikesHistory = append(upcomingHikes, pastHikes...)
-	numberOfPastHikes := len(pastHikes)
-	up.NumberOfPastHikes = strconv.Itoa(numberOfPastHikes)
+	// up.HikesHistory = append(upcomingHikes, pastHikes...)
+	// numberOfPastHikes := len(pastHikes)
+	// up.NumberOfPastHikes = strconv.Itoa(numberOfPastHikes)
 
 	userGroups, err := group.UserGroups(user.Token)
 	if err != nil {
 		return nil, err
 	}
+
+	log.Println("user groups %v", userGroups)
 	if len(userGroups) < 1 {
 		userGroups = nil
 	}
