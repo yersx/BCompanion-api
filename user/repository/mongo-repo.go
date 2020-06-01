@@ -202,7 +202,7 @@ func (*repo) UpdateImage(image string, token string) string {
 		context.TODO(),
 		bson.M{"token": token},
 		bson.D{
-			{"$pull", bson.D{{"photo", image}}},
+			{"$set", bson.D{{"photo", image}}},
 		},
 	)
 	if err2 != nil {
