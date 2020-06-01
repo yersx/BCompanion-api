@@ -198,7 +198,7 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 		if startDate.After(currentTime) {
 			upcoming = append(upcoming, b)
 		} else if startDate.Before(currentTime) {
-			upcoming = append(past, b)
+			past = append(past, b)
 		}
 	}
 
