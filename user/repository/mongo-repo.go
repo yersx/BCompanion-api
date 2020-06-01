@@ -3,10 +3,10 @@ package repository
 import (
 	"bcompanion/config/db"
 	"bcompanion/group"
+	"bcompanion/hike"
 	"bcompanion/model"
 	"context"
 	"log"
-	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -155,13 +155,14 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 	// up.Photo = user.Photo
 	// up.Status = user.Status
 
-	// upcomingHikes, err := hike.GetUpcomingByUser(user.Token)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// if len(upcomingHikes) < 1 {
-	// 	upcomingHikes = nil
-	// }
+	upcomingHikes, err := hike.GetUpcomingByUser(user.Token)
+	if err != nil {
+		return nil, err
+	}
+	if len(upcomingHikes) < 1 {
+		upcomingHikes = nil
+	}
+	log.Println("upcoming Hikes  %v", upcomingHikes)
 	// up.UpcomingHikes = upcomingHikes
 
 	// pastHikes, err := hike.GetPastbyUser(user.Token)
@@ -185,9 +186,9 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 	if len(userGroups) < 1 {
 		userGroups = nil
 	}
-	numberOfGroups := len(userGroups)
-	up.NumberOfGroups = strconv.Itoa(numberOfGroups)
-	up.Groups = userGroups
+	// numberOfGroups := len(userGroups)
+	// up.NumberOfGroups = strconv.Itoa(numberOfGroups)
+	// up.Groups = userGroups
 
 	return up, nil
 }
