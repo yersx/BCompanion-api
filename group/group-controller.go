@@ -94,7 +94,7 @@ func (*controller) AddGroup(w http.ResponseWriter, r *http.Request) {
 	log.Printf("fileName %+v\n", handler.Header)
 
 	// 3. Generate new filename
-	nameFile := handler.Filename
+	nameFile := token + handler.Filename
 
 	// 4. Read multipart file
 	buff, errReadFile := ioutil.ReadAll(file)

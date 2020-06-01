@@ -1,23 +1,13 @@
 package controller
 
 import (
-	"bcompanion/config/db"
 	"bcompanion/model"
 	"bcompanion/user"
-	"context"
+	"bcompanion/utils"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
-
-	jwt "github.com/dgrijalva/jwt-go"
-	"go.mongodb.org/mongo-driver/bson"
-	"golang.org/x/crypto/bcrypt"
-	"google.golang.org/api/identitytoolkit/v3"
-	"google.golang.org/api/option"
-	"gopkg.in/ezzarghili/recaptcha-go.v4"
 )
 
 type controller struct{}
@@ -29,6 +19,7 @@ var (
 type UserController interface {
 	SignUser(w http.ResponseWriter, r *http.Request)
 	FindUser(w http.ResponseWriter, r *http.Request)
+	UpdateUserPhoto(w http.ResponseWriter, r *http.Request)
 	FindUserProfile(w http.ResponseWriter, r *http.Request)
 	FindToken(w http.ResponseWriter, r *http.Request)
 }
@@ -165,167 +156,237 @@ func (*controller) FindToken(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func AuthorizationHandler(w http.ResponseWriter, r *http.Request) {
-
+func (*controller) UpdateUserPhoto(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	tokenString := r.Header.Get("captcha-token")
-
-	// var authData model.AuthData
-	phone, ok1 := r.URL.Query()["phone"]
-	code := r.URL.Query()["code"]
-	var res model.ResponseResult
-
-	if !ok1 || len(phone[0]) < 1 {
-		res.Message = "Url Param 'phone' is missing"
-		json.NewEncoder(w).Encode(res)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		log.Println(" Authorization")
+		w.WriteHeader(http.StatusOK)
 		return
 	}
 
-	Phone := phone[0]
-	Code := code[0]
+	token := r.Header.Get("Authorization")
+	if len(token) < 1 {
+		json.NewEncoder(w).Encode("no token sent")
+		w.WriteHeader(404)
+		return
+	}
 
-	phoneNumber := fmt.Sprintf("+%s%s", Code, Phone)
-
-	opt := option.WithCredentialsFile("ServiceAccountKey.json")
-
-	log.Output(1, "phone: "+phoneNumber)
-	log.Printf("token: " + tokenString)
-	//app, err := firebase.NewApp(context.Background(), nil, opt)
-	// if err != nil {
-
-	//  log.Fatalln(err)
-	// 	log.Fatalln(err)
-	// }
-
-	client, err := identitytoolkit.NewService(context.Background(), opt)
+	err := r.ParseMultipartForm(0)
 	if err != nil {
-		res.Message = "no firebase service"
-		json.NewEncoder(w).Encode(res)
+		json.NewEncoder(w).Encode("Does not have image")
+		w.WriteHeader(404)
 		return
 	}
 
-	captcha, err := recaptcha.NewReCAPTCHA("6Ldg2eYUAAAAAGP8E3gTqrRQFjPFstUT4lQptSEg", recaptcha.V2, 10*time.Second)
-
-	verErr := captcha.Verify(tokenString)
-	if verErr != nil {
-		log.Printf("verification error: " + err.Error())
-	}
-	// client, err := app.Firestore(context.Background())
-	// if err != nil {
-	//  log.Fatalln(err)
-	// 	log.Fatalln(err)
-
-	// }
-	// defer client.Close()
-
-	resp, err := client.Relyingparty.SendVerificationCode(&identitytoolkit.IdentitytoolkitRelyingpartySendVerificationCodeRequest{
-		PhoneNumber:    phoneNumber,
-		RecaptchaToken: tokenString}).Context(context.Background()).Do()
+	r.ParseMultipartForm(10 << 20)
+	file, handler, err := r.FormFile("file")
 	if err != nil {
-		log.Printf(err.Error())
+		json.NewEncoder(w).Encode("Error retrieving image")
+		w.WriteHeader(404)
+		return
+	}
+	defer file.Close()
+	log.Printf("fileName %+v\n", handler.Filename)
+	log.Printf("fileName %+v\n", handler.Size)
+	log.Printf("fileName %+v\n", handler.Header)
+
+	// 3. Generate new filename
+	nameFile := token + handler.Filename
+
+	// 4. Read multipart file
+	buff, errReadFile := ioutil.ReadAll(file)
+	if errReadFile != nil {
+		json.NewEncoder(w).Encode("Error reading file")
+		w.WriteHeader(404)
 		return
 	}
 
-	var idToken = resp.ServerResponse.HTTPStatusCode
-	res.Message = string(idToken)
-	w.WriteHeader(400)
-	json.NewEncoder(w).Encode(res)
+	//5. Upload to cloudinary
+	resChannelUpload := utils.UploadImage(nameFile, buff)
+	cloudinaryInfo := <-resChannelUpload
+	close(resChannelUpload)
+	if cloudinaryInfo.Err != nil {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode("internal server error with cloudinary")
+		return
+	}
 
-}
+	cloudinaryPath := cloudinaryInfo.FilePath
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	var user model.User
-	var result model.User
-	var res model.ResponseResult
-
-	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &user)
-	if err != nil {
-		res.Message = err.Error()
+	res := userService.UpdateImage(cloudinaryPath, token)
+	if res != "" {
 		json.NewEncoder(w).Encode(res)
-		return
-		//log.Fatal(err)
-	}
-
-	collection, err := db.GetDBCollection("users")
-
-	if err != nil {
-		res.Message = err.Error()
-		json.NewEncoder(w).Encode(res)
+		w.WriteHeader(404)
 		return
 	}
 
-	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&result)
-
-	if err != nil {
-		res.Message = "Invalid phone"
-		json.NewEncoder(w).Encode(res)
-		return
-	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(result.Token), []byte(user.Token))
-
-	if err != nil {
-		res.Message = "Invalid Token"
-		json.NewEncoder(w).Encode(res)
-		return
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"name":        result.FirstName,
-		"surname":     result.LastName,
-		"phoneNumber": result.PhoneNumber,
-		"dateOfBirth": result.DateOfBirth,
-		"city":        result.City,
-	})
-
-	tokenString, err := token.SignedString([]byte("secret"))
-
-	if err != nil {
-		res.Message = "Error while generating token, Try Again"
-		json.NewEncoder(w).Encode(res)
-		return
-	}
-
-	result.Token = tokenString
-
-	json.NewEncoder(w).Encode(result)
-}
-
-func AuthHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	var phone model.Phone
-	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &phone)
-	var res model.ResponseResult
-	var result model.User
-
-	if err != nil {
-		res.Message = "No Fields Were Sent In"
-		json.NewEncoder(w).Encode(res)
-		return
-	}
-
-	collection, err := db.GetDBCollection("users")
-	if err != nil {
-		res.Message = err.Error()
-		json.NewEncoder(w).Encode(res)
-		w.WriteHeader(400)
-		return
-	}
-
-	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", phone.PhoneNumber}}).Decode(&result)
-	if err != nil {
-		res.Message = "Not exist!"
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode(res)
-		return
-	}
-
-	res.Message = string(result.Token)
-	json.NewEncoder(w).Encode(res)
+	json.NewEncoder(w).Encode("Successfully changed")
 	return
 }
+
+// func AuthorizationHandler(w http.ResponseWriter, r *http.Request) {
+
+// 	w.Header().Set("Content-Type", "application/json")
+// 	tokenString := r.Header.Get("captcha-token")
+
+// 	// var authData model.AuthData
+// 	phone, ok1 := r.URL.Query()["phone"]
+// 	code := r.URL.Query()["code"]
+// 	var res model.ResponseResult
+
+// 	if !ok1 || len(phone[0]) < 1 {
+// 		res.Message = "Url Param 'phone' is missing"
+// 		json.NewEncoder(w).Encode(res)
+// 		return
+// 	}
+
+// 	Phone := phone[0]
+// 	Code := code[0]
+
+// 	phoneNumber := fmt.Sprintf("+%s%s", Code, Phone)
+
+// 	opt := option.WithCredentialsFile("ServiceAccountKey.json")
+
+// 	log.Output(1, "phone: "+phoneNumber)
+// 	log.Printf("token: " + tokenString)
+// 	//app, err := firebase.NewApp(context.Background(), nil, opt)
+// 	// if err != nil {
+
+// 	//  log.Fatalln(err)
+// 	// 	log.Fatalln(err)
+// 	// }
+
+// 	client, err := identitytoolkit.NewService(context.Background(), opt)
+// 	if err != nil {
+// 		res.Message = "no firebase service"
+// 		json.NewEncoder(w).Encode(res)
+// 		return
+// 	}
+
+// 	captcha, err := recaptcha.NewReCAPTCHA("6Ldg2eYUAAAAAGP8E3gTqrRQFjPFstUT4lQptSEg", recaptcha.V2, 10*time.Second)
+
+// 	verErr := captcha.Verify(tokenString)
+// 	if verErr != nil {
+// 		log.Printf("verification error: " + err.Error())
+// 	}
+// 	// client, err := app.Firestore(context.Background())
+// 	// if err != nil {
+// 	//  log.Fatalln(err)
+// 	// 	log.Fatalln(err)
+
+// 	// }
+// 	// defer client.Close()
+
+// 	resp, err := client.Relyingparty.SendVerificationCode(&identitytoolkit.IdentitytoolkitRelyingpartySendVerificationCodeRequest{
+// 		PhoneNumber:    phoneNumber,
+// 		RecaptchaToken: tokenString}).Context(context.Background()).Do()
+// 	if err != nil {
+// 		log.Printf(err.Error())
+// 		return
+// 	}
+
+// 	var idToken = resp.ServerResponse.HTTPStatusCode
+// 	res.Message = string(idToken)
+// 	w.WriteHeader(400)
+// 	json.NewEncoder(w).Encode(res)
+
+// }
+
+// func LoginHandler(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json")
+
+// 	var user model.User
+// 	var result model.User
+// 	var res model.ResponseResult
+
+// 	body, _ := ioutil.ReadAll(r.Body)
+// 	err := json.Unmarshal(body, &user)
+// 	if err != nil {
+// 		res.Message = err.Error()
+// 		json.NewEncoder(w).Encode(res)
+// 		return
+// 		//log.Fatal(err)
+// 	}
+
+// 	collection, err := db.GetDBCollection("users")
+
+// 	if err != nil {
+// 		res.Message = err.Error()
+// 		json.NewEncoder(w).Encode(res)
+// 		return
+// 	}
+
+// 	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", user.PhoneNumber}}).Decode(&result)
+
+// 	if err != nil {
+// 		res.Message = "Invalid phone"
+// 		json.NewEncoder(w).Encode(res)
+// 		return
+// 	}
+
+// 	err = bcrypt.CompareHashAndPassword([]byte(result.Token), []byte(user.Token))
+
+// 	if err != nil {
+// 		res.Message = "Invalid Token"
+// 		json.NewEncoder(w).Encode(res)
+// 		return
+// 	}
+
+// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+// 		"name":        result.FirstName,
+// 		"surname":     result.LastName,
+// 		"phoneNumber": result.PhoneNumber,
+// 		"dateOfBirth": result.DateOfBirth,
+// 		"city":        result.City,
+// 	})
+
+// 	tokenString, err := token.SignedString([]byte("secret"))
+
+// 	if err != nil {
+// 		res.Message = "Error while generating token, Try Again"
+// 		json.NewEncoder(w).Encode(res)
+// 		return
+// 	}
+
+// 	result.Token = tokenString
+
+// 	json.NewEncoder(w).Encode(result)
+// }
+
+// func AuthHandler(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json")
+
+// 	var phone model.Phone
+// 	body, _ := ioutil.ReadAll(r.Body)
+// 	err := json.Unmarshal(body, &phone)
+// 	var res model.ResponseResult
+// 	var result model.User
+
+// 	if err != nil {
+// 		res.Message = "No Fields Were Sent In"
+// 		json.NewEncoder(w).Encode(res)
+// 		return
+// 	}
+
+// 	collection, err := db.GetDBCollection("users")
+// 	if err != nil {
+// 		res.Message = err.Error()
+// 		json.NewEncoder(w).Encode(res)
+// 		w.WriteHeader(400)
+// 		return
+// 	}
+
+// 	err = collection.FindOne(context.TODO(), bson.D{{"phoneNumber", phone.PhoneNumber}}).Decode(&result)
+// 	if err != nil {
+// 		res.Message = "Not exist!"
+// 		w.WriteHeader(400)
+// 		json.NewEncoder(w).Encode(res)
+// 		return
+// 	}
+
+// 	res.Message = string(result.Token)
+// 	json.NewEncoder(w).Encode(res)
+// 	return
+// }

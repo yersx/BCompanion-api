@@ -188,6 +188,25 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 	return &up, nil
 }
 
+func (*repo) UpdateImage(image string, token string) string {
+	collection, err := db.GetDBCollection("users")
+	if err != nil {
+		return "can not connect to database"
+	}
+
+	_, err2 := collection.UpdateOne(
+		context.TODO(),
+		bson.M{"token": token},
+		bson.D{
+			{"$push", bson.D{{"photo", image}}},
+		},
+	)
+	if err2 != nil {
+		return "can not join the group"
+	}
+	return ""
+}
+
 // if len(userGroups) < 1 {
 // 	userGroups = nil
 // 	up.UpcomingHikes = nil

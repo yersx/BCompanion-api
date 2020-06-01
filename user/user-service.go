@@ -10,6 +10,7 @@ type UserService interface {
 	FindUser(phoneNumber string) (*model.User, error)
 	FindUserProfile(phoneNumber string) (*model.UserProfile, error)
 	FindToken(phoneNumber string) (*string, error)
+	UpdateImage(imageLink string, token string) string
 }
 
 type service struct{}
@@ -37,4 +38,8 @@ func (*service) FindUserProfile(phoneNumber string) (*model.UserProfile, error) 
 
 func (*service) FindToken(phoneNumber string) (*string, error) {
 	return repo.FindToken(phoneNumber)
+}
+
+func (*service) UpdateImage(imageLink string, token string) string {
+	return repo.UpdateImage(imageLink, token)
 }
