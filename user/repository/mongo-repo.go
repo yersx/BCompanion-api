@@ -5,6 +5,7 @@ import (
 	"bcompanion/group"
 	"bcompanion/model"
 	"context"
+	"log"
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -198,6 +199,8 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 		if len(past) < 1 {
 			past = nil
 		}
+		log.Println("past hikes %v", past)
+		log.Println("upcoming hikes %v", upcoming)
 		up.HikesHistory = past
 		up.UpcomingHikes = upcoming
 		numberOfPastHikes := len(past)
