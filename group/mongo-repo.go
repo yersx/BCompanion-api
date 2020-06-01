@@ -5,6 +5,7 @@ import (
 	"bcompanion/model"
 	"context"
 	"strconv"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -186,10 +187,26 @@ func (*repo) GetGroup(groupName string) (*model.Group, error) {
 		}
 	}
 
-	group.HikesHistory = GetHike(groupName)
+	hikes := GetHike(groupName)
+
+	past := make([]*model.Hike, 0, len(hikes))
+	upcoming := make([]*model.Hike, 0, len(hikes))
+	currentTime := time.Now().UTC()
+
+	for _, b := range hikes {
+		startDate := b.StartDateISO
+		if startDate.After(currentTime) {
+			upcoming = append(upcoming, b)
+		} else if startDate.Before(currentTime) {
+			upcoming = append(past, b)
+		}
+	}
+
+	group.CurrentHikes = upcoming
+	group.HikesHistory = past
 
 	numberOfMembers := len(group.Members)
-	numberOfHikes := len(group.HikesHistory) + len(group.CurrentHikes)
+	numberOfHikes := len(hikes)
 
 	if len(group.CurrentHikes) == 0 {
 		group.CurrentHikes = nil
