@@ -3,10 +3,8 @@ package repository
 import (
 	"bcompanion/config/db"
 	"bcompanion/group"
-	"bcompanion/hike"
 	"bcompanion/model"
 	"context"
-	"log"
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -155,26 +153,25 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 	up.Photo = user.Photo
 	up.Status = user.Status
 
-	upcomingHikes, err := hike.GetUpcomingByUser(user.Token)
-	if err != nil {
-		return nil, err
-	}
-	if len(upcomingHikes) < 1 {
-		upcomingHikes = nil
-	}
-	up.UpcomingHikes = upcomingHikes
+	// upcomingHikes, err := hike.GetUpcomingByUser(user.Token)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if len(upcomingHikes) < 1 {
+	// 	upcomingHikes = nil
+	// }
+	// up.UpcomingHikes = upcomingHikes
 
-	log.Println("middle %v", upcomingHikes)
-	pastHikes, err := hike.GetPastbyUser(user.Token)
-	if err != nil {
-		return nil, err
-	}
-	if len(pastHikes) < 1 {
-		pastHikes = nil
-	}
-	up.HikesHistory = append(upcomingHikes, pastHikes...)
-	numberOfPastHikes := len(pastHikes)
-	up.NumberOfPastHikes = strconv.Itoa(numberOfPastHikes)
+	// pastHikes, err := hike.GetPastbyUser(user.Token)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if len(pastHikes) < 1 {
+	// 	pastHikes = nil
+	// }
+	// up.HikesHistory = append(upcomingHikes, pastHikes...)
+	// numberOfPastHikes := len(pastHikes)
+	// up.NumberOfPastHikes = strconv.Itoa(numberOfPastHikes)
 
 	userGroups, err := group.UserGroups(user.Token)
 	if err != nil {
@@ -182,6 +179,30 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 	}
 	if len(userGroups) < 1 {
 		userGroups = nil
+		up.UpcomingHikes = nil
+		up.HikesHistory = nil
+		up.NumberOfPastHikes = "0"
+	} else {
+
+		past := make([]*model.Hike, 0, 100)
+		upcoming := make([]*model.Hike, 0, 100)
+
+		for _, b := range userGroups {
+			upcoming = append(upcoming, b.CurrentHikes...)
+			past = append(past, b.HikesHistory...)
+
+		}
+		if len(upcoming) < 1 {
+			upcoming = nil
+		}
+		if len(past) < 1 {
+			past = nil
+		}
+		up.HikesHistory = past
+		up.UpcomingHikes = upcoming
+		numberOfPastHikes := len(past)
+		up.NumberOfPastHikes = strconv.Itoa(numberOfPastHikes)
+
 	}
 	numberOfGroups := len(userGroups)
 	up.NumberOfGroups = strconv.Itoa(numberOfGroups)
