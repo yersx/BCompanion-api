@@ -118,8 +118,8 @@ func (*service) GetWeekWeather(place string) ([]*model.WeatherDay, error) {
 			Day:         owWeekDays[dateTime.Weekday().String()],
 			Date:        dateTime.Format("02.01.2006"),
 			Image:       owIconNames[b.Weather[0].Icon],
-			DayDegree:   fmt.Sprintf("%.0f", b.Temp.Day),
-			NightDegree: fmt.Sprintf("%.0f", b.Temp.Night),
+			DayDegree:   fmt.Sprintf("%.0f°", b.Temp.Day),
+			NightDegree: fmt.Sprintf("%.0f°", b.Temp.Night),
 			Humidity:    strconv.Itoa(b.Humidity),
 			Clouds:      strconv.Itoa(b.Clouds),
 			WindSpeed:   fmt.Sprintf("%.1f", b.WindSpeed),
@@ -194,7 +194,7 @@ func (*service) GetDayWeather(place string, date string) ([]*model.WeatherHourRe
 				Date:        dateTime.Format("02.01.2006"),
 				Image:       owIconNames[b.Weather[0].Icon],
 				Description: b.Weather[0].Description,
-				Degree:      fmt.Sprintf("%.0f", b.Temp),
+				Degree:      fmt.Sprintf("%.0f°", b.Temp),
 			}
 			out = append(out, item)
 		}
