@@ -191,6 +191,8 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 		for _, b := range userGroups {
 			upcoming = append(upcoming, b.CurrentHikes...)
 			past = append(past, b.HikesHistory...)
+			log.Println("past hikes %v", past)
+			log.Println("upcoming hikes %v", upcoming)
 
 		}
 		if len(upcoming) < 1 {
@@ -199,8 +201,8 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 		if len(past) < 1 {
 			past = nil
 		}
-		log.Println("past hikes %v", past)
-		log.Println("upcoming hikes %v", upcoming)
+		log.Println("total past hikes %v", past)
+		log.Println("total upcoming hikes %v", upcoming)
 		up.HikesHistory = past
 		up.UpcomingHikes = upcoming
 		numberOfPastHikes := len(past)
