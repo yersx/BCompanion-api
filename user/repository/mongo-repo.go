@@ -7,6 +7,7 @@ import (
 	"bcompanion/model"
 	"context"
 	"log"
+	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -133,7 +134,7 @@ func (*repo) FindToken(phoneNumber string) (*string, error) {
 
 func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 
-	var up *model.UserProfile
+	var up model.UserProfile
 	var user *model.User
 	collection, err := db.GetDBCollection("users")
 	if err != nil {
@@ -146,15 +147,16 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 			return nil, err
 		}
 	}
-	log.Println("user data %v", user)
-	// up.FirstName = user.FirstName
-	// up.LastName = user.PhoneNumber
-	// up.LastName = phoneNumber
-	// up.DateOfBirth = user.DateOfBirth
-	// up.City = user.City
-	// up.Photo = user.Photo
-	// up.Status = user.Status
+	log.Println("start")
+	up.FirstName = user.FirstName
+	up.LastName = user.PhoneNumber
+	up.LastName = phoneNumber
+	up.DateOfBirth = user.DateOfBirth
+	up.City = user.City
+	up.Photo = user.Photo
+	up.Status = user.Status
 
+	log.Println("end")
 	upcomingHikes, err := hike.GetUpcomingByUser(user.Token)
 	if err != nil {
 		return nil, err
@@ -162,33 +164,31 @@ func (*repo) FindUserProfile(phoneNumber string) (*model.UserProfile, error) {
 	if len(upcomingHikes) < 1 {
 		upcomingHikes = nil
 	}
-	log.Println("upcoming Hikes  %v", upcomingHikes)
-	// up.UpcomingHikes = upcomingHikes
+	up.UpcomingHikes = upcomingHikes
 
-	// pastHikes, err := hike.GetPastbyUser(user.Token)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// if len(pastHikes) < 1 {
-	// 	pastHikes = nil
-	// }
+	log.Println("middle %v", upcomingHikes)
+	pastHikes, err := hike.GetPastbyUser(user.Token)
+	if err != nil {
+		return nil, err
+	}
+	if len(pastHikes) < 1 {
+		pastHikes = nil
+	}
 
-	// up.HikesHistory = append(upcomingHikes, pastHikes...)
-	// numberOfPastHikes := len(pastHikes)
-	// up.NumberOfPastHikes = strconv.Itoa(numberOfPastHikes)
+	up.HikesHistory = append(upcomingHikes, pastHikes...)
+	numberOfPastHikes := len(pastHikes)
+	up.NumberOfPastHikes = strconv.Itoa(numberOfPastHikes)
 
 	userGroups, err := group.UserGroups(user.Token)
 	if err != nil {
 		return nil, err
 	}
-
-	log.Println("user groups %v", userGroups)
 	if len(userGroups) < 1 {
 		userGroups = nil
 	}
-	// numberOfGroups := len(userGroups)
-	// up.NumberOfGroups = strconv.Itoa(numberOfGroups)
-	// up.Groups = userGroups
+	numberOfGroups := len(userGroups)
+	up.NumberOfGroups = strconv.Itoa(numberOfGroups)
+	up.Groups = userGroups
 
-	return up, nil
+	return &up, nil
 }
