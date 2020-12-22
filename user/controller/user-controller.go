@@ -188,11 +188,8 @@ func (*controller) UpdateUserPhoto(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
-
-	// 3. Generate new filename
 	nameFile := token + handler.Filename
 
-	// 4. Read multipart file
 	buff, errReadFile := ioutil.ReadAll(file)
 	if errReadFile != nil {
 		json.NewEncoder(w).Encode("Error reading file")

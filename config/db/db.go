@@ -9,7 +9,7 @@ import (
 )
 
 func GetDBCollection(name string) (*mongo.Collection, error) {
-	clientOptions := options.Client().ApplyURI("mongodb+srv://mongouser:Mongo980825user@mongocluster-fvpsj.mongodb.net/test?retryWrites=true&w=majority")
+	clientOptions := options.Client().ApplyURI("mongodb+srv://mongouser:user@mongocluster-fvpsj.mongodb.net/test?retryWrites=true&w=majority")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		return nil, err

@@ -14,7 +14,7 @@ type CloudynaryInfo struct {
 
 var (
 	CtxCloudinary  = NewCloudinary()
-	CloudinaryAuth = "cloudinary://365527915797683:u_kri0We3qcCmD0ojDkU9GhPetw@yersx"
+	CloudinaryAuth = "cloudinary://YOUR_KEY@login"
 	path           = "user_images/"
 )
 

@@ -25,7 +25,7 @@ var client = &http.Client{}
 
 const (
 	units  = "metric"
-	apiKey = "0b8e291e166948ee62b043b7d37a9fa7"
+	apiKey = "OPEN_WEATHER_KEY"
 	lang   = "ru"
 	owAPI  = "https://api.openweathermap.org/data/2.5/onecall"
 )
