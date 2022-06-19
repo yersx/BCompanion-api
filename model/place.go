@@ -10,6 +10,7 @@ type Place struct {
 	PlaceName  string `json:"placeName" bson:"placeName"`
 	PlacePhoto string `json:"placePhoto" bson:"placePhoto"`
 	CityName   string `json:"cityName" bson:"cityName"`
+	HikingTime string `json:"hikingTime" bson:"hikingTime"`
 }
 
 type Places struct {
