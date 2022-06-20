@@ -49,4 +49,5 @@ type PlaceRoute struct {
 	RouteByCarText     *string  `json:"routeByCarText" bson:"routeByCarText"`
 	RouteByWalkingText *string  `json:"routeByWalkingText" bson:"routeByWalkingText"`
 	RouteMap           *string  `json:"routeMap" bson:"routeMap"`
+	HikingTime         *string  `json:"hikingTime" bson:"hikingTime"`
 }

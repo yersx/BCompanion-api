@@ -340,6 +340,7 @@ func (*repo) GetPlacesRoutes(city string) ([]*model.PlaceRoute, error) {
 		{"routeByCarText", 1},
 		{"routeByWalkingText", 1},
 		{"routeMap", 1},
+		{"hikingTime", 1},
 	}
 
 	cursor, err := collection.Find(
