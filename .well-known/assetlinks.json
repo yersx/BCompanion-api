@@ -1,0 +1,5 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : { "namespace": "android_app", "package_name": "kz.parqour",
+               "sha256_cert_fingerprints": ["85:7B:4C:B2:E9:15:C6:41:5F:14:8A:71:DB:3F:8D:17:01:05:19:38:C1:39:71:B1:80:29:32:48:0B:93:52:CD"] }
+}]
